@@ -4,7 +4,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/rmonier/clavardage">
-    <img src="clavardage/src/main/resources/img/icones/icone.png" alt="Logo" width="130">
+    <img src="clavardage/src/main/resources/img/icons/icon.png" alt="Logo" width="130">
   </a>
 
 <h3 align="center"><a href="https://github.com/rmonier/clavardage"><img src="clavardage/src/main/resources/img/assets/title.png" alt="clavardage" width="380"></a></h3>
