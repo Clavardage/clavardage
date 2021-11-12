@@ -29,7 +29,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'clavardage.Clavardage'
+    mainClass = 'clavardage.controller.Clavardage'
     applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 }
 

@@ -19,7 +19,7 @@
     ·
     <a href="https://github.com/rmonier/clavardage/issues">Issues</a>
     ·
-    <a href="https://github.com/rmonier/clavardage/projects">Show Projet</a>
+    <a href="https://insa-clavardage.atlassian.net/jira/software/projects/CLAV/boards/1">Show JIRA Project</a>
   </p>
 
 <!-- TABLE OF CONTENTS -->
