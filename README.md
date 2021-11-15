@@ -3,21 +3,21 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/rmonier/clavardage">
+  <a href="https://github.com/Clavardage/clavardage">
     <img src="clavardage/src/main/resources/img/icons/icon.png" alt="Logo" width="130">
   </a>
 
-<h3 align="center"><a href="https://github.com/rmonier/clavardage"><img src="clavardage/src/main/resources/img/assets/title.png" alt="clavardage" width="380"></a></h3>
+<h3 align="center"><a href="https://github.com/Clavardage/clavardage"><img src="clavardage/src/main/resources/img/assets/title.png" alt="clavardage" width="380"></a></h3>
 
   <p align="center">
     Clavardage: A decentralized chat
     <br />
-    <a href="https://github.com/rmonier/clavardage/releases"><strong>See Releases »</strong></a>
+    <a href="https://github.com/Clavardage/clavardage/releases"><strong>See Releases »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/rmonier/clavardage/wiki">Read the wiki</a>
+    <a href="https://github.com/Clavardage/clavardage/wiki">Read the wiki</a>
     ·
-    <a href="https://github.com/rmonier/clavardage/issues">Issues</a>
+    <a href="https://github.com/Clavardage/clavardage/issues">Issues</a>
     ·
     <a href="https://insa-clavardage.atlassian.net/jira/software/projects/CLAV/boards/1">Show JIRA Project</a>
   </p>
@@ -35,7 +35,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-            <a href="#prerequisites">Prerequisites</a>
+        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -82,7 +82,7 @@
 
 1. Clone the project
    ```sh
-   git clone https://github.com/rmonier/clavardage.git
+   git clone https://github.com/Clavardage/clavardage.git
    ```
 2. Clavardage is now ready to run.
 
@@ -155,9 +155,9 @@ _TODO_
 
 Romain Monier [ [GitHub](https://github.com/rmonier) ] – Co-developer
 <br>
-Céléstine Paillé [ [GitHub](https://github.com/clestinepa) ] – Co-developer
+Célestine Paillé [ [GitHub](https://github.com/clestinepa) ] – Co-developer
 
 <!-- CONTACT -->
 ## Contact
 
-Project Link : [https://github.com/rmonier/clavardage](https://github.com/rmonier/clavardage)
+Project Link : [https://github.com/Clavardage/clavardage](https://github.com/Clavardage/clavardage)
