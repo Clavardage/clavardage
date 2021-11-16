@@ -13,27 +13,65 @@ import javax.swing.border.EmptyBorder;
 import java.io.IOException;
 
 public class Application extends JFrame implements ActionListener, MouseListener {
-    private JTextField editMsg;
-    //	private int nbUsers = 0 ;
 
-    protected static Color COLOR_BACKGROUND = new Color(247,249,251) ;
-    protected static Color COLOR_BACKGROUND2 = new Color(255,255,255) ;
-    protected static Color COLOR_EDIT_MESSAGE = new Color(237,237,237) ;
-    protected static Color COLOR_SCROLL_BAR = new Color(237,237,237,127) ;
-    protected static Color COLOR_CURSOR_SCROLL = new Color(219,219,219) ;
-    protected static Color COLOR_CURSOR_SCROLL_HOVER = new Color(201,201,201) ;
-    protected static Color COLOR_OUR_MESSAGE = new Color(201,201,201,50) ;
-    protected static Color COLOR_SHADOW = new Color(165,165,165,50) ;
+//	private static final long serialVersionUID = 1L;
+	
+	/* ** Menu Bar ** */
+	private JMenuBar menuBar;
+	private JPanel logoPanel;
+	private JLabel logo;
+	private JMenu settings, colorApp, account;
+	private ButtonGroup allColors;
+	private JRadioButton colorAppWhite, colorAppBlack;
+	
+	/* ** Body's App ** */
+	private JPanel bodyApp;
+	private GridBagLayout gbl_bodyApp;
+	private GridBagConstraints gbc_destinataires, gbc_discussionContainer;
+	private JPanel destinataires, discussionContainer;
+	// -- Destinataires -- //
+	private JPanel users, groups, northGroups;
+	private GridBagLayout gbl_northGroups;
+	private GridBagConstraints gbc_titleGroups, gbc_addGroup;
+	private JTextArea titleUsers, titleGroups;
+	private JButton addGroup;
+	private JScrollPane usersContainer;
+	private DefaultListModel<UserJPanel> modelUsers;
+	private JList<UserJPanel> listUsers;
+	private JList<JPanel> listGroups;
+	// -- Discussion -- //
+	private JPanel discussion, messages, newMsg;
+	private JTextArea nameDestinataire;
+	private JScrollPane msg;
+	private JButton sendFile, sendPicture, sendMsg;
+	private JTextField editMsg;
+	
+	/* ** Image and Icon ** */
+	private Image logoImage, settingsImage, accountImage, addGroupImage, addGroupImageHover, sendFileImage, sendFileImageHover, sendPictureImage, sendPictureImageHover, sendMsgImage, sendMsgImageHover;
+	private ImageIcon logoIcon, settingsIcon, accountIcon, addGroupIcon, addGroupIconHover,sendFileIcon, sendFileIconHover, sendPictureIcon, sendPictureIconHover, sendMsgIcon, sendMsgIconHover;
+
+     
+	enum ColorThemeApp {LIGHT, DARK;}
+	
+    protected static Color COLOR_BACKGROUND ;
+    protected static Color COLOR_BACKGROUND2 ;
+    protected static Color COLOR_EDIT_MESSAGE ;
+    protected static Color COLOR_SCROLL_BAR ;
+    protected static Color COLOR_CURSOR_SCROLL ;
+    protected static Color COLOR_CURSOR_SCROLL_HOVER ;
+    protected static Color COLOR_OUR_MESSAGE ;
+    protected static Color COLOR_SHADOW ;
     protected static Color COLOR_BLUE = new Color(72,125,244) ;
 
     public Application(String title, ImageIcon icon) {
         this.setTitle(title);
         this.setIconImage(icon.getImage());
-        this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        this.setSize(1200, 800);
+		this.setLocationRelativeTo(null);
+        //this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        //this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.setBackground(COLOR_BACKGROUND);
         this.setMinimumSize(new Dimension(300,300));
 
         /* Add the menu bar */
@@ -50,6 +88,8 @@ public class Application extends JFrame implements ActionListener, MouseListener
             e.printStackTrace();
         }
 
+        this.customThemeApp(ColorThemeApp.LIGHT);
+        
         this.addMouseListener(this); // test
     }
 
@@ -59,103 +99,74 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the menu bar.
      * */
     private JMenuBar createMenuBar() throws IOException {
-        JMenuBar menuBar = new JMenuBar();
+        menuBar = new JMenuBar();
 //		menuBar.setUI();
-        menuBar.setBackground(COLOR_BACKGROUND2);
         menuBar.setBorder(new EmptyBorder(0, 20, 0, 10));
         menuBar.setPreferredSize(new Dimension(0, 50));
         menuBar.setBorderPainted(false);
 
 
-        JPanel logoPanel = new JPanel();
-        logoPanel.setBackground(COLOR_BACKGROUND2);
+        logoPanel = new JPanel();
+        logoPanel.setOpaque(false);
         logoPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         logoPanel.setPreferredSize(new Dimension(0, 40));
         menuBar.add(logoPanel);
         logoPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
-        ImageIcon logoIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/Logo_title.png")),"Logo");
-        logoIcon = new ImageIcon(logoIcon.getImage().getScaledInstance(130, 33, Image.SCALE_SMOOTH));
-        JLabel logo = new JLabel();
+        logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Logo_title.png")).getScaledInstance(130, 33, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(logoImage, "logo");
+        logo = new JLabel();
+        logo.setOpaque(false);
         logo.setBorder(null);
-        logo.setBackground(COLOR_BACKGROUND2);
         logo.setIcon(logoIcon);
         logoPanel.add(logo);
 
-        ImageIcon settingsIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/Settings.png")),"Setting menu");
-        settingsIcon = new ImageIcon(settingsIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
-        JMenu settings = new JMenu();
+        
+        settingsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Settings.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        settingsIcon = new ImageIcon(settingsImage, "Setting menu");
+        settings = new JMenu();
+        settings.setOpaque(false);
         settings.setBorder(null);
-        settings.setBackground(COLOR_BACKGROUND2);
         settings.setIcon(settingsIcon);
         menuBar.add(settings);
 
-        JMenu colorApp = new JMenu("Change the default color");
+        colorApp = new JMenu("Change the default color");
+        colorApp.setOpaque(false);
         colorApp.setBorder(null);
-        colorApp.setBackground(COLOR_BACKGROUND2);
         settings.add(colorApp);
 
-        ButtonGroup allColors = new ButtonGroup();
+        allColors = new ButtonGroup();
 
-        JRadioButton colorAppWhite = new JRadioButton("White");
+        colorAppWhite = new JRadioButton("White");
         colorAppWhite.setSelected(true);
         colorAppWhite.setMnemonic(KeyEvent.VK_W);
         colorAppWhite.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                COLOR_BACKGROUND = new Color(247,249,251) ;
-                COLOR_BACKGROUND2 = new Color(255,255,255) ;
-                COLOR_EDIT_MESSAGE = new Color(237,237,237) ;
-                COLOR_SCROLL_BAR = new Color(237,237,237,127) ;
-                COLOR_CURSOR_SCROLL = new Color(219,219,219) ;
-                COLOR_CURSOR_SCROLL_HOVER = new Color(201,201,201) ;
-                COLOR_OUR_MESSAGE = new Color(201,201,201,50) ;
-                COLOR_SHADOW = new Color(165,165,165,50) ;
-                COLOR_BLUE = new Color(72,125,244) ;
-
+                customThemeApp(ColorThemeApp.LIGHT);
             }
         });
         allColors.add(colorAppWhite);
         colorApp.add(colorAppWhite);
 
-        JRadioButton colorAppBlack = new JRadioButton("Black");
+        colorAppBlack = new JRadioButton("Black");
         colorAppBlack.setMnemonic(KeyEvent.VK_B);
         colorAppBlack.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                COLOR_BACKGROUND = new Color(38,38,38) ;
-                COLOR_BACKGROUND2 = new Color(89,89,89) ;
-                COLOR_EDIT_MESSAGE = new Color(237,237,237) ;
-                COLOR_SCROLL_BAR = new Color(127,127,127,127) ;
-                COLOR_CURSOR_SCROLL = new Color(64,64,64) ;
-                COLOR_CURSOR_SCROLL_HOVER = new Color(62,62,62) ;
-                COLOR_OUR_MESSAGE = new Color(62,62,62,50) ;
-                COLOR_SHADOW = new Color(165,165,165,50) ;
-                COLOR_BLUE = new Color(72,125,244) ;
-                menuBar.updateUI();
-
+                customThemeApp(ColorThemeApp.DARK);
             }
         });
         allColors.add(colorAppBlack);
         colorApp.add(colorAppBlack);
-
-        JRadioButton colorAppRed = new JRadioButton("Red");
-        allColors.add(colorAppRed);
-        colorApp.add(colorAppRed);
-
-        JRadioButton colorAppBlue = new JRadioButton("Blue");
-        allColors.add(colorAppBlue);
-        colorApp.add(colorAppBlue);
-
-//				settings.addSeparator();
-
-
-
-        ImageIcon accountIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/Account.png")),"Account menu");
-        accountIcon = new ImageIcon(accountIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
-        JMenu account = new JMenu();
+        
+//		settings.addSeparator();
+        
+        accountImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Account.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        accountIcon = new ImageIcon(accountImage, "Account menu");
+        account = new JMenu();
+        account.setOpaque(false);
         account.setBorder(null);
-        account.setBackground(COLOR_BACKGROUND2);
         account.setIcon(accountIcon);
         menuBar.add(account);
 
@@ -166,11 +177,10 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the app's body.
      * */
     private JPanel createBodyApp() throws IOException {
-        JPanel bodyApp = new JPanel();
-        bodyApp.setBackground(COLOR_BACKGROUND);
+        bodyApp = new JPanel();
 
         /* Set the GridBagLayout */
-        GridBagLayout gbl_bodyApp = new GridBagLayout();
+        gbl_bodyApp = new GridBagLayout();
         gbl_bodyApp.columnWidths = new int[]{30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 0};
         gbl_bodyApp.rowHeights = new int[]{100};
         gbl_bodyApp.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
@@ -178,7 +188,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
         bodyApp.setLayout(gbl_bodyApp);
 
         /* Add Destinataires with good constraints */
-        GridBagConstraints gbc_destinataires = new GridBagConstraints();
+        gbc_destinataires = new GridBagConstraints();
         gbc_destinataires.insets = new Insets(0, 0, 0, 5);
         gbc_destinataires.fill = GridBagConstraints.BOTH;
         gbc_destinataires.gridwidth = 3;
@@ -187,7 +197,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
         bodyApp.add(createDestinatairesPanel(), gbc_destinataires);
 
         /* Add Discussion with good constraints */
-        GridBagConstraints gbc_discussionContainer = new GridBagConstraints();
+        gbc_discussionContainer = new GridBagConstraints();
         gbc_discussionContainer.fill = GridBagConstraints.BOTH;
         gbc_discussionContainer.gridwidth = 7;
         gbc_discussionContainer.gridx = 3;
@@ -201,54 +211,52 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the panel of the destinataires.
      * */
     private JPanel createDestinatairesPanel() throws IOException {
-        JPanel destinataires = new JPanel();
-        destinataires.setBackground(COLOR_BACKGROUND);
+        destinataires = new JPanel();
+        destinataires.setOpaque(false);
         destinataires.setLayout(new GridLayout(2, 1, 0, 0));
 
-        JPanel users = new JPanel();
-        users.setBackground(COLOR_BACKGROUND);
+        users = new JPanel();
+        users.setOpaque(false);
         destinataires.add(users);
         users.setLayout(new BorderLayout(0, 0));
-
-        JTextArea titleUsers = new JTextArea("Users");
-        customTitle(titleUsers, COLOR_BACKGROUND);
+	
+        titleUsers = new JTextArea("Users");
+        customTitle(titleUsers);
         users.add(titleUsers, BorderLayout.NORTH);
 
         users.add(createListUsers());
 
-        JPanel groups = new JPanel();
-        groups.setBackground(COLOR_BACKGROUND);
+        groups = new JPanel();
+        groups.setOpaque(false);
         destinataires.add(groups);
         groups.setLayout(new BorderLayout(0, 0));
 
-        JPanel northGroups = new JPanel();
-        northGroups.setBackground(COLOR_BACKGROUND);
+        northGroups = new JPanel();
+        northGroups.setOpaque(false);
         groups.add(northGroups, BorderLayout.NORTH);
-        GridBagLayout gbl_northGroups = new GridBagLayout();
+        gbl_northGroups = new GridBagLayout();
         gbl_northGroups.columnWidths = new int[]{10, 10, 10, 10, 10, 10, 10, 10, 0};
         gbl_northGroups.rowHeights = new int[]{21};
         gbl_northGroups.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
         gbl_northGroups.rowWeights = new double[]{0.0};
         northGroups.setLayout(gbl_northGroups);
 
-
-        JTextArea titleGroups = new JTextArea("Groups");
-        customTitle(titleGroups, COLOR_BACKGROUND);
-        GridBagConstraints gbc_titleGroups = new GridBagConstraints();
+        titleGroups = new JTextArea("Groups");
+        customTitle(titleGroups);
+        gbc_titleGroups = new GridBagConstraints();
         gbc_titleGroups.gridwidth = 7;
         gbc_titleGroups.fill = GridBagConstraints.BOTH;
         gbc_titleGroups.gridx = 0;
         gbc_titleGroups.gridy = 0;
         northGroups.add(titleGroups, gbc_titleGroups);
 
-        ImageIcon addGroupIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")),"Add Group Button");
-        addGroupIcon = new ImageIcon(addGroupIcon.getImage().getScaledInstance(13, 13, Image.SCALE_SMOOTH));
-        ImageIcon addGroupIconHover = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")),"Add Group Button Hover");
-        addGroupIconHover = new ImageIcon(addGroupIconHover.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH));
-        JButton addGroup = new JButton();
-        addGroup.setBackground(COLOR_BACKGROUND);
+        addGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(13, 13, Image.SCALE_SMOOTH);
+        addGroupIcon = new ImageIcon(addGroupImage, "Add Group Button");
+        addGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+        addGroupIconHover = new ImageIcon(addGroupImageHover, "Add Group Button Hover");
+        addGroup = new JButton();
         customButton(addGroup,addGroupIcon,addGroupIconHover);
-        GridBagConstraints gbc_addGroup = new GridBagConstraints();
+        gbc_addGroup = new GridBagConstraints();
         gbc_addGroup.fill = GridBagConstraints.BOTH;
         gbc_addGroup.gridx = 7;
         gbc_addGroup.gridy = 0;
@@ -263,27 +271,25 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the panel of the discussion container.
      * */
     private JPanel createDiscussionContainerPanel() throws IOException {
-        JPanel discussionContainer = new JPanel();
-        discussionContainer.setBackground(COLOR_BACKGROUND);
+        discussionContainer = new JPanel();
+        discussionContainer.setOpaque(false);
         discussionContainer.setBorder(new EmptyBorder(15, 15, 15, 15));
         discussionContainer.setLayout(new GridLayout(1, 0, 0, 0));
 
-        JPanel discussion = new MyRoundJPanel();
-        discussion.setBackground(COLOR_BACKGROUND2);
+        discussion = new MyRoundJPanel();
         discussion.setBorder(new EmptyBorder(0, 10, 0, 10));
         discussion.setLayout(new BorderLayout(0, 0));
         discussionContainer.add(discussion);
 
         /*Ajout Java FX pour l'ombre ?*/
 
-        JTextArea nameDestinataire = new JTextArea("Michel");
-        customTitle(nameDestinataire, COLOR_BACKGROUND2);
+        nameDestinataire = new JTextArea("Michel");
+        customTitle(nameDestinataire);
         discussion.add(nameDestinataire, BorderLayout.NORTH);
 
-        JPanel messages = new JPanel();
-        messages.setBackground(COLOR_BACKGROUND2);
-        JScrollPane msg = new JScrollPane(messages);
-        msg.setBackground(COLOR_BACKGROUND2);
+        messages = new JPanel();
+        msg = new JScrollPane(messages);
+        msg.setOpaque(false);
         msg.setBorder(new EmptyBorder(0, 30, 0, 0));
         discussion.add(msg);
 
@@ -298,17 +304,16 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * */
     private JScrollPane createListUsers() throws IOException {
 
-        final DefaultListModel<UserJPanel> model = new DefaultListModel<UserJPanel>();
+       	modelUsers = new DefaultListModel<UserJPanel>();
 
-        model.addElement(new UserJPanel("Julien",true));
-        model.addElement(new UserJPanel("Micheline",true));
-        model.addElement(new UserJPanel("Théodore",false));
-        model.addElement(new UserJPanel("Loïc",false));
-        model.addElement(new UserJPanel("Arthur",true));
-        model.addElement(new UserJPanel("Fantine",false));
+        modelUsers.addElement(new UserJPanel("Julien",true));
+        modelUsers.addElement(new UserJPanel("Micheline",true));
+        modelUsers.addElement(new UserJPanel("Theodore",false));
+        modelUsers.addElement(new UserJPanel("Loic",false));
+        modelUsers.addElement(new UserJPanel("Arthur",true));
+        modelUsers.addElement(new UserJPanel("Fantine",false));
 
-        JList<UserJPanel> listUsers = new JList<UserJPanel>(model);
-        listUsers.setBackground(COLOR_BACKGROUND);
+        listUsers = new JList<UserJPanel>(modelUsers);
         listUsers.setBorder(new EmptyBorder(0, 20, 10, 20));
         listUsers.setFont(new Font("Dialog", Font.BOLD, 12));
         listUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -317,9 +322,8 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
         listUsers.setPreferredSize(new Dimension(0, 30*6));
 
-        JScrollPane usersContainer = new JScrollPane();
+        usersContainer = new JScrollPane();
         usersContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI());
-        usersContainer.getVerticalScrollBar().setBackground(COLOR_BACKGROUND);
         usersContainer.setBorder(null);
         usersContainer.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         usersContainer.setViewportView(listUsers);
@@ -349,8 +353,8 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the list of Groups.
      * */
     private JList<JPanel> createListGroups()  throws IOException {
-        JList<JPanel> listGroups = new JList<JPanel>();
-        listGroups.setBackground(COLOR_BACKGROUND);
+    	listGroups = new JList<JPanel>();
+    	listGroups.setOpaque(false);
         listGroups.setBorder(new EmptyBorder(10, 20, 10, 20));
         return listGroups ;
     }
@@ -359,26 +363,27 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the panel of new message.
      * */
     private JPanel createNewMsgPanel() throws IOException{
-        JPanel newMsg = new JPanel();
-        newMsg.setBackground(COLOR_BACKGROUND2);
+        newMsg = new JPanel();
+        newMsg.setOpaque(false);
         newMsg.setBorder(new EmptyBorder(10, 30, 10, 30));
         newMsg.setLayout(new BoxLayout(newMsg, BoxLayout.X_AXIS));
 
-        ImageIcon sendFileIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/sendFile.png")),"Send File Button");
-        sendFileIcon = new ImageIcon(sendFileIcon.getImage().getScaledInstance(14, 21, Image.SCALE_SMOOTH));
-        ImageIcon sendFileIconHover = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/sendFile.png")),"Send File Button Hover");
-        sendFileIconHover = new ImageIcon(sendFileIconHover.getImage().getScaledInstance(16, 24, Image.SCALE_SMOOTH));
-        JButton sendFile = new JButton();
+        
+        sendFileImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendFile.png")).getScaledInstance(14, 21, Image.SCALE_SMOOTH);
+        sendFileIcon = new ImageIcon(sendFileImage, "Send File Button");
+        sendFileImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendFile.png")).getScaledInstance(16, 24, Image.SCALE_SMOOTH);
+        sendFileIconHover = new ImageIcon(sendFileImageHover, "Send File Button Hover");
+        sendFile = new JButton();
         customButton(sendFile,sendFileIcon,sendFileIconHover);
         newMsg.add(sendFile);
 
         newMsg.add(createMargin(10,0));
 
-        ImageIcon sendPictureIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/sendPicture.png")),"Send Picture Button");
-        sendPictureIcon = new ImageIcon(sendPictureIcon.getImage().getScaledInstance(14, 21, Image.SCALE_SMOOTH));
-        ImageIcon sendPictureIconHover = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/sendPicture.png")),"Send Picture Button Hover");
-        sendPictureIconHover = new ImageIcon(sendPictureIconHover.getImage().getScaledInstance(16, 24, Image.SCALE_SMOOTH));
-        JButton sendPicture = new JButton();
+        sendPictureImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendPicture.png")).getScaledInstance(14, 21, Image.SCALE_SMOOTH);
+        sendPictureIcon = new ImageIcon(sendPictureImage, "Send Picture Button");
+        sendPictureImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendPicture.png")).getScaledInstance(16, 24, Image.SCALE_SMOOTH);
+        sendPictureIconHover = new ImageIcon(sendPictureImageHover, "Send Picture Button Hover");
+        sendPicture = new JButton();
         customButton(sendPicture,sendPictureIcon,sendPictureIconHover);
         newMsg.add(sendPicture);
 
@@ -386,16 +391,15 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
         editMsg = new RoundJTextField();
         editMsg.setText("Hello...");
-        editMsg.setBackground(COLOR_EDIT_MESSAGE);
         newMsg.add(editMsg);
 
         newMsg.add(createMargin(10,0));
 
-        ImageIcon sendMsgIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/sendMsg.png")),"Send Msg Button");
-        sendMsgIcon = new ImageIcon(sendMsgIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
-        ImageIcon sendMsgIconHover = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/sendMsg.png")),"Send Msg Button Hover");
-        sendMsgIconHover = new ImageIcon(sendMsgIconHover.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-        JButton sendMsg = new JButton();
+        sendMsgImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendMsg.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        sendMsgIcon = new ImageIcon(sendMsgImage, "Send Msg Button");
+        sendMsgImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendMsg.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH);
+        sendMsgIconHover = new ImageIcon(sendMsgImageHover, "Send Msg Button Hover");
+        sendMsg = new JButton();
         customButton(sendMsg,sendMsgIcon,sendMsgIconHover);
         newMsg.add(sendMsg);
 
@@ -416,9 +420,9 @@ public class Application extends JFrame implements ActionListener, MouseListener
     /**
      * Custom title.
      * */
-    private void customTitle(JTextArea title, Color bg) {
-        title.setBackground(bg);
-        title.setCaretColor(bg);
+    private void customTitle(JTextArea title) {
+        title.setOpaque(false);
+      //  title.setCaretColor(bg);
         title.setForeground(COLOR_BLUE);
         title.setFont(new Font("Dialog", Font.PLAIN, 16));
         title.setBorder(new EmptyBorder(10, 15, 10, 15));
@@ -438,6 +442,46 @@ public class Application extends JFrame implements ActionListener, MouseListener
         button.setRolloverIcon(iconHover);
         button.setPreferredSize(new Dimension(button.getIcon().getIconWidth(),button.getIcon().getIconHeight()));
     }
+    
+    /**
+     * Custom theme App.
+     * */
+    private void customThemeApp(ColorThemeApp c) {
+    	if (c == ColorThemeApp.LIGHT) {
+            COLOR_BACKGROUND = new Color(247,249,251) ;
+            COLOR_BACKGROUND2 = new Color(255,255,255) ;
+            COLOR_EDIT_MESSAGE = new Color(237,237,237) ;
+            COLOR_SCROLL_BAR = new Color(237,237,237,127) ;
+            COLOR_CURSOR_SCROLL = new Color(219,219,219) ;
+            COLOR_CURSOR_SCROLL_HOVER = new Color(201,201,201) ;
+            COLOR_OUR_MESSAGE = new Color(201,201,201,50) ;
+            COLOR_SHADOW = new Color(165,165,165,50) ;
+    	} else if (c == ColorThemeApp.DARK) {
+    		COLOR_BACKGROUND = new Color(38,38,38) ;
+            COLOR_BACKGROUND2 = new Color(89,89,89) ;
+            COLOR_EDIT_MESSAGE = new Color(127,127,127) ;
+            COLOR_SCROLL_BAR = new Color(127,127,127,127) ;
+            COLOR_CURSOR_SCROLL = new Color(64,64,64) ;
+            COLOR_CURSOR_SCROLL_HOVER = new Color(62,62,62) ;
+            COLOR_OUR_MESSAGE = new Color(62,62,62,50) ;
+            COLOR_SHADOW = new Color(165,165,165,50) ;
+    	}
+        this.setBackground(COLOR_BACKGROUND);
+        
+    	/* ** Menu Bar ** */
+        menuBar.setBackground(COLOR_BACKGROUND2);
+        
+    	/* ** Body's App ** */
+        bodyApp.setBackground(COLOR_BACKGROUND);
+    	// -- Destinataires -- //
+        listUsers.setBackground(COLOR_BACKGROUND);
+        usersContainer.getVerticalScrollBar().setBackground(COLOR_BACKGROUND); 
+    	// -- Discussion -- //
+        discussion.setBackground(COLOR_BACKGROUND2);
+        messages.setBackground(COLOR_BACKGROUND2);
+        editMsg.setBackground(COLOR_EDIT_MESSAGE);
+    }
+
 
     /* --------- GLOBAL LISTENERS ----------- */
 

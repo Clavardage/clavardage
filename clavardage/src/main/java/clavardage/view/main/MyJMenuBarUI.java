@@ -1,8 +1,9 @@
 package clavardage.view.main;
 
-import javax.swing.plaf.MenuBarUI;
+import javax.swing.JComponent;
+import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.basic.BasicMenuBarUI;
 
-public class MyJMenuBarUI extends MenuBarUI {
-	
-	
+public class MyJMenuBarUI extends BasicMenuBarUI {
+
 }

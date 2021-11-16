@@ -19,9 +19,6 @@ public class MyJScrollBarUI extends BasicScrollBarUI {
     @Override
     protected JButton createDecreaseButton(int orientation) {
       return new JButton() {
-    	  
-		private static final long serialVersionUID = 1L;
-
 		@Override
         public Dimension getPreferredSize() { return d; }
       };
@@ -30,8 +27,6 @@ public class MyJScrollBarUI extends BasicScrollBarUI {
     @Override
     protected JButton createIncreaseButton(int orientation) {
       return new JButton() {
-  		private static final long serialVersionUID = 1L;
-
         @Override
         public Dimension getPreferredSize() { return d; }
       };

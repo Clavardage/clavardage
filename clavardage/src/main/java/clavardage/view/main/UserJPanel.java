@@ -45,13 +45,14 @@ public class UserJPanel extends JPanel {
 		gbc_namePanel.gridy = 0;
 		add(namePanel, gbc_namePanel);
 		
+		Image connectImage;
 		ImageIcon connectIcon;
 		if (connect) {
-			connectIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")),"User is connected");
-			connectIcon = new ImageIcon(connectIcon.getImage().getScaledInstance(10, 10, Image.SCALE_SMOOTH));
+			connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(12, 12, Image.SCALE_SMOOTH);
+			connectIcon = new ImageIcon(connectImage, "User is connected");
 		} else {
-			connectIcon = new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")),"User is disconnected");
-			connectIcon = new ImageIcon(connectIcon.getImage().getScaledInstance(12, 12, Image.SCALE_SMOOTH));
+			connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(12, 12, Image.SCALE_SMOOTH);
+			connectIcon = new ImageIcon(connectImage, "User is disconnected");
 		}
 		JLabel connectLabel = new JLabel();
 		connectLabel.setBackground(Application.COLOR_BACKGROUND);
