@@ -1,5 +1,21 @@
 package clavardage.view.main;
 
+/** TODO
+ * -ombre avec JavaFX sur discussion et menuBar
+ * -changer couleur texte dans customThemeApp (ajouter COLOR_TEXT et COLOR_TITLE ?)
+ * -dans editMsg : -ajouter petite marge à gauche
+ * 				   -modifier couleur Hello... mais si on écrit dedans, le texte est quand même noir
+ * 				   -faire en sorte que Hello... disparaisse quand on clique dans le JTextField
+ * -Bouton Hover centré et pas sur le côté 
+ * -changer design MenuItem
+ * -listUsers et list Group : cliquer sur la zone du JText Area n'active pas le mouseClicked du DestinataireJPanel, il faut changer ça 
+ * -mettre à jour la list de group directement après avoir appuyer sur le bouton (pour le moment, il faut cliquer dedans pour refresh)
+ * -pouvoir organiser les JPanel dans l'ordre alphabatique des noms + tout les connecté d'abord
+ * -enlever le static des COLORS (pour MyJScrollBarUI)
+ */
+
+
+
 import clavardage.controller.Clavardage;
 import clavardage.controller.gui.MainGUI;
 
@@ -14,7 +30,6 @@ import java.io.IOException;
 
 public class Application extends JFrame implements ActionListener, MouseListener {
 
-//	private static final long serialVersionUID = 1L;
 	
 	/* ** Menu Bar ** */
 	private JMenuBar menuBar;
@@ -35,10 +50,10 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	private GridBagConstraints gbc_titleGroups, gbc_addGroup;
 	private JTextArea titleUsers, titleGroups;
 	private JButton addGroup;
-	private JScrollPane usersContainer;
-	private DefaultListModel<UserJPanel> modelUsers;
-	private JList<UserJPanel> listUsers;
-	private JList<JPanel> listGroups;
+	private JScrollPane usersContainer, groupsContainer;
+	private JPanel listUsers, listGroups ;
+	private int nbUsers, nbGroups;
+	enum Destinataire {User,Group;}
 	// -- Discussion -- //
 	private JPanel discussion, messages, newMsg;
 	private JTextArea nameDestinataire;
@@ -46,15 +61,14 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	private JButton sendFile, sendPicture, sendMsg;
 	private JTextField editMsg;
 	
-	/* ** Image and Icon ** */
+	/* ** Pictures and Icons ** */
 	private Image logoImage, settingsImage, accountImage, addGroupImage, addGroupImageHover, sendFileImage, sendFileImageHover, sendPictureImage, sendPictureImageHover, sendMsgImage, sendMsgImageHover;
 	private ImageIcon logoIcon, settingsIcon, accountIcon, addGroupIcon, addGroupIconHover,sendFileIcon, sendFileIconHover, sendPictureIcon, sendPictureIconHover, sendMsgIcon, sendMsgIconHover;
 
-     
+	/* ** Colors ** */
 	enum ColorThemeApp {LIGHT, DARK;}
-	
-    protected static Color COLOR_BACKGROUND ;
-    protected static Color COLOR_BACKGROUND2 ;
+	protected static Color COLOR_BACKGROUND ;
+	protected static Color COLOR_BACKGROUND2 ;
     protected static Color COLOR_EDIT_MESSAGE ;
     protected static Color COLOR_SCROLL_BAR ;
     protected static Color COLOR_CURSOR_SCROLL ;
@@ -66,7 +80,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
     public Application(String title, ImageIcon icon) {
         this.setTitle(title);
         this.setIconImage(icon.getImage());
-        this.setSize(1200, 800);
+        this.setSize(1200, 400);
 		this.setLocationRelativeTo(null);
         //this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
         //this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -93,14 +107,12 @@ public class Application extends JFrame implements ActionListener, MouseListener
         this.addMouseListener(this); // test
     }
 
-
-
     /**
      * Create the menu bar.
+     * @throws IOException
      * */
     private JMenuBar createMenuBar() throws IOException {
         menuBar = new JMenuBar();
-//		menuBar.setUI();
         menuBar.setBorder(new EmptyBorder(0, 20, 0, 10));
         menuBar.setPreferredSize(new Dimension(0, 50));
         menuBar.setBorderPainted(false);
@@ -175,6 +187,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
     /**
      * Create the app's body.
+     * @throws IOException
      * */
     private JPanel createBodyApp() throws IOException {
         bodyApp = new JPanel();
@@ -209,6 +222,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
     /**
      * Create the panel of the destinataires.
+     * @throws IOException
      * */
     private JPanel createDestinatairesPanel() throws IOException {
         destinataires = new JPanel();
@@ -256,6 +270,17 @@ public class Application extends JFrame implements ActionListener, MouseListener
         addGroupIconHover = new ImageIcon(addGroupImageHover, "Add Group Button Hover");
         addGroup = new JButton();
         customButton(addGroup,addGroupIcon,addGroupIconHover);
+        addGroup.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	System.out.println("test add group");
+            	try {
+            		addGroupToList("New Group", true);
+            	} catch (IOException e1) {
+            		e1.printStackTrace();
+            	}
+            }
+        });
         gbc_addGroup = new GridBagConstraints();
         gbc_addGroup.fill = GridBagConstraints.BOTH;
         gbc_addGroup.gridx = 7;
@@ -269,6 +294,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
     /**
      * Create the panel of the discussion container.
+     * @throws IOException
      * */
     private JPanel createDiscussionContainerPanel() throws IOException {
         discussionContainer = new JPanel();
@@ -298,69 +324,68 @@ public class Application extends JFrame implements ActionListener, MouseListener
         return discussionContainer ;
     }
 
-
     /**
      * Create the list of Users.
+     * @throws IOException
      * */
     private JScrollPane createListUsers() throws IOException {
-
-       	modelUsers = new DefaultListModel<UserJPanel>();
-
-        modelUsers.addElement(new UserJPanel("Julien",true));
-        modelUsers.addElement(new UserJPanel("Micheline",true));
-        modelUsers.addElement(new UserJPanel("Theodore",false));
-        modelUsers.addElement(new UserJPanel("Loic",false));
-        modelUsers.addElement(new UserJPanel("Arthur",true));
-        modelUsers.addElement(new UserJPanel("Fantine",false));
-
-        listUsers = new JList<UserJPanel>(modelUsers);
+    	nbUsers = 0;
+    	
+    	listUsers = new JPanel();
         listUsers.setBorder(new EmptyBorder(0, 20, 10, 20));
-        listUsers.setFont(new Font("Dialog", Font.BOLD, 12));
-        listUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listUsers.setLayout(new BoxLayout(listUsers, BoxLayout.Y_AXIS));
-        listUsers.setLayoutOrientation(JList.VERTICAL_WRAP);
-
-        listUsers.setPreferredSize(new Dimension(0, 30*6));
-
-        usersContainer = new JScrollPane();
-        usersContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI());
+        
+        for (String name : MainGUI.getUsernames()) {
+        	listUsers.add(new DestinataireJPanel(name,++nbUsers,true,Destinataire.User,this));
+        }
+        listUsers.add(new DestinataireJPanel("Julien",++nbUsers,true,Destinataire.User,this));
+        listUsers.add(new DestinataireJPanel("Micheline",++nbUsers,true,Destinataire.User,this));
+        listUsers.add(new DestinataireJPanel("Theodore",++nbUsers,false,Destinataire.User,this));
+        listUsers.add(new DestinataireJPanel("Loic",++nbUsers,false,Destinataire.User,this));
+        listUsers.add(new DestinataireJPanel("Arthur",++nbUsers,true,Destinataire.User,this));
+        listUsers.add(new DestinataireJPanel("Fantine",++nbUsers,false,Destinataire.User,this));
+        
+    	System.out.println("nbUsers =" + nbUsers);
+        listUsers.setPreferredSize(new Dimension(0, 30*nbUsers));
+                
+        usersContainer = new JScrollPane(listUsers);
+        usersContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI(COLOR_BACKGROUND, COLOR_SCROLL_BAR, COLOR_CURSOR_SCROLL, COLOR_CURSOR_SCROLL_HOVER));
         usersContainer.setBorder(null);
         usersContainer.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        usersContainer.setViewportView(listUsers);
 
         return usersContainer ;
-
     }
-
-//	/**
-//	 * Add a destinataire to a list of destinataire.
-//	 * */
-//	private void addUserToList(String name, Boolean connect, JList<UserJPanel> list) {
-//    	UserJPanel user = new UserJPanel(name,connect);
-//    	list.add(user);
-//    	nbUsers++;
-//		list.setPreferredSize(new Dimension(0, user.getHeight()*nbUsers));
-//
-//	}
-//
-//	/**
-//	 * Remove a destinataire of a list of destinataire.
-//	 * */
-//	private void removeDestinataireOfList(JPanel destinataire, JList<JPanel> list) {
-//	}
 
     /**
      * Create the list of Groups.
+     * @throws IOException
      * */
-    private JList<JPanel> createListGroups()  throws IOException {
-    	listGroups = new JList<JPanel>();
-    	listGroups.setOpaque(false);
-        listGroups.setBorder(new EmptyBorder(10, 20, 10, 20));
-        return listGroups ;
+    private JScrollPane createListGroups() throws IOException {
+    	nbGroups = 0;
+    	
+    	listGroups = new JPanel();
+        listGroups.setBorder(new EmptyBorder(0, 20, 10, 20));
+        listGroups.setLayout(new BoxLayout(listGroups, BoxLayout.Y_AXIS));
+        
+        addGroupToList("Clovordoge", true);
+        addGroupToList("Les potos", true);
+        addGroupToList("Salut c'est nous", false);
+        addGroupToList("4IR A2 > 4IR A1", false);
+        addGroupToList("Je suis un groupe", true);
+        addGroupToList("Espionnage Industriel", false);
+        
+        groupsContainer = new JScrollPane();
+        groupsContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI(COLOR_BACKGROUND, COLOR_SCROLL_BAR, COLOR_CURSOR_SCROLL, COLOR_CURSOR_SCROLL_HOVER));
+        groupsContainer.setBorder(null);
+        groupsContainer.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        groupsContainer.setViewportView(listGroups);
+
+        return groupsContainer ;
     }
 
     /**
      * Create the panel of new message.
+     * @throws IOException
      * */
     private JPanel createNewMsgPanel() throws IOException{
         newMsg = new JPanel();
@@ -389,7 +414,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
         newMsg.add(createMargin(10,0));
 
-        editMsg = new RoundJTextField();
+        editMsg = new MyRoundJTextField();
         editMsg.setText("Hello...");
         newMsg.add(editMsg);
 
@@ -475,12 +500,30 @@ public class Application extends JFrame implements ActionListener, MouseListener
         bodyApp.setBackground(COLOR_BACKGROUND);
     	// -- Destinataires -- //
         listUsers.setBackground(COLOR_BACKGROUND);
-        usersContainer.getVerticalScrollBar().setBackground(COLOR_BACKGROUND); 
+        usersContainer.getVerticalScrollBar().setBackground(COLOR_BACKGROUND);
+        listGroups.setBackground(COLOR_BACKGROUND);
+        groupsContainer.getVerticalScrollBar().setBackground(COLOR_BACKGROUND); 
     	// -- Discussion -- //
         discussion.setBackground(COLOR_BACKGROUND2);
         messages.setBackground(COLOR_BACKGROUND2);
         editMsg.setBackground(COLOR_EDIT_MESSAGE);
     }
+    
+	/**
+	 * Add a group to the list of groups.
+	 * @throws IOException 
+	 * */
+	private void addGroupToList(String name, Boolean connect) throws IOException {
+    	listGroups.add(new DestinataireJPanel(name,++nbGroups,connect,Destinataire.Group,this));
+    	System.out.println("nbGroups =" + nbGroups);
+    	listGroups.setPreferredSize(new Dimension(0, 30*nbGroups));
+	}
+
+	/**
+	 * Remove a group to the list of groups.
+	 * */
+	private void removeDestinataireOfList(JPanel destinataire, JList<JPanel> list) {
+	}
 
 
     /* --------- GLOBAL LISTENERS ----------- */
@@ -492,8 +535,8 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("test");
-        MainGUI.getUsernames().forEach(System.out::println);
+//        System.out.println("test");
+//        MainGUI.getUsernames().forEach(System.out::println);
     }
 
     @Override
@@ -515,4 +558,13 @@ public class Application extends JFrame implements ActionListener, MouseListener
     public void mouseExited(MouseEvent e) {
 
     }
+    
+    /* --------- GET and SETTER ----------- */
+
+    
+    public void setNameDestinataire(String newDestinataire) {
+    	nameDestinataire.setText(newDestinataire);
+    }
+
+
 }

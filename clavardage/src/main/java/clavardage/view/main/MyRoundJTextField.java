@@ -4,13 +4,13 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 
-public class RoundJTextField extends JTextField {
+public class MyRoundJTextField extends JTextField {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Shape shape;
     
-    public RoundJTextField() {
+    public MyRoundJTextField() {
         super();
         setOpaque(false);
     }
