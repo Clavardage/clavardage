@@ -1,9 +1,11 @@
 package clavardage.controller;
 
+import clavardage.controller.connectivity.ConnectivityDaemon;
 import clavardage.controller.gui.MainGUI;
-import clavardage.model.managers.ConversationManager;
+import clavardage.model.managers.UserManager;
 
 import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.Objects;
 
 /** Main Class
@@ -21,6 +23,10 @@ public class Clavardage
      */
     public static void main(String[] args)
     {
+        //createTestUsers(); // uncomment to create 50 more users at the next run (test, will be deleted)
+
+        /* MAIN WINDOW */
+
         try {
             MainGUI.createGUI();
         } catch (Exception e) {
@@ -28,6 +34,30 @@ public class Clavardage
             e.printStackTrace();
         }
 
-        new ConversationManager(); // test for db init
+        /* CONNECTIVITY DAEMON */
+
+        try {
+            ConnectivityDaemon.start();
+        } catch (Exception e) {
+            System.err.println("Error during the creation of ConnectivityDaemon Thread. [" + e + "]");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * will be deleted, call it to create 50 users
+     */
+    private static void createTestUsers() {
+        UserManager um = new UserManager();
+        System.out.print("/!\\ TEST /!\\ : Processing the creation of 50 users.");
+        for(int i = 0 ; i < 50 ; i++) {
+            try {
+                um.createUser("user_" + i, "pass_" + i, "mail_" + i + "@clav.com");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            System.out.print(".");
+        }
+        System.out.println();
     }
 }

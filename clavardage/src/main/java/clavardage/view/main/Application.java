@@ -1,6 +1,6 @@
 package clavardage.view.main;
 
-/** TODO
+/* TODO
  * -ombre avec JavaFX sur discussion et menuBar
  * -changer couleur texte dans customThemeApp (ajouter COLOR_TEXT et COLOR_TITLE ?)
  * -dans editMsg : -ajouter petite marge à gauche
@@ -14,10 +14,9 @@ package clavardage.view.main;
  * -enlever le static des COLORS (pour MyJScrollBarUI)
  */
 
-
-
 import clavardage.controller.Clavardage;
 import clavardage.controller.gui.MainGUI;
+import clavardage.model.exceptions.UserNotConnectedException;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -30,7 +29,6 @@ import java.io.IOException;
 
 public class Application extends JFrame implements ActionListener, MouseListener {
 
-	
 	/* ** Menu Bar ** */
 	private JMenuBar menuBar;
 	private JPanel logoPanel;
@@ -98,7 +96,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
         /* Add the app's body */
         try {
             this.getContentPane().add(createBodyApp(), BorderLayout.CENTER);
-        } catch (IOException e) {
+        } catch (IOException | UserNotConnectedException e) {
             e.printStackTrace();
         }
 
@@ -189,7 +187,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the app's body.
      * @throws IOException
      * */
-    private JPanel createBodyApp() throws IOException {
+    private JPanel createBodyApp() throws IOException, UserNotConnectedException {
         bodyApp = new JPanel();
 
         /* Set the GridBagLayout */
@@ -224,7 +222,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the panel of the destinataires.
      * @throws IOException
      * */
-    private JPanel createDestinatairesPanel() throws IOException {
+    private JPanel createDestinatairesPanel() throws IOException, UserNotConnectedException {
         destinataires = new JPanel();
         destinataires.setOpaque(false);
         destinataires.setLayout(new GridLayout(2, 1, 0, 0));
@@ -328,14 +326,14 @@ public class Application extends JFrame implements ActionListener, MouseListener
      * Create the list of Users.
      * @throws IOException
      * */
-    private JScrollPane createListUsers() throws IOException {
+    private JScrollPane createListUsers() throws IOException, UserNotConnectedException {
     	nbUsers = 0;
     	
     	listUsers = new JPanel();
         listUsers.setBorder(new EmptyBorder(0, 20, 10, 20));
         listUsers.setLayout(new BoxLayout(listUsers, BoxLayout.Y_AXIS));
         
-        for (String name : MainGUI.getUsernames()) {
+        for (String name : MainGUI.getAllUsernamesInDatabase()) {
         	listUsers.add(new DestinataireJPanel(name,++nbUsers,true,Destinataire.User,this));
         }
         listUsers.add(new DestinataireJPanel("Julien",++nbUsers,true,Destinataire.User,this));
@@ -535,8 +533,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
     @Override
     public void mouseClicked(MouseEvent e) {
-//        System.out.println("test");
-//        MainGUI.getUsernames().forEach(System.out::println);
+
     }
 
     @Override
