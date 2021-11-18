@@ -9,10 +9,12 @@ public class MyRoundJTextField extends JTextField {
 	private static final long serialVersionUID = 1L;
 	
 	private Shape shape;
+	private boolean empty ;
     
     public MyRoundJTextField() {
         super();
         setOpaque(false);
+        empty = true;
     }
 
 	protected void paintComponent(Graphics g) {
@@ -29,5 +31,13 @@ public class MyRoundJTextField extends JTextField {
              shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, 30,30);
          }
          return shape.contains(x, y);
+    }
+    
+    public boolean isEmpty() {
+    	return this.empty ;
+    }
+    
+    public void setEmpty(boolean v) {
+    	this.empty = v;
     }
 }
