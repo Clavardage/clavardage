@@ -1,6 +1,7 @@
 package clavardage.controller.gui;
 
 import clavardage.controller.Clavardage;
+import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.managers.UserManager;
 import clavardage.view.main.Application;
 
@@ -9,10 +10,13 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static clavardage.controller.authentification.AuthOperations.cancelIfNotConnected;
+
 /**
  *
  */
 public class MainGUI {
+
     /**
      * Create and display Application View
      * @return the application frame
@@ -23,11 +27,11 @@ public class MainGUI {
         return app;
     }
 
-    public static ArrayList<String> getUsernames() {
-        UserManager uman = new UserManager();
+    public static ArrayList<String> getAllUsernamesInDatabase() throws UserNotConnectedException {
+        //cancelIfNotConnected();
         ArrayList<String> names = new ArrayList<String>();
         try {
-            uman.getAllUsers().forEach((u) -> names.add(u.getLogin()));
+            (new UserManager()).getAllUsers().forEach((u) -> names.add(u.getLogin()));
         } catch (Exception e) {
             System.err.println("Error: " + e);
             e.printStackTrace();
