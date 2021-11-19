@@ -6,11 +6,10 @@ package clavardage.view.main;
  * 				   -faire en sorte que Hello... réapparaisse si on a rien écrit et qu'on clique autre part
  * -Bouton Hover centré et pas sur le côté 
  * -changer design MenuItem
- * -mettre à jour la list de group directement après avoir appuyer sur le bouton (pour le moment, il faut cliquer dedans pour refresh) => repaint listGroup dans le add ?
  * -pouvoir organiser les JPanel dans l'ordre alphabatique des noms + tout les connecté d'abord
  * -enlever le static des COLORS (pour MyJScrollBarUI)
  * -changer la couleur mouseEntered dans DestinataireJPanel
- *
+ * -taille min thumb JScrollBar
  */
 
 
@@ -120,13 +119,12 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		menuBar.setPreferredSize(new Dimension(0, 50));
 		menuBar.setBorderPainted(false);
 
-
 		logoPanel = new JPanel();
 		logoPanel.setOpaque(false);
 		logoPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 		logoPanel.setPreferredSize(new Dimension(0, 40));
-		menuBar.add(logoPanel);
 		logoPanel.setLayout(new GridLayout(0, 1, 0, 0));
+		menuBar.add(logoPanel);
 
 		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Logo_title.png")).getScaledInstance(130, 33, Image.SCALE_SMOOTH);
 		logoIcon = new ImageIcon(logoImage, "logo");
@@ -135,7 +133,6 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		logo.setBorder(null);
 		logo.setIcon(logoIcon);
 		logoPanel.add(logo);
-
 
 		settingsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Settings.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 		settingsIcon = new ImageIcon(settingsImage, "Setting menu");
@@ -284,6 +281,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+				groupsContainer.validate();
 			}
 		});
 		gbc_addGroup = new GridBagConstraints();
