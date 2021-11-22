@@ -58,8 +58,7 @@ public class MyJScrollBarUI extends BasicScrollBarUI {
         g2.drawRoundRect(r.x,r.y,r.width,r.height,25,25);
         g2.setBackground(Application.COLOR_BACKGROUND);
 //        g2.setBackground(this.COLOR_BACKGROUND);
-        g2.dispose();
-        
+        g2.dispose();        
     }
     
     @Override
