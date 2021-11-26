@@ -62,7 +62,8 @@ CREATE TABLE IF NOT EXISTS user (
     uuid CHAR(36) PRIMARY KEY NOT NULL,
     login VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    mail VARCHAR(255)
+    mail VARCHAR(255) UNIQUE,
+    last_ip VARCHAR(255)
 )
 """);
             pstmt.executeUpdate();

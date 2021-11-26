@@ -1,10 +1,12 @@
 package clavardage.controller;
 
 import clavardage.controller.connectivity.ConnectivityDaemon;
+import clavardage.controller.connectivity.NetworkConnector;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.managers.UserManager;
 
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.sql.SQLException;
 import java.util.Objects;
 
@@ -52,8 +54,8 @@ public class Clavardage
         System.out.print("/!\\ TEST /!\\ : Processing the creation of 50 users.");
         for(int i = 0 ; i < 50 ; i++) {
             try {
-                um.createUser("user_" + i, "pass_" + i, "mail_" + i + "@clav.com");
-            } catch (SQLException e) {
+                um.createUser("user_" + i, "pass_" + i, "mail_" + i + "@clav.com", InetAddress.getByName(NetworkConnector.getLocalAddress()));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             System.out.print(".");
