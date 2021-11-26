@@ -6,7 +6,6 @@ import clavardage.model.managers.UserManager;
 import clavardage.model.objects.UserPrivate;
 
 import java.sql.SQLException;
-import java.util.UUID;
 
 public class AuthOperations {
 
@@ -14,7 +13,7 @@ public class AuthOperations {
     private static final UserManager userMngr;
 
     static {
-        user = new UserPrivate(null, null, null, null);
+        user = new UserPrivate(null, null, null, null, null);
         userMngr = new UserManager();
     }
 
@@ -48,16 +47,16 @@ public class AuthOperations {
 
     /**
      * Connect the current user
-     * @param id
+     * @param mail
      * @param password
      * @throws SQLException
      * @throws WrongIdentifiantsException
      */
-    public static void connectUser(String id, String password) throws Exception {
+    public static void connectUser(String mail, String password) throws Exception {
         if(isUserConnected()) {
             throw new Exception("User already connected. Please use disconnect method first");
         }
-        user = userMngr.connect(UUID.fromString(id), password);
+        user = userMngr.connect(mail, password);
     }
 
     /**

@@ -5,6 +5,8 @@ import clavardage.model.exceptions.WrongIdentifiantsException;
 import clavardage.model.objects.User;
 import clavardage.model.objects.UserPrivate;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,14 +16,14 @@ import java.util.UUID;
 public class UserManager extends DatabaseManager {
 
     /**
-     * @param uuid
+     * @param mail
      * @param password
      * @return
      */
-    public UserPrivate connect(UUID uuid, String password) throws SQLException, WrongIdentifiantsException {
-        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.* FROM user WHERE user.uuid = ?");
+    public UserPrivate connect(String mail, String password) throws SQLException, WrongIdentifiantsException, UnknownHostException {
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.* FROM user WHERE user.mail = ?");
 
-        pstmt.setString(1, uuid.toString());
+        pstmt.setString(1, mail);
 
         ResultSet res = pstmt.executeQuery();
         UserPrivate u;
@@ -29,7 +31,7 @@ public class UserManager extends DatabaseManager {
             if(!PasswordFactory.verify(password, res.getString("password"))) {
                 throw new WrongIdentifiantsException("Wrong password");
             }
-            u = new UserPrivate(UUID.fromString(res.getString("uuid")), res.getString("login"), res.getString("password"), res.getString("mail"));
+            u = new UserPrivate(UUID.fromString(res.getString("uuid")), res.getString("login"), res.getString("password"), res.getString("mail"), InetAddress.getByName(res.getString("last_ip")));
         } else {
             res.close();
             pstmt.close();
@@ -50,6 +52,7 @@ public class UserManager extends DatabaseManager {
         user.setLogin(null);
         user.setPassword(null);
         user.setMail(null);
+        user.setLastIp(null);
     }
 
     /**
@@ -78,20 +81,22 @@ public class UserManager extends DatabaseManager {
      * @param mail
      * @return
      */
-    public UserPrivate createUser(String login, String rawPassword, String mail) throws SQLException {
-        String req = "INSERT INTO user(uuid, login, password, mail) VALUES(?, ?, ?, ?)";
+    public UserPrivate createUser(String login, String rawPassword, String mail, InetAddress lastIp) throws SQLException {
+        String req = "INSERT INTO user(uuid, login, password, mail, last_ip) VALUES(?, ?, ?, ?, ?)";
         PreparedStatement pstmt = getConnection().prepareStatement(req);
 
         String hashedPass = PasswordFactory.generateHash(rawPassword);
-        pstmt.setString(1, UUID.randomUUID().toString());
+        UUID uuid = UUID.randomUUID();
+        pstmt.setString(1, uuid.toString());
         pstmt.setString(2, login);
         pstmt.setString(3, hashedPass);
         pstmt.setString(4, mail);
+        pstmt.setString(4, lastIp.getHostName());
 
         pstmt.executeUpdate();
         pstmt.close();
 
-        return new UserPrivate(UUID.randomUUID(), login, hashedPass, mail);
+        return new UserPrivate(uuid, login, hashedPass, mail, lastIp);
     }
     /**
      * Add an existing user to the database
@@ -101,14 +106,15 @@ public class UserManager extends DatabaseManager {
      * @param mail
      * @return
      */
-    public void addExistingUser(UUID uuid, String login, String hashedPassword, String mail) throws SQLException {
-        String req = "INSERT INTO user(uuid, login, password, mail) VALUES(?, ?, ?, ?)";
+    public void addExistingUser(UUID uuid, String login, String hashedPassword, String mail, InetAddress lastIp) throws SQLException {
+        String req = "INSERT INTO user(uuid, login, password, mail, last_ip) VALUES(?, ?, ?, ?, ?)";
         PreparedStatement pstmt = getConnection().prepareStatement(req);
 
         pstmt.setString(1, uuid.toString());
         pstmt.setString(2, login);
         pstmt.setString(3, hashedPassword);
         pstmt.setString(4, mail);
+        pstmt.setString(4, lastIp.getHostName());
 
         pstmt.executeUpdate();
         pstmt.close();
@@ -125,7 +131,7 @@ public class UserManager extends DatabaseManager {
 
         ResultSet res = pstmt.executeQuery();
         while(res.next()) {
-            users.add(new User(UUID.fromString(res.getString("uuid")), res.getString("login")));
+            users.add(new User(UUID.fromString(res.getString("uuid")), res.getString("login"), InetAddress.getByName(res.getString("last_ip"))));
         }
 
         res.close();

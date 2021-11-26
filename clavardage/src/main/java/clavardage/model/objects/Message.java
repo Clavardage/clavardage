@@ -1,6 +1,8 @@
 package clavardage.model.objects;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
 
     private int id;
     private String text;

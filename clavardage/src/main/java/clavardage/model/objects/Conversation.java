@@ -1,9 +1,10 @@
 package clavardage.model.objects;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Conversation {
+public class Conversation implements Serializable {
 
     private int id;
     private String name;
@@ -53,5 +54,9 @@ public class Conversation {
 
     public void setListUsers(ArrayList<User> list_users) {
         this.listUsers = list_users;
+    }
+
+    public boolean isWithOneUserOnly() {
+        return getListUsers().size() == 2;
     }
 }
