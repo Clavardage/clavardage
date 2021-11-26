@@ -110,6 +110,17 @@ public class DestinataireJPanel extends JPanel {
 			}
 
 			@Override
+			public void mouseEntered(MouseEvent e) {
+				nameUser.setForeground(Color.RED);
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				nameUser.setForeground(namePanel.getForeground());		    
+			}
+
+			@Override
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
 				
@@ -119,17 +130,6 @@ public class DestinataireJPanel extends JPanel {
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 				
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				nameUser.setForeground(Color.RED);
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				nameUser.setForeground(namePanel.getForeground());		    
 			}
         });
 		

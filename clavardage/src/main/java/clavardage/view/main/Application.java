@@ -10,9 +10,8 @@ package clavardage.view.main;
  * -enlever le static des COLORS (pour MyJScrollBarUI)
  * -changer la couleur mouseEntered dans DestinataireJPanel
  * -taille min thumb JScrollBar
+ * -quand taille nom destinateire trop grande, ajuster par la droite sas touhcer au positionnement à gauche
  */
-
-
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.gui.MainGUI;
@@ -88,7 +87,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		//this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		this.setMinimumSize(new Dimension(300,300));
+		this.setMinimumSize(new Dimension(400,400));
 
 		/* Add the menu bar */
 		try {
@@ -416,7 +415,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
 		newMsg.add(createMargin(10,0));
 
-		editMsg = new MyRoundJTextField();
+		editMsg = new MyRoundJTextField(30);
 		editMsg.setText("Hello...");
 		editMsg.setMargin(new Insets(0, 10, 0, 10));
 		editMsg.addMouseListener( new  MouseAdapter(){
@@ -442,6 +441,17 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		newMsg.add(sendMsg);
 
 		return newMsg ;
+	}
+	
+	/**
+	 * Create the panel of messages.
+	 * @throws IOException
+	 * */
+	private JScrollPane createMsgPanel() throws IOException{
+		msg = new JScrollPane();
+		
+		
+		return msg;
 	}
 
 	/**
