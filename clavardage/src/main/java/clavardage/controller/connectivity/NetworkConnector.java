@@ -1,5 +1,10 @@
 package clavardage.controller.connectivity;
 
+import clavardage.model.objects.Conversation;
+import clavardage.model.objects.Message;
+import clavardage.model.objects.User;
+import clavardage.model.objects.UserPrivate;
+
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -44,5 +49,24 @@ abstract public class NetworkConnector {
             }
         }
         throw new Exception("Error while retrieving local address");
+    }
+
+    /**
+     * Returns the true DTO type or null if not assigned
+     * @param obj
+     * @return
+     */
+    public Object getDTO(Object obj) {
+        if(UserPrivate.class.isAssignableFrom(obj.getClass())) {
+            return (UserPrivate)obj;
+        } else if(User.class.isAssignableFrom(obj.getClass())) {
+            return (User)obj;
+        } else if(Conversation.class.isAssignableFrom(obj.getClass())) {
+            return (Conversation)obj;
+        } else if(Message.class.isAssignableFrom(obj.getClass())) {
+            return (Message)obj;
+        }
+
+        return null;
     }
 }

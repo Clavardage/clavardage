@@ -1,13 +1,21 @@
 package clavardage.controller.connectivity;
 
+import clavardage.controller.Clavardage;
+import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.objects.Conversation;
+import clavardage.model.objects.User;
+
+import java.net.InetAddress;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Handle the network connectivity activities and use infos to update database and program state
  */
 public class ConnectivityDaemon {
 
-    private static final Thread daemon, discoveryDaemon, conversationDaemon;
+    private static final Thread daemon, discoveryDaemon, conversationServerDaemon;
     private static boolean kill;
 
     static {
@@ -85,7 +93,7 @@ public class ConnectivityDaemon {
         }
 
         ConversationService finalConv = conv;
-        conversationDaemon = new Thread(() -> {
+        conversationServerDaemon = new Thread(() -> {
             while(keepDaemonAlive()) {
                 try {
                     finalConv.listen();
@@ -109,6 +117,19 @@ public class ConnectivityDaemon {
                 }
             }
         });
+
+        // tests
+        if(!Clavardage.machine1) {
+            try {
+                AuthOperations.connectUser("mail_1@clav.com", "pass_1");
+                ArrayList<User> testarr = new ArrayList<User>();
+                testarr.add(new User(UUID.randomUUID(), "test1", InetAddress.getByName(NetworkConnector.getLocalAddress())));
+                testarr.add(new User(UUID.randomUUID(), "test2", InetAddress.getByName(NetworkConnector.getLocalAddress())));
+                conv.openConversation(new Conversation(1, "test", LocalDateTime.now(), testarr));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static boolean keepDaemonAlive() {
@@ -121,15 +142,15 @@ public class ConnectivityDaemon {
         synchronized (discoveryDaemon) {
             discoveryDaemon.interrupt();
         }
-        synchronized (conversationDaemon) {
-            conversationDaemon.interrupt();
+        synchronized (conversationServerDaemon) {
+            conversationServerDaemon.interrupt();
         }
     }
 
     public static void start() {
         daemon.start();
         discoveryDaemon.start();
-        conversationDaemon.start();
+        conversationServerDaemon.start();
     }
 
     public static void notifyThread() {

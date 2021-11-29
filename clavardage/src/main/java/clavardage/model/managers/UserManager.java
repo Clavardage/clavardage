@@ -91,7 +91,7 @@ public class UserManager extends DatabaseManager {
         pstmt.setString(2, login);
         pstmt.setString(3, hashedPass);
         pstmt.setString(4, mail);
-        pstmt.setString(4, lastIp.getHostName());
+        pstmt.setString(5, lastIp.getHostName());
 
         pstmt.executeUpdate();
         pstmt.close();
@@ -114,7 +114,7 @@ public class UserManager extends DatabaseManager {
         pstmt.setString(2, login);
         pstmt.setString(3, hashedPassword);
         pstmt.setString(4, mail);
-        pstmt.setString(4, lastIp.getHostName());
+        pstmt.setString(5, lastIp.getHostName());
 
         pstmt.executeUpdate();
         pstmt.close();
