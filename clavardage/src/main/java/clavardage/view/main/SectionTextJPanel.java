@@ -16,7 +16,7 @@ public class SectionTextJPanel extends JPanel {
 	private JTextField textSection;
 	private JTextArea titleSection;
 	
-	public SectionTextJPanel(String title) {
+	public SectionTextJPanel(String title, String text) {
 		super();
 		
 		this.setOpaque(false);
@@ -27,7 +27,6 @@ public class SectionTextJPanel extends JPanel {
 		this.add(createMargin(0,5));
 
 		titleSection = new JTextArea(title);
-		titleSection.setOpaque(false);
 		titleSection.setPreferredSize(new Dimension(0,50));
 		titleSection.setEditable(false);
 		titleSection.setHighlighter(null);
@@ -43,6 +42,7 @@ public class SectionTextJPanel extends JPanel {
 		textSection = new MyRoundJTextField(40);
 		textSection.setPreferredSize(new Dimension(0,40));
 		textSection.setMargin(new Insets(0, 10, 0, 10));
+		textSection.setText(text);
 		this.add(textSection);
 		
 		this.add(createMargin(0,20));
@@ -66,4 +66,11 @@ public class SectionTextJPanel extends JPanel {
 		textSection.setBackground(bg);
 		textSection.setForeground(fg);
 	}
+	
+	public String getText() {
+		return textSection.getText();
+	}
+	
+	
+	
 }

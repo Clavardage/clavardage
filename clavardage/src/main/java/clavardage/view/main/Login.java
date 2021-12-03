@@ -5,12 +5,19 @@ package clavardage.view.main;
  * -head panel
  * -quand on écrit dans password, ce sont des point qui apparaissent
  * -sections en gridbaglayout : élément dans des lignes de tailles fixes et séparer par des lignes grow
+ * -trycash avec des fenetre popup 
  */
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -20,60 +27,38 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-
-import clavardage.controller.Clavardage;
-import clavardage.controller.gui.MainGUI;
-import clavardage.view.main.Application.ColorThemeApp;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JScrollPane;
-import java.awt.Font;
-import java.awt.Point;
-import java.awt.FlowLayout;
 
-public class Login extends JFrame implements ActionListener, MouseListener {
+import clavardage.controller.Clavardage;
+import clavardage.controller.authentification.AuthOperations;
+import clavardage.view.main.Application.ColorThemeApp;
+
+public class Login extends JPanel implements ActionListener, MouseListener {
 	
-	private ColorThemeApp theme;
-	private JPanel logPanel, headPanel, sections, LogButtonPanel ;
+	private JPanel logPanel, headPanel, sections, LogButtonPanel;
 	private JButton signInButton ;
 	private JLabel logoLabel;
 	private JScrollPane sectionContainer;
 	private JTextArea logButton;
 	private Image logoImage;
 	private ImageIcon logoIcon;
-
+	private SectionTextJPanel username, password;
+	private JLabel textError;
 	
-	public Login(String title, ImageIcon icon) {
-		this.setTitle(title);
-		this.setIconImage(icon.getImage());
-		this.setSize(1200, 708);
-		this.setLocationRelativeTo(null);
-		//this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-		//this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		this.setMinimumSize(new Dimension(400,400));
-		
+	public Login() {		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[] {0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 2.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-		this.getContentPane().setLayout(gridBagLayout);
+		this.setLayout(gridBagLayout);
 		
-		this.theme = ColorThemeApp.LIGHT ;
 		
 		
 		/* Add the login panel */
@@ -83,7 +68,7 @@ public class Login extends JFrame implements ActionListener, MouseListener {
 			e.printStackTrace();
 		}
 		
-		customThemeLogin(theme);
+		customThemeLogin(ColorThemeApp.LIGHT);
 	}
 	
 	/**
@@ -91,14 +76,13 @@ public class Login extends JFrame implements ActionListener, MouseListener {
 	 * @throws IOException
 	 * */
 	private void createLoginPanel() throws IOException {
-
 		logPanel = new MyRoundJPanel();
 		GridBagConstraints gbc_logPanel = new GridBagConstraints();
 		gbc_logPanel.insets = new Insets(20, 0, 20, 5);
 		gbc_logPanel.fill = GridBagConstraints.BOTH;
 		gbc_logPanel.gridx = 1;
 		gbc_logPanel.gridy = 0;
-		this.getContentPane().add(logPanel, gbc_logPanel);
+		this.add(logPanel, gbc_logPanel);
 
 		GridBagLayout gbl_logPanel = new GridBagLayout();
 		gbl_logPanel.columnWidths = new int[]{0, 0, 0, 0};
@@ -127,13 +111,8 @@ public class Login extends JFrame implements ActionListener, MouseListener {
 		gbc_sectionContainer.gridx = 1;
 		gbc_sectionContainer.gridy = 3;
 		logPanel.add(sectionContainer, gbc_sectionContainer);
-		
-
-		
 	}
 	
-
-
 	/**
 	 * Create the head panel.
 	 * @throws IOException 
@@ -167,17 +146,26 @@ public class Login extends JFrame implements ActionListener, MouseListener {
 		sections.setLayout(new BoxLayout(sections, BoxLayout.Y_AXIS));
 		sections.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
-		SectionTextJPanel username = new SectionTextJPanel("Login or Mail");
-		SectionTextJPanel password = new SectionTextJPanel("Password");
+		textError = new JLabel(" ");
+		textError.setFont(new Font("Dialog", Font.ITALIC, 14));
+		textError.setForeground(Color.RED);
+		sections.add(textError);
+		
+		
+		username = new SectionTextJPanel("Login or Mail","mail_0@clav.com");
 		sections.add(username);
+
+		password = new SectionTextJPanel("Password","pass_0");
 		sections.add(password);
+		
+		sections.add(createMargin(0, 20));
 		
 		LogButtonPanel = new JPanel();
 		createLogButton();
-		sections.add(createMargin(0, 20));
 		sections.add(LogButtonPanel);
+
 		sections.add(createMargin(0, 40));
-		
+
 		sectionContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI(Application.COLOR_BACKGROUND, Application.COLOR_SCROLL_BAR, Application.COLOR_CURSOR_SCROLL, Application.COLOR_CURSOR_SCROLL_HOVER));
 		sectionContainer.setBorder(null);
 		sectionContainer.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -200,6 +188,7 @@ public class Login extends JFrame implements ActionListener, MouseListener {
 		LogButtonPanel.setOpaque(false);
 		FlowLayout flowLayout = (FlowLayout) LogButtonPanel.getLayout();
 		flowLayout.setVgap(0);
+		logButton.addMouseListener(this);
 	}
 	
 	/**
@@ -229,7 +218,7 @@ public class Login extends JFrame implements ActionListener, MouseListener {
 	/**
 	 * Custom theme Login.
 	 * */
-	private void customThemeLogin(ColorThemeApp c) {
+	public void customThemeLogin(ColorThemeApp c) {
 		if (c == ColorThemeApp.LIGHT) {
 			Application.COLOR_BACKGROUND = new Color(247,249,251) ;
 			Application.COLOR_BACKGROUND2 = new Color(255,255,255) ;
@@ -263,60 +252,48 @@ public class Login extends JFrame implements ActionListener, MouseListener {
 				((SectionTextJPanel) panel).setColorTextSession(Application.COLOR_EDIT_MESSAGE, Application.COLOR_TEXT_EDIT);
 			}
 		}
-		sectionContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2); 
-
-		
-		
-
-		
+		sectionContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2); 		
 	}
+	
 
-
+	/* --------- GLOBAL LISTENERS ----------- */
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getSource()==logButton) {
+			try {
+				AuthOperations.connectUser(username.getText(),password.getText());
+				if(AuthOperations.isUserConnected()) {
+					System.out.println("CONNECTED!!");
+					Application.displayContent(Application.getApp(), Application.getMessageWindow());
+					textError.setText(" ");
+
+				}
+			} catch (Exception e1) {
+				textError.setText(e1.getMessage());
+
+			}
+		}
 	}
-
-
-
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
-
-
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
-
-
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
-
-
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
-
-
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

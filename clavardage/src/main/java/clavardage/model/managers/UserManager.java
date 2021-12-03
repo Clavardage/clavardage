@@ -127,7 +127,7 @@ public class UserManager extends DatabaseManager {
     public ArrayList<User> getAllUsers() throws Exception {
         ArrayList<User> users = new ArrayList<>();
 
-        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.uuid, user.login FROM user");
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.uuid, user.login, user.last_ip FROM user");
 
         ResultSet res = pstmt.executeQuery();
         while(res.next()) {
