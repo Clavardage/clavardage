@@ -1,24 +1,30 @@
 package clavardage.view.main;
 
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JTextArea;
-import javax.swing.BoxLayout;
-
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import clavardage.view.main.Login.SectionText;
+
 public class SectionTextJPanel extends JPanel {
 	private JTextField textSection;
 	private JTextArea titleSection;
+	private SectionText type;
+	private JPanel password;
 	
-	public SectionTextJPanel(String title, String text) {
+	public SectionTextJPanel(String title, String text, SectionText t) {
 		super();
-		
+		this.type = t ;
 		this.setOpaque(false);
 		this.setMaximumSize(new Dimension (Toolkit.getDefaultToolkit().getScreenSize().width, 120));
 		this.setMinimumSize(new Dimension (0, 120));
@@ -39,11 +45,27 @@ public class SectionTextJPanel extends JPanel {
 		
 		this.add(createMargin(0,5));
 		
-		textSection = new MyRoundJTextField(40);
-		textSection.setPreferredSize(new Dimension(0,40));
-		textSection.setMargin(new Insets(0, 10, 0, 10));
+		if (type == SectionText.PW) {
+			password = new MyRoundJPanel(40);
+			password.setPreferredSize(new Dimension(0,40));
+			FlowLayout flowLayout = (FlowLayout) password.getLayout();
+			flowLayout.setVgap(0);
+			flowLayout.setHgap(0);
+			this.add(password);
+			textSection = new JPasswordField(40);
+			textSection.setPreferredSize(new Dimension(0,40));
+			textSection.setOpaque(false);
+			textSection.setBorder(null);
+			password.add(textSection);
+		} else {
+			textSection = new MyRoundJTextField(40);
+			textSection.setPreferredSize(new Dimension(0,40));
+			textSection.setMargin(new Insets(0, 15, 0, 10));
+			this.add(textSection);
+
+		}
+
 		textSection.setText(text);
-		this.add(textSection);
 		
 		this.add(createMargin(0,20));
 
@@ -63,7 +85,11 @@ public class SectionTextJPanel extends JPanel {
 	}
 	
 	public void setColorTextSession(Color bg, Color fg) {
-		textSection.setBackground(bg);
+		if (type == SectionText.PW) {
+			password.setBackground(bg);
+		} else {
+			textSection.setBackground(bg);
+		}
 		textSection.setForeground(fg);
 	}
 	

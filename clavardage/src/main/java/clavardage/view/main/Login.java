@@ -1,19 +1,17 @@
 package clavardage.view.main;
 
 /* TODO
- * -login au centre du bouton
- * -head panel
- * -quand on écrit dans password, ce sont des point qui apparaissent
- * -sections en gridbaglayout : élément dans des lignes de tailles fixes et séparer par des lignes grow
- * -trycash avec des fenetre popup 
+ * -Sign in
  */
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -31,8 +29,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
@@ -41,15 +39,13 @@ import clavardage.view.main.Application.ColorThemeApp;
 
 public class Login extends JPanel implements ActionListener, MouseListener {
 	
-	private JPanel logPanel, headPanel, sections, LogButtonPanel;
+	private JPanel logPanel, headPanel, logoPanel, sections, logButtonPanel, logButtonSection;
 	private JButton signInButton ;
-	private JLabel logoLabel;
 	private JScrollPane sectionContainer;
-	private JTextArea logButton;
+	private JLabel textError, logButton;
 	private Image logoImage;
-	private ImageIcon logoIcon;
 	private SectionTextJPanel username, password;
-	private JLabel textError;
+	enum SectionText {LOG, PW;}
 	
 	public Login() {		
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -58,8 +54,6 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 		gridBagLayout.columnWeights = new double[]{1.0, 2.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		this.setLayout(gridBagLayout);
-		
-		
 		
 		/* Add the login panel */
 		try {
@@ -76,7 +70,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	 * @throws IOException
 	 * */
 	private void createLoginPanel() throws IOException {
-		logPanel = new MyRoundJPanel();
+		logPanel = new MyRoundJPanel(30);
 		GridBagConstraints gbc_logPanel = new GridBagConstraints();
 		gbc_logPanel.insets = new Insets(20, 0, 20, 5);
 		gbc_logPanel.fill = GridBagConstraints.BOTH;
@@ -86,7 +80,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 
 		GridBagLayout gbl_logPanel = new GridBagLayout();
 		gbl_logPanel.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_logPanel.rowHeights = new int[] {20, 200, 30, 0};
+		gbl_logPanel.rowHeights = new int[] {30, 200, 30, 0};
 		gbl_logPanel.columnWeights = new double[]{1.0, 3.0, 1.0, Double.MIN_VALUE};
 		gbl_logPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0};
 		logPanel.setLayout(gbl_logPanel);
@@ -104,13 +98,13 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 		/* ** Sections ** */
 		sections = new JPanel();
 		sectionContainer = new JScrollPane(sections);
-		createSection();
 		GridBagConstraints gbc_sectionContainer = new GridBagConstraints();
 		gbc_sectionContainer.insets = new Insets(0, 0, 20, 5);
 		gbc_sectionContainer.fill = GridBagConstraints.BOTH;
 		gbc_sectionContainer.gridx = 1;
 		gbc_sectionContainer.gridy = 3;
 		logPanel.add(sectionContainer, gbc_sectionContainer);
+		createSection();
 	}
 	
 	/**
@@ -118,25 +112,37 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	 * @throws IOException 
 	 * */
 	private void createHeadPanel() throws IOException {
-		headPanel.setLayout(new BoxLayout(headPanel, BoxLayout.X_AXIS));
+		GridBagLayout gbl_headPanel = new GridBagLayout();
+		gbl_headPanel.columnWidths = new int[]{0, 300, 0, 0};
+		gbl_headPanel.rowHeights = new int[]{10, 150, 10, 0};
+		gbl_headPanel.columnWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_headPanel.rowWeights = new double[]{1.0, 0.0, 1.0, Double.MIN_VALUE};
+		headPanel.setLayout(gbl_headPanel);
 		headPanel.setOpaque(false);
+		headPanel.setPreferredSize(new Dimension(0, 0));
 		
-		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/title_below_logo.png")).getScaledInstance(90, 48, Image.SCALE_SMOOTH);
-		logoIcon = new ImageIcon(logoImage, "logo");
-		logoLabel = new JLabel();
-		logoLabel.setMinimumSize(new Dimension(210, 210));
-		logoLabel.setPreferredSize(new Dimension(210, 210));
-		logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/title_below_logo.png"));
+		new ImageIcon(logoImage, "logo");
+		logoPanel = new JPanel()  {
+			Image img = logoImage;
+			{setOpaque(false);}
+			public void paintComponent(Graphics graphics) 
+			{
+				graphics.drawImage(img.getScaledInstance(-1, this.getSize().height, Image. SCALE_SMOOTH), 0, 0 , this);
+				super.paintComponent(graphics);
+			}
+		};
 		
-		logoLabel.setOpaque(true);
-		logoLabel.setBackground(Color.CYAN);
-		logoLabel.setBorder(null);
-		logoLabel.setIcon(logoIcon);
-		headPanel.add(logoLabel);
+		GridBagConstraints gbc_logoPanel = new GridBagConstraints();
+		gbc_logoPanel.insets = new Insets(0, 0, 5, 5);
+		gbc_logoPanel.fill = GridBagConstraints.BOTH;
+		gbc_logoPanel.gridx = 1;
+		gbc_logoPanel.gridy = 1;
+		headPanel.add(logoPanel, gbc_logoPanel);
 
 		signInButton = new JButton("Sign In");
 		customButton(signInButton);
-		headPanel.add(signInButton);		
+		//headPanel.add(signInButton);		
 	}
 
 	/**
@@ -151,18 +157,15 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 		textError.setForeground(Color.RED);
 		sections.add(textError);
 		
-		
-		username = new SectionTextJPanel("Login or Mail","mail_0@clav.com");
+		username = new SectionTextJPanel("Login or Mail","mail_0@clav.com", SectionText.LOG);
 		sections.add(username);
 
-		password = new SectionTextJPanel("Password","pass_0");
+		password = new SectionTextJPanel("Password","pass_0", SectionText.PW);
 		sections.add(password);
 		
 		sections.add(createMargin(0, 20));
 		
-		LogButtonPanel = new JPanel();
-		createLogButton();
-		sections.add(LogButtonPanel);
+		sections.add(createLogButton());
 
 		sections.add(createMargin(0, 40));
 
@@ -174,21 +177,29 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	/**
 	 * Create the Login button.
 	 * */
-	private void createLogButton() { 
-		logButton = new MyRoundJTextArea();
-		logButton.setText("Login");
+	private JPanel createLogButton() { 
+		logButton = new JLabel("Login",SwingConstants.CENTER);
 		logButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		logButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		logButton.setForeground(Color.WHITE);
-		logButton.setBackground(Application.COLOR_BLUE);
-		logButton.setPreferredSize(new Dimension(200, 80));
-		logButton.setEditable(false);
-		logButton.setHighlighter(null);
-		LogButtonPanel.add(logButton);
-		LogButtonPanel.setOpaque(false);
-		FlowLayout flowLayout = (FlowLayout) LogButtonPanel.getLayout();
+		
+		logButtonPanel = new MyRoundJPanel(90);
+		logButtonPanel.add(logButton);
+		logButtonPanel.setPreferredSize(new Dimension(200, 80));
+		logButtonPanel.setBackground(Application.COLOR_BLUE);
+		logButtonPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		logButtonPanel.setLayout(new GridBagLayout());
+
+		logButtonSection = new JPanel();
+		logButtonSection.add(logButtonPanel);
+		logButtonSection.setOpaque(false);
+		FlowLayout flowLayout = (FlowLayout) logButtonSection.getLayout();
 		flowLayout.setVgap(0);
+
 		logButton.addMouseListener(this);
+		logButtonPanel.addMouseListener(this);
+
+		return logButtonSection;
 	}
 	
 	/**
@@ -206,13 +217,14 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	 * Custom button.
 	 * */
 	private void customButton(JButton button) {
+		button.setForeground(Application.COLOR_BLUE);
+		button.setFont(new Font("Dialog", Font.PLAIN, 20));
 		button.setOpaque(false);
 		button.setBorderPainted(false);
 		button.setFocusPainted(false);
 		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		button.setContentAreaFilled(false);
 		button.setMargin(new Insets(0, 0, 0, 0));
-
 	}
 
 	/**
@@ -260,18 +272,16 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getSource()==logButton) {
+		if (e.getSource()==logButton | e.getSource()==logButtonPanel) {
 			try {
 				AuthOperations.connectUser(username.getText(),password.getText());
 				if(AuthOperations.isUserConnected()) {
 					System.out.println("CONNECTED!!");
 					Application.displayContent(Application.getApp(), Application.getMessageWindow());
 					textError.setText(" ");
-
 				}
 			} catch (Exception e1) {
 				textError.setText(e1.getMessage());
-
 			}
 		}
 	}

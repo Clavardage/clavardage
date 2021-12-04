@@ -305,7 +305,7 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		discussionContainer.setBorder(new EmptyBorder(15, 15, 15, 15));
 		discussionContainer.setLayout(new GridLayout(1, 0, 0, 0));
 
-		discussion = new MyRoundJPanel();
+		discussion = new MyRoundJPanel(30);
 		discussion.setBorder(new EmptyBorder(0, 10, 0, 10));
 		discussion.setLayout(new BorderLayout(0, 0));
 		discussionContainer.add(discussion);

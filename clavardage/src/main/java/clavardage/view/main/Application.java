@@ -43,13 +43,13 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		app = this;
 		this.setTitle(title);
 		this.setIconImage(icon.getImage());
-		this.setSize(1200, 400);
+		this.setSize(1200, 800);
 		this.setLocationRelativeTo(null);
-		this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		//this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+		//this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		//this.setMinimumSize(new Dimension(400,400));
+		this.setMinimumSize(new Dimension(400,400));
 
 		try {
 			message = createMessageWindow();
