@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import clavardage.controller.Clavardage;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.managers.UserManager;
+import clavardage.view.main.Application;
 import clavardage.view.main.Login;
 
 /**
@@ -22,8 +23,7 @@ public class MainGUI {
      * @return the application frame
      */
     public static JFrame createGUI() throws IOException {
-        //JFrame app = new Application("Clavardage", new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/icons/icon.png"))));
-        JFrame app = new Login("Login", new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/icons/icon.png"))));
+        JFrame app = new Application("Clavardage", new ImageIcon(ImageIO.read(Clavardage.getResourceStream("/img/icons/icon.png"))));
         app.setVisible(true);
         return app;
     }

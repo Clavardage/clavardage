@@ -1,17 +1,16 @@
 package clavardage.view.main;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.time.OffsetTime;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -19,12 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import clavardage.controller.Clavardage;
-import clavardage.view.main.Application.ColorThemeApp;
-import clavardage.view.main.Application.Destinataire;
-import java.awt.Insets;
+import clavardage.view.main.Message.Destinataire;
 
 public class DestinataireJPanel extends JPanel {
 	
@@ -33,7 +29,7 @@ public class DestinataireJPanel extends JPanel {
 	private JLabel connectLabel;
 	private int idUser;
 	
-	public DestinataireJPanel(String name, int id, boolean connect, Destinataire d, Application app) throws IOException {
+	public DestinataireJPanel(String name, int id, boolean connect, Destinataire d, Message window) throws IOException {
 		super();
 
 		this.idUser = id;
@@ -106,7 +102,7 @@ public class DestinataireJPanel extends JPanel {
 		super.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {	
-				app.setNameDestinataire(name);
+				window.setNameDestinataire(name);
 			}
 
 			@Override
@@ -147,7 +143,7 @@ public class DestinataireJPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				app.setNameDestinataire(name);				
+				window.setNameDestinataire(name);				
 			}
 
 			@Override
@@ -176,7 +172,7 @@ public class DestinataireJPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				app.setNameDestinataire(name);
+				window.setNameDestinataire(name);
 				
 			}
 
