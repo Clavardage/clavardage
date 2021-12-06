@@ -3,8 +3,10 @@ package clavardage.controller.connectivity;
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.objects.Conversation;
+import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
 
+import java.net.BindException;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -62,23 +64,11 @@ public class ConnectivityDaemon {
                 try {
                     finalDisc.listen(); // wait for new connected users
                     System.out.println(finalDisc.getNewUser().getUUID());
+                } catch (BindException e) {
+                    e.printStackTrace();
+                    waitForRetryConnection();
                 } catch(Exception e) {
                     e.printStackTrace();
-                    try {
-                        System.err.print("Error, unable to connect, retrying in 5");
-                        Thread.sleep(1000);
-                        System.err.print(", 4");
-                        Thread.sleep(1000);
-                        System.err.print(", 3");
-                        Thread.sleep(1000);
-                        System.err.print(", 2");
-                        Thread.sleep(1000);
-                        System.err.println(", 1");
-                        Thread.sleep(1000);
-                        System.err.println("Retrying...");
-                    } catch (InterruptedException e2) {
-                        e2.printStackTrace();
-                    }
                 }
             }
         });
@@ -97,39 +87,52 @@ public class ConnectivityDaemon {
             while(keepDaemonAlive()) {
                 try {
                     finalConv.listen();
-                } catch(Exception e) {
+                } catch (BindException e) {
                     e.printStackTrace();
-                    try {
-                        System.err.print("Error, unable to connect, retrying in 5");
-                        Thread.sleep(1000);
-                        System.err.print(", 4");
-                        Thread.sleep(1000);
-                        System.err.print(", 3");
-                        Thread.sleep(1000);
-                        System.err.print(", 2");
-                        Thread.sleep(1000);
-                        System.err.println(", 1");
-                        Thread.sleep(1000);
-                        System.err.println("Retrying...");
-                    } catch (InterruptedException e2) {
-                        e2.printStackTrace();
-                    }
+                    waitForRetryConnection();
+                } catch(Exception e) {
+                    System.err.println("Server error: " + e);
+                    System.out.println("Log: Relaunching server...");
                 }
             }
         });
 
         // tests
-        if(!Clavardage.machine1) {
+        ConversationService finalConv1 = conv;
+        new Thread(() -> {
             try {
-                AuthOperations.connectUser("mail_1@clav.com", "pass_1");
                 ArrayList<User> testarr = new ArrayList<User>();
-                testarr.add(new User(UUID.randomUUID(), "test1", InetAddress.getByName(NetworkConnector.getLocalAddress())));
-                testarr.add(new User(UUID.randomUUID(), "test2", InetAddress.getByName(NetworkConnector.getLocalAddress())));
-                conv.openConversation(new Conversation(1, "test", LocalDateTime.now(), testarr));
+                User alice = new User(UUID.randomUUID(), "test1", InetAddress.getByName("127.0.0.1"));
+                User bob = new User(UUID.randomUUID(), "test2", InetAddress.getByName("127.0.0.2"));
+                testarr.add(alice);
+                testarr.add(bob);
+                Conversation c = new Conversation(UUID.fromString("7275cad1-d551-4e84-9eb3-fc2dc5812f32"), "test", LocalDateTime.of(12,12,1,1,1), testarr);
+                if(!Clavardage.machine1) {
+                    try {
+                        AuthOperations.connectUser("mail_1@clav.com", "pass_1");
+                        finalConv1.openConversation(c);
+                        try {
+                            Thread.sleep(3000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        finalConv1.sendMessageToConversation(c, new Message(1, "Nouveau msg test !!!!!!! \\n\\tblablou", alice, c));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    AuthOperations.connectUser("mail_2@clav.com", "pass_2");
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    finalConv1.sendMessageToConversation(c, new Message(2, "Bien recu bro", bob, c));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        })/*.start()*/;
     }
 
     private static boolean keepDaemonAlive() {
@@ -156,6 +159,24 @@ public class ConnectivityDaemon {
     public static void notifyThread() {
         synchronized (daemon) {
             daemon.notify();
+        }
+    }
+
+    private static void waitForRetryConnection() {
+        try {
+            System.err.print("Error, unable to connect, retrying in 5");
+            Thread.sleep(1000);
+            System.err.print(", 4");
+            Thread.sleep(1000);
+            System.err.print(", 3");
+            Thread.sleep(1000);
+            System.err.print(", 2");
+            Thread.sleep(1000);
+            System.err.println(", 1");
+            Thread.sleep(1000);
+            System.err.println("Retrying...");
+        } catch (InterruptedException e2) {
+            e2.printStackTrace();
         }
     }
 }

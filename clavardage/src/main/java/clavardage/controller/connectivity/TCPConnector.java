@@ -24,7 +24,7 @@ public class TCPConnector extends NetworkConnector implements ConversationActivi
     }
 
     public Thread askServer(Conversation c, String ip) throws IOException {
-        ip = LOCAL_IP_ADDRESS; //tests
+        System.out.println("Log: TCP TRYING: " + ip + ":" + FORCED_TCP_PORT);
         Socket link = new Socket(InetAddress.getByName(ip), FORCED_TCP_PORT);
         System.out.println("Log: TCP asking to " + ip + ":" + FORCED_TCP_PORT);
         return new Thread(new RunnableTCPThread() {

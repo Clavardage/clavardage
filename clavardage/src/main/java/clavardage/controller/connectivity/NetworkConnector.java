@@ -1,5 +1,6 @@
 package clavardage.controller.connectivity;
 
+import clavardage.controller.Clavardage;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
@@ -11,8 +12,8 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 abstract public class NetworkConnector {
-    protected final String LOCAL_IP_BROADCAST = true ? "127.0.0.255" : getBroadcastAddress(); // localhost for testing
-    protected final String LOCAL_IP_ADDRESS = true ? "127.0.0.1" : getLocalAddress(); // localhost for testing
+    protected final String LOCAL_IP_BROADCAST = true ? "127.255.255.255" : getBroadcastAddress(); // localhost for testing
+    protected final String LOCAL_IP_ADDRESS = true ? (Clavardage.machine1 ? "127.0.0.1" : "127.0.0.2") : getLocalAddress(); // localhost for testing
 
     protected NetworkConnector() throws Exception {
     }

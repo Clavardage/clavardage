@@ -15,8 +15,8 @@ public class DiscoveryService implements Activity {
 
     public DiscoveryService() throws Exception {
         super();
-        udpSender = new UDPConnector(Clavardage.machine1 ? 4242 : 4243);
-        udpListener = new UDPConnector(Clavardage.machine1 ? 4243 : 4242);
+        udpSender = new UDPConnector();
+        udpListener = new UDPConnector();
     }
 
     public void sendHello() throws Exception {

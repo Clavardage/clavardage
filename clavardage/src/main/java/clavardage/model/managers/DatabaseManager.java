@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS user (
 
             pstmt = getConnection().prepareStatement("""
 CREATE TABLE IF NOT EXISTS conversation (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    uuid CHAR(36) PRIMARY KEY NOT NULL,
     name VARCHER(255),
     date_created TEXT NOT NULL
 )

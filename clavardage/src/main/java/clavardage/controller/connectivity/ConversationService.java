@@ -1,6 +1,5 @@
 package clavardage.controller.connectivity;
 
-import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.objects.Conversation;
@@ -9,18 +8,17 @@ import clavardage.model.objects.Message;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.UUID;
 
 public class ConversationService implements Activity {
 
     private final TCPConnector tcpServer, tcpClient;
-    private HashMap<Conversation, Boolean> lockList;
+    private final HashMap<UUID, RunnableTCPThread> convList;
 
     public ConversationService() throws Exception {
         super();
-        lockList = new HashMap<Conversation, Boolean>();
-        tcpServer = new TCPConnector(Clavardage.machine1 ? 4342 : 4343) {
+        convList = new HashMap<UUID, RunnableTCPThread>();
+        tcpServer = new TCPConnector() {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {
@@ -40,7 +38,7 @@ public class ConversationService implements Activity {
                 }
             }
         };
-        tcpClient = new TCPConnector(Clavardage.machine1 ? 4343 : 4342) {
+        tcpClient = new TCPConnector() {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {
@@ -87,106 +85,87 @@ public class ConversationService implements Activity {
      */
     public void handleConversation(RunnableTCPThread r, Conversation currentConv) throws IOException {
         try {
-            lockList.put(currentConv, true);
+            convList.put(currentConv.getUUID(), r);
             System.out.println("Waiting for events for Conversation `" + currentConv.getName() + "`");
-            while(lockList.get(currentConv)) {
-                waitForConversationEvent(r, currentConv);
+            while(true) {
+                Message msg = waitForConversationEvent(r);
+
+                /* HANDLE MESSAGE */
+                System.out.println("Test: from: " + msg.getUser().getLogin() + " msg = " + msg.getText());
+                //TODO
             }
         } catch (Exception e) {
-            System.err.println("Conversation error: " + e);
+            System.err.println("Log: Conversation error: " + e);
         } finally {
-            r.close();
+            try {
+                r.close();
+                System.out.println("Log: Conversation `" + currentConv.getName() + "` closed!");
+            } catch(Exception e) {
+                System.err.println("Unable to close conversation, maybe already closed?");
+            }
         }
     }
 
     /**
-     * Wait for any Conversation event possible : reception of message (getPacketData), user sending message or closing the conversation (unlock)
+     * Wait for Conversation event : reception of message (getPacketData) OR OTHER DATA (TODO)
      * @param r
+     * @return New Message
      * @throws Exception
      */
-    private void waitForConversationEvent(RunnableTCPThread r, Conversation currentConv) throws Exception {
-        if(true)
-            return;
-        //FIXME
-        Thread fatherThread = Thread.currentThread();
-        AtomicReference<Message> msgReceived = new AtomicReference<Message>(null);
-        AtomicBoolean msgToSend = new AtomicBoolean(false);
-        AtomicBoolean closeSignal = new AtomicBoolean(false);
+    private Message waitForConversationEvent(RunnableTCPThread r) throws Exception {
 
         /* WAITING FOR NEW MESSAGE */
 
-        Thread newMsg = new Thread(() -> {
-            Object obj = null;
+        Message msgReceived = null;
+        Object obj = null;
+
+        try {
+            obj = r.getPacketData();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
             try {
-                obj = r.getPacketData();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-                try {
-                    r.close(); // if error, close the socket
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                r.close(); // if error, close the socket
+            } catch (IOException ex) {
+                //ex.printStackTrace();
             }
-            if(Objects.nonNull(obj) && obj instanceof Message) {
-                msgReceived.set((Message) obj);
-                fatherThread.notify();
-            } else {
-                System.err.println("Message data error");
-                try {
-                    throw new Exception("Message data error");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+            throw new Exception("Message reception error");
+        }
 
-        /* WAITING FOR MESSAGE TO SEND */
-
-        Thread sendMsg = new Thread(() -> {
-            if(true) return; //TODO
-            msgToSend.set(true);
-            fatherThread.notify();
-        });
-
-        /* WAITING FOR CLOSING SIGNAL */
-
-        Thread closeConv = new Thread(() -> {
-            if(true) return; //TODO
-            closeSignal.set(true);
-            fatherThread.notify();
-        });
-
-        closeConv.start();
-        sendMsg.start();
-        newMsg.start();
-
-        fatherThread.wait();
-
-        /* CANCEL ALL THREADS WHEN ONE HAS NOTIFIED PARENT */
-
-        newMsg.interrupt();
-        sendMsg.interrupt();
-        closeConv.interrupt();
-
-        /* HANDLE THE EVENT */
-
-        if(closeSignal.get()) {
-            close(currentConv);
-        } else if(msgToSend.get()) {
-
-        } else if(Objects.nonNull(msgReceived.get())) {
-
+        if(Objects.nonNull(obj) && obj instanceof Message) {
+            msgReceived = (Message) obj;
         } else {
-            throw new Exception("Error");
+            System.err.println("Message data error");
+            throw new Exception("Message data error");
+        }
+
+        return msgReceived;
+    }
+
+    /**
+     * Close conversation (unlock the handleConversation instance by closing the socket)
+     * @param c
+     */
+    public void close(Conversation c) {
+        try {
+            convList.get(c.getUUID()).close();
+            convList.remove(c.getUUID());
+            System.out.println("Log: Conversation `" + c.getName() + "` closed!");
+        } catch (IOException e) {
+            System.err.println("Unable to close conversation, maybe already closed?");
         }
     }
 
     /**
-     * Close conversation (unlock the handleConversation instance, hence closing the socket)
+     *
      * @param c
+     * @param m
      */
-    public void close(Conversation c) {
-        lockList.put(c, false);
+    public void sendMessageToConversation(Conversation c, Message m) throws Exception {
+        try {
+            convList.get(c.getUUID()).sendPacket(m);
+        } catch (Exception e) {
+            throw new Exception("Unable to send message : " + e);
+        }
     }
 
     @Override

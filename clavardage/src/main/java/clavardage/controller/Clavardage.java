@@ -7,7 +7,6 @@ import clavardage.model.managers.UserManager;
 
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.sql.SQLException;
 import java.util.Objects;
 
 /** Main Class

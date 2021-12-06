@@ -3,33 +3,34 @@ package clavardage.model.objects;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Conversation implements Serializable {
 
-    private int id;
+    private UUID uuid;
     private String name;
     private LocalDateTime dateCreated;
     private ArrayList<User> listUsers;
 
     /**
-     * @param id
+     * @param uuid
      * @param name
      * @param dateCreated
      * @param listUsers
      */
-    public Conversation(int id, String name, LocalDateTime dateCreated, ArrayList<User> listUsers) {
-        this.id = id;
+    public Conversation(UUID uuid, String name, LocalDateTime dateCreated, ArrayList<User> listUsers) {
+        this.uuid = uuid;
         this.name = name;
         this.dateCreated = dateCreated;
         this.listUsers = listUsers;
     }
 
-    public int getId() {
-        return id;
+    public UUID getUUID() {
+        return uuid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUUID(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {

@@ -33,7 +33,7 @@ public class UDPConnector extends NetworkConnector {
         out.writeObject(obj);
         out.flush();
         outPacket = new DatagramPacket(bos.toByteArray(), bos.toByteArray().length, InetAddress.getByName(ip), port);
-        System.out.println("Log: Sending to " + LOCAL_IP_BROADCAST + ":" + FORCED_UDP_PORT);
+        System.out.println("Log: Sending to " + ip + ":" + port);
         dgramSocketOut.send(outPacket);
         dgramSocketOut.close();
     }
@@ -45,10 +45,10 @@ public class UDPConnector extends NetworkConnector {
     private void getPacket() throws IOException {
         if(Objects.nonNull(dgramSocketIn))
             dgramSocketIn.close();
-        dgramSocketIn = new DatagramSocket(FORCED_UDP_PORT, InetAddress.getByName(LOCAL_IP_BROADCAST));
+        dgramSocketIn = new DatagramSocket(FORCED_UDP_PORT, InetAddress.getByName(LOCAL_IP_ADDRESS));
         buffer = new byte[BUFFER_SIZE];
         inPacket = new DatagramPacket(buffer, buffer.length);
-        System.out.println("Log: Listening on " + LOCAL_IP_BROADCAST + ":" + FORCED_UDP_PORT + "...");
+        System.out.println("Log: Listening on " + LOCAL_IP_ADDRESS + ":" + FORCED_UDP_PORT + "...");
         dgramSocketIn.receive(inPacket);
         dgramSocketIn.close();
     }
