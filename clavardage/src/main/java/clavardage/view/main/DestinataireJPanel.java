@@ -102,7 +102,7 @@ public class DestinataireJPanel extends JPanel {
 		super.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {	
-				window.setNameDestinataire(name);
+				window.openConversation(name);
 			}
 
 			@Override
@@ -143,7 +143,7 @@ public class DestinataireJPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				window.setNameDestinataire(name);				
+				window.openConversation(name);
 			}
 
 			@Override
@@ -172,7 +172,7 @@ public class DestinataireJPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				window.setNameDestinataire(name);
+				window.openConversation(name);
 				
 			}
 
@@ -193,8 +193,8 @@ public class DestinataireJPanel extends JPanel {
 	
 	
 	
-	public void setForegroundNamePanel(Color c) {
-			namePanel.setForeground(c); //pour le mouseExited
-			nameUser.setForeground(c);
+	public void setForegroundNamePanel() {
+			namePanel.setForeground(Application.COLOR_TEXT); //pour le mouseExited
+			nameUser.setForeground(Application.COLOR_TEXT);
 	}
 }

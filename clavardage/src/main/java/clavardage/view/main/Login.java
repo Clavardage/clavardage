@@ -46,6 +46,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	private Image logoImage;
 	private SectionTextJPanel username, password;
 	enum SectionText {LOG, PW;}
+	enum TypeBuble {MINE, THEIR;}
 	
 	public Login() {		
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -62,7 +63,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 			e.printStackTrace();
 		}
 		
-		customThemeLogin(ColorThemeApp.LIGHT);
+		customThemeLogin(Application.getColorThemeApp());
 	}
 	
 	/**
@@ -80,7 +81,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 
 		GridBagLayout gbl_logPanel = new GridBagLayout();
 		gbl_logPanel.columnWidths = new int[]{0, 0, 0, 0};
-		gbl_logPanel.rowHeights = new int[] {30, 200, 30, 0};
+		gbl_logPanel.rowHeights = new int[] {30, 200, 0, 0};
 		gbl_logPanel.columnWeights = new double[]{1.0, 3.0, 1.0, Double.MIN_VALUE};
 		gbl_logPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0};
 		logPanel.setLayout(gbl_logPanel);
@@ -154,12 +155,12 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 		
 		textError = new JLabel(" ");
 		textError.setFont(new Font("Dialog", Font.ITALIC, 14));
-		textError.setForeground(Color.RED);
+		textError.setForeground(Application.COLOR_RED);
 		sections.add(textError);
 		
-		username = new SectionTextJPanel("Login or Mail","mail_0@clav.com", SectionText.LOG);
+		username = new SectionTextJPanel("Mail","mail_0@clav.com", SectionText.LOG);
 		sections.add(username);
-
+		
 		password = new SectionTextJPanel("Password","pass_0", SectionText.PW);
 		sections.add(password);
 		
@@ -231,29 +232,8 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	 * Custom theme Login.
 	 * */
 	public void customThemeLogin(ColorThemeApp c) {
-		if (c == ColorThemeApp.LIGHT) {
-			Application.COLOR_BACKGROUND = new Color(247,249,251) ;
-			Application.COLOR_BACKGROUND2 = new Color(255,255,255) ;
-			Application.COLOR_EDIT_MESSAGE = new Color(237,237,237) ;
-			Application.COLOR_SCROLL_BAR = new Color(241,242,243) ;
-			Application.COLOR_CURSOR_SCROLL = new Color(219,219,219) ;
-			Application.COLOR_CURSOR_SCROLL_HOVER = new Color(201,201,201) ;
-			Application.COLOR_OUR_MESSAGE = new Color(212,212,212) ;
-			Application.COLOR_SHADOW = new Color(165,165,165,50) ;
-			Application.COLOR_TEXT = new Color(0,0,0);
-			Application.COLOR_TEXT_EDIT = new Color(127,127,127);
-		} else if (c == ColorThemeApp.DARK) {
-			Application.COLOR_BACKGROUND = new Color(20,16,12) ;
-			Application.COLOR_BACKGROUND2 = new Color(0,0,0) ;
-			Application.COLOR_EDIT_MESSAGE = new Color(18,18,18) ;
-			Application.COLOR_SCROLL_BAR = new Color(14,13,12) ;
-			Application.COLOR_CURSOR_SCROLL = new Color(36,36,36) ;
-			Application.COLOR_CURSOR_SCROLL_HOVER = new Color(54,54,54) ;
-			Application.COLOR_OUR_MESSAGE = new Color(43,43,43) ;
-			Application.COLOR_SHADOW = new Color(165,165,165,50) ;
-			Application.COLOR_TEXT = new Color (217,217,217);
-			Application.COLOR_TEXT_EDIT = new Color(127,127,127);
-		}
+		((Application) Application.getApp()).changeColorThemeApp(c);
+
 		this.setBackground(Application.COLOR_BACKGROUND);
 		logPanel.setBackground(Application.COLOR_BACKGROUND2);	
 
