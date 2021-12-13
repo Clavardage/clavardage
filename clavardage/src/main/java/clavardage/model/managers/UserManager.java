@@ -2,6 +2,7 @@ package clavardage.model.managers;
 
 import clavardage.controller.authentification.PasswordFactory;
 import clavardage.model.exceptions.WrongIdentifiantsException;
+import clavardage.model.objects.Conversation;
 import clavardage.model.objects.User;
 import clavardage.model.objects.UserPrivate;
 
@@ -138,5 +139,86 @@ public class UserManager extends DatabaseManager {
         pstmt.close();
 
         return users;
+    }
+
+    public ArrayList<User> getUsersByConversation(Conversation conv) throws SQLException, UnknownHostException {
+        ArrayList<User> users = new ArrayList<>();
+
+        PreparedStatement pstmt = getConnection().prepareStatement("""
+SELECT user.uuid, user.login, user.last_ip
+FROM user, user_in_conversation AS uic
+WHERE user.uuid = uic.uuid_user AND uic.uuid_conversation = ?""");
+
+        pstmt.setString(1, conv.getUUID().toString());
+
+        ResultSet res = pstmt.executeQuery();
+        while(res.next()) {
+            users.add(new User(UUID.fromString(res.getString("uuid")), res.getString("login"), InetAddress.getByName(res.getString("last_ip"))));
+        }
+
+        res.close();
+        pstmt.close();
+
+        return users;
+    }
+
+    public ArrayList<User> getUsersByConversationUUID(UUID uuid) throws SQLException, UnknownHostException {
+        ArrayList<User> users = new ArrayList<>();
+
+        PreparedStatement pstmt = getConnection().prepareStatement("""
+SELECT user.uuid, user.login, user.last_ip
+FROM user, user_in_conversation AS uic
+WHERE user.uuid = uic.uuid_user AND uic.uuid_conversation = ?""");
+
+        pstmt.setString(1, uuid.toString());
+
+        ResultSet res = pstmt.executeQuery();
+        while(res.next()) {
+            users.add(new User(UUID.fromString(res.getString("uuid")), res.getString("login"), InetAddress.getByName(res.getString("last_ip"))));
+        }
+
+        res.close();
+        pstmt.close();
+
+        return users;
+    }
+
+    public User getUserByUUID(UUID uuid) throws Exception {
+        User u = null;
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.uuid, user.login, user.last_ip FROM user WHERE user.uuid = ?");
+
+        pstmt.setString(1, uuid.toString());
+
+        ResultSet res = pstmt.executeQuery();
+        if(res.next()) {
+            u = new User(UUID.fromString(res.getString("uuid")), res.getString("login"), InetAddress.getByName(res.getString("last_ip")));
+        } else {
+            res.close();
+            pstmt.close();
+            throw new Exception("User does not exist");
+        }
+
+        res.close();
+        pstmt.close();
+
+        return u;
+    }
+
+    public boolean isUserExist(UUID uuid) throws Exception {
+        boolean exists = false;
+
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT * FROM user WHERE user.uuid = ?");
+
+        pstmt.setString(1, uuid.toString());
+        ResultSet res = pstmt.executeQuery();
+
+        if(res.next()) {
+            exists = true;
+        }
+
+        res.close();
+        pstmt.close();
+
+        return exists;
     }
 }

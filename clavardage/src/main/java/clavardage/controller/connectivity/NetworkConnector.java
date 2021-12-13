@@ -12,7 +12,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 abstract public class NetworkConnector {
-    protected final String LOCAL_IP_BROADCAST = true ? "127.255.255.255" : getBroadcastAddress(); // localhost for testing
+    protected final String LOCAL_IP_BROADCAST = true ? (Clavardage.machine1 ? "127.0.0.2" : "127.0.0.1") : getBroadcastAddress(); // localhost for testing
     protected final String LOCAL_IP_ADDRESS = true ? (Clavardage.machine1 ? "127.0.0.1" : "127.0.0.2") : getLocalAddress(); // localhost for testing
 
     protected NetworkConnector() throws Exception {
