@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.view.main.Application.ColorThemeApp;
 
 public class Application extends JFrame implements ActionListener, MouseListener {
 
@@ -28,14 +29,19 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	protected static Color COLOR_BACKGROUND ;
 	protected static Color COLOR_BACKGROUND2 ;
 	protected static Color COLOR_EDIT_MESSAGE ;
+	protected static Color COLOR_MINE_MESSAGE ;
+	protected static Color COLOR_TEXT_MINE_MESSAGE ;
 	protected static Color COLOR_SCROLL_BAR ;
 	protected static Color COLOR_CURSOR_SCROLL ;
 	protected static Color COLOR_CURSOR_SCROLL_HOVER ;
-	protected static Color COLOR_OUR_MESSAGE ;
 	protected static Color COLOR_SHADOW ;
-	protected static Color COLOR_BLUE = new Color(72,125,244) ;
 	protected static Color COLOR_TEXT ;
-	protected static Color COLOR_TEXT_EDIT ;
+	protected static Color COLOR_TEXT_EDIT = new Color(127,127,127);
+	protected static Color COLOR_TEXT_THEIR_MESSAGE = new Color(255,255,255);
+	protected static Color COLOR_BLUE = new Color(72,125,244) ;
+	protected static Color COLOR_RED = new Color(238,34,34) ;
+
+	private static ColorThemeApp colorThemeApp ;
 	
 
 
@@ -44,12 +50,11 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		this.setTitle(title);
 		this.setIconImage(icon.getImage());
 		this.setSize(1200, 800);
-		this.setLocationRelativeTo(null);
-		//this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
-		//this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+//		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		this.setLocationRelativeTo(null);
 		this.setMinimumSize(new Dimension(400,400));
+		colorThemeApp = ColorThemeApp.LIGHT; 
 
 		try {
 			message = createMessageWindow();
@@ -57,7 +62,6 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		} catch (IOException | UserNotConnectedException e1) {
 			e1.printStackTrace();
 		}
-
 		displayContent(app, login);
 	}
 
@@ -101,8 +105,48 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	public static JPanel getMessageWindow() {
 		return message;
 	}
+	
 	public static JPanel getLoginWindow() {
 		return login;
+	}
+	
+	public static ColorThemeApp getColorThemeApp() {
+		return colorThemeApp;
+	}
+	
+	public void changeColorThemeApp(ColorThemeApp color) {
+		if (color == ColorThemeApp.LIGHT) {
+			COLOR_BACKGROUND = new Color(247,249,251) ;
+			COLOR_BACKGROUND2 = new Color(255,255,255) ;
+			
+			COLOR_EDIT_MESSAGE = new Color(237,237,237) ;
+			
+			COLOR_MINE_MESSAGE = new Color(212,212,212) ;
+			COLOR_TEXT_MINE_MESSAGE = new Color(0,0,0);
+
+			COLOR_SCROLL_BAR = new Color(241,242,243) ;
+			COLOR_CURSOR_SCROLL = new Color(219,219,219) ;
+			COLOR_CURSOR_SCROLL_HOVER = new Color(201,201,201) ;
+			
+			COLOR_SHADOW = new Color(165,165,165,50) ;
+			
+			COLOR_TEXT = new Color(0,0,0);
+		} else if (color == ColorThemeApp.DARK) {
+			COLOR_BACKGROUND = new Color(20,16,12) ;
+			COLOR_BACKGROUND2 = new Color(0,0,0) ;
+			
+			COLOR_EDIT_MESSAGE = new Color(18,18,18) ;
+			
+			COLOR_MINE_MESSAGE = new Color(43,43,43) ;
+			COLOR_TEXT_MINE_MESSAGE = new Color(255,255,255) ;
+
+			COLOR_SCROLL_BAR = new Color(14,13,12) ;
+			COLOR_CURSOR_SCROLL = new Color(36,36,36) ;
+			COLOR_CURSOR_SCROLL_HOVER = new Color(54,54,54) ;
+			
+			COLOR_SHADOW = new Color(165,165,165,50) ;
+			COLOR_TEXT = new Color (217,217,217);
+		}
 	}
 	
 	/* --------- GLOBAL LISTENERS ----------- */

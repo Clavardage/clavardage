@@ -10,7 +10,7 @@ public class MyRoundJTextField extends JTextField {
 	
 	private Shape shape;
 	private boolean empty ;
-    private int radius;
+    private static int radius;
     
     public MyRoundJTextField(int r) {
         super();
@@ -34,12 +34,16 @@ public class MyRoundJTextField extends JTextField {
          }
          return shape.contains(x, y);
     }
-    
-    public boolean isEmpty() {
+       
+    public boolean isEmptyText() {
     	return this.empty ;
     }
     
-    public void setEmpty(boolean v) {
+    public void setEmptyText(boolean v) {
     	this.empty = v;
+    	if (v == true) {
+			this.setText("Hello...");
+			this.setForeground(Application.COLOR_TEXT_EDIT);
+    	}
     }
 }

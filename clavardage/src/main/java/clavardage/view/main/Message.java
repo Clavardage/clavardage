@@ -1,10 +1,18 @@
 package clavardage.view.main;
 
+/* TODO
+ * -button hover à centrer
+ * -editMsg : si on clique autre par et que getText().isEmpty() ou isBlanck() alors on revient sur le truc initial
+ * -rajouter heure des messages devant les buble + noms des expediters dans les conversataions de groupes
+ * -rond bleu pour signifier conversation ouverte + mettre la conversation en haut
+ */
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,7 +21,9 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -34,6 +44,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
@@ -41,10 +52,14 @@ import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.main.Application.ColorThemeApp;
+import clavardage.view.main.Login.TypeBuble;
+
 import javax.swing.JMenuItem;
 
 public class Message extends JPanel implements ActionListener, MouseListener {
 
+	private boolean conversationOpen ;
+	
 	/* ** Menu Bar ** */
 	private JMenuBar menuBar;
 	private JPanel logoPanel;
@@ -70,8 +85,9 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 	enum Destinataire {User,Group;}
 	// -- Discussion -- //
 	private JPanel discussion, messages, newMsg;
+	private JLabel chooseDestinataire;
 	private JTextArea nameDestinataire;
-	private JScrollPane msg;
+	private JScrollPane messageContainer;
 	private JButton sendFile, sendPicture, sendMsg;
 	private JTextField editMsg;
 
@@ -89,7 +105,7 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		add(createBodyApp(), BorderLayout.CENTER);
 		/* Add the app's body */
 		add(createMenuBar(), BorderLayout.NORTH);
-		customThemeMessage(Application.ColorThemeApp.LIGHT);
+		customThemeMessage(Application.getColorThemeApp());
 	}
 
 
@@ -113,7 +129,6 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Logo_title.png")).getScaledInstance(130, 33, Image.SCALE_SMOOTH);
 		logoIcon = new ImageIcon(logoImage, "logo");
 		logo = new JLabel();
-		logo.setOpaque(false);
 		logo.setBorder(null);
 		logo.setIcon(logoIcon);
 		logoPanel.add(logo);
@@ -121,21 +136,25 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		settingsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Settings.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 		settingsIcon = new ImageIcon(settingsImage, "Setting menu");
 		settings = new JMenu();
-		settings.setOpaque(false);
 		settings.setBorder(null);
+		settings.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		settings.setIcon(settingsIcon);
 		menuBar.add(settings);
 
 		colorApp = new JMenu("Change the default color");
-		colorApp.setOpaque(false);
 		colorApp.setBorder(null);
+		colorApp.setFocusPainted(false);
+
+		colorApp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
 		settings.add(colorApp);
 
 		allColors = new ButtonGroup();
 
 		colorAppWhite = new JRadioButton("White");
+		colorAppWhite.setFocusPainted(false);
 		colorAppWhite.setSelected(true);
-		colorAppWhite.setMnemonic(KeyEvent.VK_W);
+		colorAppWhite.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		colorAppWhite.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -146,7 +165,8 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		colorApp.add(colorAppWhite);
 
 		colorAppBlack = new JRadioButton("Black");
-		colorAppBlack.setMnemonic(KeyEvent.VK_B);
+		colorAppBlack.setFocusPainted(false);
+		colorAppBlack.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		colorAppBlack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -156,17 +176,17 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		allColors.add(colorAppBlack);
 		colorApp.add(colorAppBlack);
 
-		//		settings.addSeparator();
 
 		accountImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Account.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 		accountIcon = new ImageIcon(accountImage, "Account menu");
 		account = new JMenu();
-		account.setOpaque(false);
 		account.setBorder(null);
 		account.setIcon(accountIcon);
+		account.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		menuBar.add(account);
 		
 		disconnect = new JMenuItem("Disconnect");
+		disconnect.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		disconnect.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -309,18 +329,16 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		discussion.setBorder(new EmptyBorder(0, 10, 0, 10));
 		discussion.setLayout(new BorderLayout(0, 0));
 		discussionContainer.add(discussion);
-		/*Ajout Java FX pour l'ombre ?*/
 
-		nameDestinataire = new JTextArea("Michel");
+		nameDestinataire = new JTextArea();
+		
+		/*In first, there is no conversation*/
+		nameDestinataire.setText("");
 		customTitle(nameDestinataire);
 		discussion.add(nameDestinataire, BorderLayout.NORTH);
-
-		messages = new JPanel();
-		msg = new JScrollPane(messages);
-		msg.setOpaque(false);
-		msg.setBorder(new EmptyBorder(0, 30, 0, 0));
-		discussion.add(msg);
-
+			
+		discussion.add(createMsgPanel(), BorderLayout.CENTER);
+		
 		discussion.add(createNewMsgPanel(), BorderLayout.SOUTH);
 
 		return discussionContainer ;
@@ -418,16 +436,16 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		editMsg = new MyRoundJTextField(30);
 		editMsg.setText("Hello...");
 		editMsg.setMargin(new Insets(0, 10, 0, 10));
-		editMsg.addMouseListener( new  MouseAdapter(){
-			public void mousePressed(MouseEvent e) {
-				if (((MyRoundJTextField) editMsg).isEmpty()) {
-					editMsg.setText("");
-					editMsg.setForeground(Application.COLOR_TEXT);
-					((MyRoundJTextField) editMsg).setEmpty(false);
-				}
-			}
-		});
+		editMsg.addMouseListener(this);
+		editMsg.addKeyListener((KeyListener) new KeyAdapter() {
+	        @Override
+	        public void keyPressed(KeyEvent e) {
+	            if(e.getKeyCode() == KeyEvent.VK_ENTER){
+	                sendMessage(0);
+	            }
+	        }
 
+	    });
 		newMsg.add(editMsg);
 
 		newMsg.add(createMargin(10,0));
@@ -438,18 +456,46 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		sendMsgIconHover = new ImageIcon(sendMsgImageHover, "Send Msg Button Hover");
 		sendMsg = new JButton();
 		customButton(sendMsg,sendMsgIcon,sendMsgIconHover);
+		sendMsg.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+                sendMessage(1);
+			}
+		});
 		newMsg.add(sendMsg);
-
+		
+		newMsg.setVisible(false);
+		
 		return newMsg ;
 	}
+	
+
 
 	/**
 	 * Create the panel of messages.
 	 * @throws IOException
 	 * */
 	private JScrollPane createMsgPanel() throws IOException{
-		msg = new JScrollPane();
-		return msg;
+		conversationOpen = false ;
+		
+		messages = new JPanel();
+		messages.setBorder(new EmptyBorder(0, 30, 0, 0));
+		messages.setLayout(new GridBagLayout());
+		
+		nameDestinataire.setText("");
+		chooseDestinataire = new JLabel("Choose someone to start a conversation...", SwingConstants.CENTER);
+		chooseDestinataire.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		chooseDestinataire.setForeground(Application.COLOR_BLUE);
+		
+		messages.add(chooseDestinataire);
+			
+		messageContainer = new JScrollPane(messages);
+		messageContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI(Application.COLOR_BACKGROUND, Application.COLOR_SCROLL_BAR, Application.COLOR_CURSOR_SCROLL, Application.COLOR_CURSOR_SCROLL_HOVER));
+		messageContainer.setBorder(null);
+		messageContainer.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		
+		return messageContainer;
 	}
 
 	/**
@@ -496,29 +542,8 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 	 * Custom theme App.
 	 * */
 	public void customThemeMessage(ColorThemeApp c) {
-		if (c == ColorThemeApp.LIGHT) {
-			Application.COLOR_BACKGROUND = new Color(247,249,251) ;
-			Application.COLOR_BACKGROUND2 = new Color(255,255,255) ;
-			Application.COLOR_EDIT_MESSAGE = new Color(237,237,237) ;
-			Application.COLOR_SCROLL_BAR = new Color(241,242,243) ;
-			Application.COLOR_CURSOR_SCROLL = new Color(219,219,219) ;
-			Application.COLOR_CURSOR_SCROLL_HOVER = new Color(201,201,201) ;
-			Application.COLOR_OUR_MESSAGE = new Color(212,212,212) ;
-			Application.COLOR_SHADOW = new Color(165,165,165,50) ;
-			Application.COLOR_TEXT = new Color(0,0,0);
-			Application.COLOR_TEXT_EDIT = new Color(127,127,127);
-		} else if (c == ColorThemeApp.DARK) {
-			Application.COLOR_BACKGROUND = new Color(20,16,12) ;
-			Application.COLOR_BACKGROUND2 = new Color(0,0,0) ;
-			Application.COLOR_EDIT_MESSAGE = new Color(18,18,18) ;
-			Application.COLOR_SCROLL_BAR = new Color(14,13,12) ;
-			Application.COLOR_CURSOR_SCROLL = new Color(36,36,36) ;
-			Application.COLOR_CURSOR_SCROLL_HOVER = new Color(54,54,54) ;
-			Application.COLOR_OUR_MESSAGE = new Color(43,43,43) ;
-			Application.COLOR_SHADOW = new Color(165,165,165,50) ;
-			Application.COLOR_TEXT = new Color (217,217,217);
-			Application.COLOR_TEXT_EDIT = new Color(127,127,127);
-		}
+		((Application) Application.getApp()).changeColorThemeApp(c);
+		
 		this.setBackground(Application.COLOR_BACKGROUND);
 
 		/* ** Menu Bar ** */
@@ -526,22 +551,40 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 
 		/* ** Body's App ** */
 		bodyApp.setBackground(Application.COLOR_BACKGROUND);
+		
 		// -- Destinataires -- //
 		listUsers.setBackground(Application.COLOR_BACKGROUND);
 		for (Component panel : listUsers.getComponents()) {
-			((DestinataireJPanel) panel).setForegroundNamePanel(Application.COLOR_TEXT);
+			((DestinataireJPanel) panel).setForegroundNamePanel();
 		}
 		usersContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND);
+		
 		listGroups.setBackground(Application.COLOR_BACKGROUND);
 		for (Component panel : listGroups.getComponents()) {
-			((DestinataireJPanel) panel).setForegroundNamePanel(Application.COLOR_TEXT);
+			((DestinataireJPanel) panel).setForegroundNamePanel();
 		}
 		groupsContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND); 
+		
 		// -- Discussion -- //
 		discussion.setBackground(Application.COLOR_BACKGROUND2);
 		messages.setBackground(Application.COLOR_BACKGROUND2);
+		
 		editMsg.setBackground(Application.COLOR_EDIT_MESSAGE);
-		editMsg.setForeground(Application.COLOR_TEXT_EDIT);
+		if (((MyRoundJTextField) editMsg).isEmptyText()) {
+			editMsg.setForeground(Application.COLOR_TEXT_EDIT);
+		} else {
+			editMsg.setForeground(Application.COLOR_TEXT);
+		}
+		
+		messages.setBackground(Application.COLOR_BACKGROUND2);
+		for (Component panel : messages.getComponents()) {
+			if (panel.getClass().getName() == "clavardage.view.main.MessageBuble") {
+				((MessageBuble) panel).setColorPanel();
+			}
+		}
+		messageContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2); 
+
+
 	}
 
 	/**
@@ -552,7 +595,7 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 		DestinataireJPanel group = new DestinataireJPanel(name,++nbGroups,connect,Destinataire.Group,this);
 		listGroups.add(group);
 		listGroups.setPreferredSize(new Dimension(0, 30*nbGroups));
-		group.setForegroundNamePanel(Application.COLOR_TEXT);
+		group.setForegroundNamePanel();
 
 	}
 
@@ -586,20 +629,69 @@ public class Message extends JPanel implements ActionListener, MouseListener {
 	private void removeDestinataireOfList(JPanel destinataire, JList<JPanel> list) {
 	}
 	
-	/* --------- GET and SETTER ----------- */
-
-	public void setNameDestinataire(String newDestinataire) {
-		nameDestinataire.setText(newDestinataire);
+	/**
+	 * Display the new message on the discussion panel and reset JTextField.
+	 * */
+	private void sendMessage(int mode) {
+		if   ( (!((MyRoundJTextField) editMsg).isEmptyText()) & (!(editMsg.getText().isEmpty() | editMsg.getText().isBlank())) )   {
+			MessageBuble msg = new MessageBuble(TypeBuble.MINE,editMsg.getText());
+			msg.setColorPanel();
+			messages.add(msg);
+			messageContainer.validate();
+			if (mode == 1) {
+				((MyRoundJTextField) editMsg).setEmptyText(true);
+			} else {
+				editMsg.setText("");
+			}
+		}	
 	}
+	
+	/* --------- GET and SETTER ----------- */
+	
+	public void openConversation(String newDestinataire) {
+		if (!conversationOpen) {
+			conversationOpen = true;
+			
+			messages.remove(chooseDestinataire);
+			messages.setLayout(new BoxLayout(messages, BoxLayout.Y_AXIS));
+			
+			MessageBuble msg1 = new MessageBuble(TypeBuble.THEIR,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.");
+			MessageBuble msg2 = new MessageBuble(TypeBuble.MINE,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.");
+			MessageBuble msg3 = new MessageBuble(TypeBuble.THEIR,"Hello, comment tu vas mega super bien ?");
+			msg2.setColorPanel();
+			messages.add(msg1);
+			messages.add(msg2);
+			messages.add(msg3);
+			
+			newMsg.setVisible(true);
+		}
+		nameDestinataire.setText(newDestinataire);
+		((MyRoundJTextField) editMsg).setEmptyText(true);	
+	}
+	
 
 	/* --------- GLOBAL LISTENERS ----------- */
 
 	@Override
-	public void mouseClicked(MouseEvent e) {		
+	public void mouseClicked(MouseEvent e) {	
+		if (e.getSource()==editMsg) {
+			if (((MyRoundJTextField) editMsg).isEmptyText()) {
+				editMsg.setText("");
+				editMsg.setForeground(Application.COLOR_TEXT);
+				((MyRoundJTextField) editMsg).setEmptyText(false);
+			}
+		} else {
+//			if ( editMsg.getText().isEmpty() |  editMsg.getText().isBlank()) {
+//				((MyRoundJTextField) editMsg).setEmptyText(true);
+//			}
+//			Utiliser Is Focusable !!!
+		}
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {		
+	public void mousePressed(MouseEvent e) {
+
+		
 	}
 
 	@Override
