@@ -1,10 +1,5 @@
 package clavardage.view.main;
 
-/* TODO
- * -Sign in
- */
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -37,7 +32,7 @@ import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.view.main.Application.ColorThemeApp;
 
-public class Login extends JPanel implements ActionListener, MouseListener {
+public class LoginWindow extends JPanel implements ActionListener, MouseListener {
 	
 	private JPanel logPanel, headPanel, logoPanel, sections, logButtonPanel, logButtonSection;
 	private JButton signInButton ;
@@ -45,10 +40,10 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	private JLabel textError, logButton;
 	private Image logoImage;
 	private SectionTextJPanel username, password;
-	enum SectionText {LOG, PW;}
-	enum TypeBuble {MINE, THEIR;}
+	public enum SectionText {LOG, PW;}
+	public enum TypeBuble {MINE, THEIR;}
 	
-	public Login() {		
+	public LoginWindow() throws IOException {		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[] {0, 0};
@@ -57,11 +52,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 		this.setLayout(gridBagLayout);
 		
 		/* Add the login panel */
-		try {
-			createLoginPanel();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		createLoginPanel();
 		
 		customThemeLogin(Application.getColorThemeApp());
 	}
@@ -122,6 +113,11 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 		headPanel.setOpaque(false);
 		headPanel.setPreferredSize(new Dimension(0, 0));
 		
+		GridBagConstraints gbc_logoPanel = new GridBagConstraints();
+		gbc_logoPanel.insets = new Insets(0, 0, 5, 5);
+		gbc_logoPanel.fill = GridBagConstraints.BOTH;
+		gbc_logoPanel.gridx = 1;
+		gbc_logoPanel.gridy = 1;
 		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/title_below_logo.png"));
 		new ImageIcon(logoImage, "logo");
 		logoPanel = new JPanel()  {
@@ -133,12 +129,6 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 				super.paintComponent(graphics);
 			}
 		};
-		
-		GridBagConstraints gbc_logoPanel = new GridBagConstraints();
-		gbc_logoPanel.insets = new Insets(0, 0, 5, 5);
-		gbc_logoPanel.fill = GridBagConstraints.BOTH;
-		gbc_logoPanel.gridx = 1;
-		gbc_logoPanel.gridy = 1;
 		headPanel.add(logoPanel, gbc_logoPanel);
 
 		signInButton = new JButton("Sign In");
@@ -170,7 +160,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 
 		sections.add(createMargin(0, 40));
 
-		sectionContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI(Application.COLOR_BACKGROUND, Application.COLOR_SCROLL_BAR, Application.COLOR_CURSOR_SCROLL, Application.COLOR_CURSOR_SCROLL_HOVER));
+		sectionContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI());
 		sectionContainer.setBorder(null);
 		sectionContainer.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	}
@@ -179,6 +169,7 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 	 * Create the Login button.
 	 * */
 	private JPanel createLogButton() { 
+		
 		logButton = new JLabel("Login",SwingConstants.CENTER);
 		logButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		logButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -256,12 +247,18 @@ public class Login extends JPanel implements ActionListener, MouseListener {
 			try {
 				AuthOperations.connectUser(username.getText(),password.getText());
 				if(AuthOperations.isUserConnected()) {
-					System.out.println("CONNECTED!!");
+					if (Application.getMessageWindow() == null) {
+						Application.createMessageWindow();
+					}
 					Application.displayContent(Application.getApp(), Application.getMessageWindow());
 					textError.setText(" ");
+					System.out.println("CONNECTED!!!!");
+
 				}
 			} catch (Exception e1) {
-				textError.setText(e1.getMessage());
+				//textError.setText(e1.getMessage());
+				e1.printStackTrace();
+
 			}
 		}
 	}

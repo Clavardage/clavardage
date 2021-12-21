@@ -1,6 +1,7 @@
 package clavardage.view.main;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -20,21 +21,52 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import clavardage.controller.Clavardage;
-import clavardage.view.main.Message.Destinataire;
+import clavardage.model.objects.Message;
+import clavardage.view.main.MessageWindow.Destinataire;
 
 public class DestinataireJPanel extends JPanel {
 	
 	private JPanel connectPanel, namePanel;
 	private JTextArea nameUser;
 	private JLabel connectLabel;
-	private int idUser;
-	
-	public DestinataireJPanel(String name, int id, boolean connect, Destinataire d, Message window) throws IOException {
+	private int id;
+	private boolean conversationOpen, connect ;
+	private Image openImage, connectImage;
+	private ImageIcon openIcon, connectIcon ;
+	private Destinataire type;
+	 
+	public DestinataireJPanel(String name, int i, boolean c, Destinataire d, MessageWindow window) throws IOException {
 		super();
-
-		this.idUser = id;
+		
+		this.conversationOpen = false;
+		this.id = i;
+		this.type = d;
+		this.connect = c;
 		this.connectPanel = new JPanel();
 		this.namePanel = new JPanel();
+		this.conversationOpen = false ;
+
+		
+		this.openImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+		this.openIcon = new ImageIcon(openImage, "The conversation is open");
+		
+		if (this.type == Destinataire.User) {
+			if (connect) {
+				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+				connectIcon = new ImageIcon(connectImage, "User is connected");
+			} else {
+				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+				connectIcon = new ImageIcon(connectImage, "User is disconnected");
+			}
+		} else {
+			if (connect) {
+				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+				connectIcon = new ImageIcon(connectImage, "At least one user is connected");
+			} else {
+				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+				connectIcon = new ImageIcon(connectImage, "All users are disconnected");
+			}
+		}		
 		
 		this.setBorder(null);
 		this.setOpaque(false);
@@ -66,25 +98,7 @@ public class DestinataireJPanel extends JPanel {
 		gbc_namePanel.gridy = 0;
 		add(this.namePanel, gbc_namePanel);
 		
-		Image connectImage;
-		ImageIcon connectIcon;
-		if (d == Destinataire.User) {
-			if (connect) {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "User is connected");
-			} else {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "User is disconnected");
-			}
-		} else {
-			if (connect) {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "At least one user is connected");
-			} else {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "All users are disconnected");
-			}
-		}
+		
 		connectLabel = new JLabel();
 		connectLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		connectLabel.setOpaque(false);
@@ -102,12 +116,17 @@ public class DestinataireJPanel extends JPanel {
 		super.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {	
-				window.openConversation(name);
+				window.openConversation(nameUser.getText(), id, type);
+				try {
+					openMyConversation(window);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				nameUser.setForeground(Color.RED);
+				nameUser.setForeground(Application.COLOR_RED);
 
 			}
 
@@ -133,7 +152,7 @@ public class DestinataireJPanel extends JPanel {
 		namePanel.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				nameUser.setForeground(Color.RED);
+				nameUser.setForeground(Application.COLOR_RED);
 			}
 
 			@Override
@@ -143,7 +162,12 @@ public class DestinataireJPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				window.openConversation(name);
+				window.openConversation(nameUser.getText(), id, type);
+				try {
+					openMyConversation(window);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 			@Override
@@ -162,7 +186,7 @@ public class DestinataireJPanel extends JPanel {
 		nameUser.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				nameUser.setForeground(Color.RED);
+				nameUser.setForeground(Application.COLOR_RED);
 			}
 
 			@Override
@@ -172,8 +196,12 @@ public class DestinataireJPanel extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				window.openConversation(name);
-				
+				window.openConversation(nameUser.getText(), id, type);
+				try {
+					openMyConversation(window);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}				
 			}
 
 			@Override
@@ -191,10 +219,37 @@ public class DestinataireJPanel extends JPanel {
 		
 	}
 	
+	public int getIdDestinataire() {
+		return id;
+	}
 	
+	public boolean isConnected() {
+		return connect;
+	}
+	
+	public String getNameDestinataire() {
+		return nameUser.getText();
+	}
 	
 	public void setForegroundNamePanel() {
 			namePanel.setForeground(Application.COLOR_TEXT); //pour le mouseExited
 			nameUser.setForeground(Application.COLOR_TEXT);
+	}
+	
+	public void openMyConversation(MessageWindow window) throws IOException {
+		for (Component panel : window.getListUsers().getComponents()) {
+			((DestinataireJPanel) panel).closeMyConversation();
+		}
+		for (Component panel : window.getListGroups().getComponents()) {
+			((DestinataireJPanel) panel).closeMyConversation();
+		}
+		this.conversationOpen = true ;
+		connectLabel.setIcon(openIcon);
+		window.moveInTopOfList(this.type, this.id);
+	}
+	
+	public void closeMyConversation() {
+		this.conversationOpen = false ;
+		connectLabel.setIcon(connectIcon);	
 	}
 }

@@ -11,7 +11,6 @@ import clavardage.controller.Clavardage;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.managers.UserManager;
 import clavardage.view.main.Application;
-import clavardage.view.main.Login;
 
 /**
  *

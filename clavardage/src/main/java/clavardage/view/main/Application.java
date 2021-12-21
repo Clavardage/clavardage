@@ -45,7 +45,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	
 
 
-	public Application(String title, ImageIcon icon) throws IOException {
+	public Application(String title, ImageIcon icon) {
 		app = this;
 		this.setTitle(title);
 		this.setIconImage(icon.getImage());
@@ -53,15 +53,15 @@ public class Application extends JFrame implements ActionListener, MouseListener
 //		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
-		this.setMinimumSize(new Dimension(400,400));
+		this.setMinimumSize(new Dimension(600,600));
 		colorThemeApp = ColorThemeApp.LIGHT; 
 
 		try {
-			message = createMessageWindow();
-			login = createLoginWindow();
-		} catch (IOException | UserNotConnectedException e1) {
-			e1.printStackTrace();
+			createLoginWindow();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		
 		displayContent(app, login);
 	}
 
@@ -71,14 +71,9 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	 * @throws IOException
 	 * @throws UserNotConnectedException 
 	 * */
-	private JPanel createLoginWindow() throws IOException, UserNotConnectedException {
-		JPanel login = new Login();
-		return login ;
-	}
-	
-	public static void setColorTheme(ColorThemeApp color) {
-		((Message) message).customThemeMessage(color);
-		((Login) login).customThemeLogin(color);
+	public static void createLoginWindow() throws IOException {
+		login = new LoginWindow();
+;
 	}
 	
 	/**
@@ -86,11 +81,14 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	 * @throws IOException
 	 * @throws UserNotConnectedException 
 	 * */
-	private JPanel createMessageWindow() throws IOException, UserNotConnectedException {
-		JPanel message = new Message();
-		return message ;
+	public static void createMessageWindow() throws IOException, UserNotConnectedException {
+		message = new MessageWindow();
 	}
 	
+	public static void setColorTheme(ColorThemeApp color) {
+		((MessageWindow) message).customThemeMessage(color);
+		((LoginWindow) login).customThemeLogin(color);
+	}
 	
 	public static void displayContent(JFrame app, JPanel content) {
 		app.setContentPane(content);
