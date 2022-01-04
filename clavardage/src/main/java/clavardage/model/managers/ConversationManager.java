@@ -51,6 +51,26 @@ public class ConversationManager extends DatabaseManager {
 
         return conv;
     }
+    public Conversation getConversationByUserConvUUID(UUID uuid) throws Exception {
+        Conversation conv = null;
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT conversation.* FROM conversation, user_in_conversation uic WHERE conversation.uuid = uic.uuid_conversation AND uic.uuid = ?");
+
+        pstmt.setString(1, uuid.toString());
+
+        ResultSet res = pstmt.executeQuery();
+        if(res.next()) {
+            conv = new Conversation(UUID.fromString(res.getString("uuid")), res.getString("name"), res.getTimestamp("date_created").toLocalDateTime(), (new UserManager()).getUsersByConversationUUID(uuid));
+        } else {
+            res.close();
+            pstmt.close();
+            throw new Exception("Conversation does not exist");
+        }
+
+        res.close();
+        pstmt.close();
+
+        return conv;
+    }
 
     public Conversation getConversationByTwoUsers(User u1, User u2) throws Exception {
         PreparedStatement pstmt = getConnection().prepareStatement("""

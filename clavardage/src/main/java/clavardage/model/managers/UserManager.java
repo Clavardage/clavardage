@@ -182,6 +182,26 @@ WHERE user.uuid = uic.uuid_user AND uic.uuid_conversation = ?""");
 
         return users;
     }
+    public User getUserByUserConvUUID(UUID uuid) throws Exception {
+        User u = null;
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.uuid, user.login, user.last_ip FROM user, user_in_conversation uic WHERE uic.uuid_user = user.uuid AND uic.uuid = ?");
+
+        pstmt.setString(1, uuid.toString());
+
+        ResultSet res = pstmt.executeQuery();
+        if(res.next()) {
+            u = new User(UUID.fromString(res.getString("uuid")), res.getString("login"), InetAddress.getByName(res.getString("last_ip")));
+        } else {
+            res.close();
+            pstmt.close();
+            throw new Exception("User does not exist");
+        }
+
+        res.close();
+        pstmt.close();
+
+        return u;
+    }
 
     public User getUserByUUID(UUID uuid) throws Exception {
         User u = null;

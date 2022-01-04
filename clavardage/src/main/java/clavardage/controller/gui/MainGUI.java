@@ -17,6 +17,7 @@ import clavardage.controller.connectivity.ConversationService;
 import clavardage.model.exceptions.ConversationDoesNotExistException;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.managers.ConversationManager;
+import clavardage.model.managers.MessageManager;
 import clavardage.model.managers.UserManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
@@ -162,9 +163,9 @@ public class MainGUI {
 
     public static void sendMessageInConversation(UUID uuid, String message) throws Exception {
         Conversation conv = (new ConversationManager()).getConversationByUUID(uuid);
-        Message msgObj = new Message(UUID.randomUUID(), message, AuthOperations.getConnectedUser(), conv, LocalDateTime.now());
-        // TODO: save in DB
-        // send it
+        // save in DB
+        Message msgObj = (new MessageManager()).saveNewMessage(message, AuthOperations.getConnectedUser(), conv);
+        // send it if saved
         ConnectivityDaemon.getConversationService().sendMessageToConversation(conv, msgObj);
     }
 

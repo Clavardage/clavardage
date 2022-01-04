@@ -3,6 +3,7 @@ package clavardage.controller.connectivity;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.model.managers.MessageManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
@@ -94,8 +95,9 @@ public class ConversationService implements Activity {
                 Message msg = waitForConversationEvent(r);
 
                 /* HANDLE MESSAGE */
-                System.out.println("Test: from: " + msg.getUser().getLogin() + " msg = " + msg.getText());
-                //TODO: save in DB
+                // System.out.println("Test: from: " + msg.getUser().getLogin() + " msg = " + msg.getText()); // test display
+                // save in DB
+                (new MessageManager()).saveExistingMessage(msg.getUUID(), msg.getText(), msg.getUser(), msg.getConversation(), msg.getDateCreated());
                 // send it to GUI
                 MainGUI.addNewMessage(currentConv, msg);
             }
