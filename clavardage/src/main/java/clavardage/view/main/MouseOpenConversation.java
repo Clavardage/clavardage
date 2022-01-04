@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import javax.swing.JTextArea;
 
+import clavardage.controller.gui.MainGUI;
 import clavardage.view.main.MessageWindow.Destinataire;
+import com.sun.tools.javac.Main;
 
 public class MouseOpenConversation implements MouseListener {
 	
@@ -21,12 +23,22 @@ public class MouseOpenConversation implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		MessageWindow window = Application.getMessageWindow();
-		window.openConversation(dest.getNameDestinataire(), dest.getIdDestinataire(), dest.getTypeDestinataire());
+		// TODO: if user dest not connected throw exception because non clickable
 		try {
-			dest.openMyConversation();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			// TODO: display a loading in thread
+			MainGUI.openConversation(dest.getIdDestinataire()); // open network communication
+			// TODO: remove loading in thread
+
+			MessageWindow window = Application.getMessageWindow();
+			window.openConversation(dest.getNameDestinataire(), dest.getIdDestinataire(), dest.getTypeDestinataire());
+			try {
+				dest.openMyConversation();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			// TODO: remove loading in thread
 		}
 	}
 	

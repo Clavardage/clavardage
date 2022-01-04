@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS user_in_conversation (
     uuid CHAR(36) PRIMARY KEY NOT NULL,
     uuid_user CHAR(36) NOT NULL,
     uuid_conversation CHAR(36) NOT NULL,
+    still_in BOOLEAN NOT NULL,
     FOREIGN KEY(uuid_user) REFERENCES user(uuid),
     FOREIGN KEY(uuid_conversation) REFERENCES conversation(uuid)
 )
@@ -96,6 +97,7 @@ CREATE TABLE IF NOT EXISTS message (
     uuid CHAR(36) PRIMARY KEY NOT NULL,
     text VARCHAR(255) NOT NULL,
     user_conv CHAR(36) NOT NULL,
+    date_created DATETIME NOT NULL,
     FOREIGN KEY(user_conv) REFERENCES user_in_conversation(uuid)
 )
 """);

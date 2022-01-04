@@ -46,6 +46,7 @@ import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.model.objects.User;
 import clavardage.view.main.Application.ColorThemeApp;
 import clavardage.view.main.LoginWindow.TypeBuble;
 
@@ -74,7 +75,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	private MyListDestinataires listUsers, listGroups ;
 	private int nbUsers, nbGroups;
 	private ArrayList<DestinataireJPanel> allUsers, allGroups ;
-	enum Destinataire {User,Group;}
+	public enum Destinataire {User,Group;}
 	// -- Discussion -- //
 	private MyDiscussionPanel discussion;
 	private JMenuBar northDiscussion;
@@ -226,9 +227,9 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		/* Records all users (except myself) and their associated discussion */
 		allUsers = new ArrayList<DestinataireJPanel>();
 		allMessagesUsers = new ArrayList<MessagesPanel>();
-		for (String name : MainGUI.getAllUsernamesInDatabase()) {
-			if (!(name.equals(AuthOperations.getConnectedUser().getLogin()))) {
-				addNewUserToList(name, true); //for the moment, all users are new and there is no conversation
+		for (User user : MainGUI.getAllUsersInDatabase()) {
+			if (!(user.getUUID().equals(AuthOperations.getConnectedUser().getUUID()))) {
+				addNewUserToList(user, true); //for the moment, all users are new and there is no conversation
 			}
 		}
 		
@@ -351,10 +352,10 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	 * @throws IOException 
 	 * @throws UserNotConnectedException 
 	 * */
-	public void addNewUserToList(String name, Boolean connect) throws IOException, UserNotConnectedException {
+	public void addNewUserToList(User userInDb, Boolean connect) throws IOException, UserNotConnectedException {
 		/* Create the user and his associated discussion */
-		UUID idUser = new UUID(nbUsers, nbUsers);
-		DestinataireJPanel user = new DestinataireJPanel(name,idUser,connect,Destinataire.User) ;
+		UUID idUser = userInDb.getUUID();
+		DestinataireJPanel user = new DestinataireJPanel(userInDb.getLogin(),idUser,connect,Destinataire.User) ;
 		MessagesPanel noDiscussion = new MessagesPanel(this, user.getIdDestinataire(), Destinataire.User);
 		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation with " + user.getNameDestinataire() + " : send a message ! :)");
 		noDiscussion.add(startConversation);
@@ -423,13 +424,13 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 			
 			if (typeCurrentConversation == Destinataire.User) {
 				for (MessagesPanel conv : allMessagesUsers) {
-					if (conv.getIdConversation() == idCurrentConversation) {
+					if (conv.getIdConversation().equals(idCurrentConversation)) {
 						currentConversation = conv ;
 					}
 				}
 			} else {
 				for (MessagesPanel conv : allMessagesGroups) {
-					if (conv.getIdConversation() == idCurrentConversation) {
+					if (conv.getIdConversation().equals(idCurrentConversation)) {
 						currentConversation = conv ;
 					}
 				}
@@ -443,6 +444,12 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 			currentConversation.add(msg); //we add the new msg
 			
 			messageContainer.validate();
+
+			try {
+				MainGUI.sendMessageInConversation(MainGUI.getConversationUUIDByTwoUsersUUID(AuthOperations.getConnectedUser().getUUID(), currentConversation.getIdConversation()), editMsg.getText());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			if (mode == 1) { // if it send with the button sendMsg 
 				editMsg.setEmptyText(true);
@@ -474,7 +481,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		if (!conversationOpen) {
 			conversationOpen = true;	
 			newMsg.setVisible(true);
-		}		                                           
+		}
 		
 		/* display the name Destinataire */
 		nameDestinataire.setText(newDestinataire);
@@ -483,13 +490,13 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		MessagesPanel chosenConversation = null;
 		if (d == Destinataire.User) {
 			for (MessagesPanel conv : allMessagesUsers) {
-				if (conv.getIdConversation() == id) {
+				if (conv.getIdConversation().equals(id)) {
 					chosenConversation = conv ;
 				}
 			}
 		} else {
 			for (MessagesPanel conv : allMessagesGroups) {
-				if (conv.getIdConversation() == id) {
+				if (conv.getIdConversation().equals(id)) {
 					chosenConversation = conv ;
 				}
 			}
@@ -509,7 +516,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 			editNameGroup.setVisible(false);
 			settingsGroups.setVisible(false);
 		}
-		editMsg.setEmptyText(true);	
+		editMsg.setEmptyText(true);
 	}
 
 	public void createAddMemberInGroup() {
@@ -664,12 +671,12 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		
 		if (type == Destinataire.User) {
 			for (DestinataireJPanel user : allUsers) {
-				if (user.getIdDestinataire() == id) {
+				if (user.getIdDestinataire().equals(id)) {
 					listUsers.add(user);
 				}
 			} 
 			for (DestinataireJPanel user : allUsers) {
-				if (!(user.getIdDestinataire() == id)) {
+				if (!(user.getIdDestinataire().equals(id))) {
 					listUsers.add(user);
 				}
 			}
@@ -679,12 +686,12 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 			}
 		} else {
 			for (DestinataireJPanel group : allGroups) {
-				if (group.getIdDestinataire() == id) {
+				if (group.getIdDestinataire().equals(id)) {
 					listGroups.add(group);
 				}
 			}
 			for (DestinataireJPanel group : allGroups) {
-				if (!(group.getIdDestinataire() == id)) {
+				if (!(group.getIdDestinataire().equals(id))) {
 					listGroups.add(group);
 				}
 			}

@@ -22,6 +22,9 @@ import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
 import clavardage.view.main.Application;
+import clavardage.view.main.MessageWindow;
+
+import static clavardage.controller.authentification.AuthOperations.cancelIfNotConnected;
 
 /**
  *
@@ -49,8 +52,9 @@ public class MainGUI {
         User uDest = null;
         if(c.isWithOneUserOnly()) { // 1 to 1
             for(User u : c.getListUsers()) {
-                if(u.getUUID() == AuthOperations.getConnectedUser().getUUID())
+                if(u.getUUID().equals(AuthOperations.getConnectedUser().getUUID())) {
                     continue;
+                }
                 uDest = u;
             }
         } else { // Groups
@@ -63,8 +67,8 @@ public class MainGUI {
                 JOptionPane.YES_NO_OPTION);
 
         if(choice == JOptionPane.YES_OPTION) {
-            // TODO: handle GUI conversation
-            //test
+            // handle GUI conversation
+            Application.getMessageWindow().openConversation(uDest.getLogin(), uDest.getUUID(), MessageWindow.Destinataire.User);
             //ConnectivityDaemon.getConversationService().sendMessageToConversation(c, new Message(UUID.randomUUID(), "Bien recu bro", new User(UUID.randomUUID(), "test2", InetAddress.getByName("127.0.0.2")), c));
         } else { // close conversation
             ConnectivityDaemon.getConversationService().close(c);
@@ -87,10 +91,28 @@ public class MainGUI {
      * @throws UserNotConnectedException
      */
     public static ArrayList<String> getAllUsernamesInDatabase() throws UserNotConnectedException {
-        //cancelIfNotConnected();
+        cancelIfNotConnected();
         ArrayList<String> names = new ArrayList<String>();
         try {
             (new UserManager()).getAllUsers().forEach((u) -> names.add(u.getLogin()));
+        } catch (Exception e) {
+            System.err.println("Error: " + e);
+            e.printStackTrace();
+        }
+
+        return names;
+    }
+
+    /**
+     * Retrieve all users in database
+     * @return
+     * @throws UserNotConnectedException
+     */
+    public static ArrayList<User> getAllUsersInDatabase() throws UserNotConnectedException {
+        cancelIfNotConnected();
+        ArrayList<User> names = new ArrayList<User>();
+        try {
+            names.addAll((new UserManager()).getAllUsers());
         } catch (Exception e) {
             System.err.println("Error: " + e);
             e.printStackTrace();
@@ -132,9 +154,15 @@ public class MainGUI {
         conv_serv.openConversation(conv);
     }
 
+    public static UUID getConversationUUIDByTwoUsersUUID(UUID u1, UUID u2) throws Exception {
+        ConversationManager cm = new ConversationManager();
+        UserManager um = new UserManager();
+        return cm.getConversationByTwoUsers(um.getUserByUUID(u1), um.getUserByUUID(u2)).getUUID();
+    }
+
     public static void sendMessageInConversation(UUID uuid, String message) throws Exception {
         Conversation conv = (new ConversationManager()).getConversationByUUID(uuid);
-        Message msgObj = new Message(UUID.randomUUID(), message, AuthOperations.getConnectedUser(), conv);
+        Message msgObj = new Message(UUID.randomUUID(), message, AuthOperations.getConnectedUser(), conv, LocalDateTime.now());
         // TODO: save in DB
         // send it
         ConnectivityDaemon.getConversationService().sendMessageToConversation(conv, msgObj);
@@ -200,7 +228,7 @@ public class MainGUI {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        conv.sendMessageToConversation(c, new Message(UUID.randomUUID(), "Nouveau msg test !!!!!!! \\n\\tblablou", alice, c));
+                        conv.sendMessageToConversation(c, new Message(UUID.randomUUID(), "Nouveau msg test !!!!!!! \\n\\tblablou", alice, c, LocalDateTime.now()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -211,7 +239,7 @@ public class MainGUI {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    conv.sendMessageToConversation(c, new Message(UUID.randomUUID(), "Bien recu bro", bob, c));
+                    conv.sendMessageToConversation(c, new Message(UUID.randomUUID(), "Bien recu bro", bob, c, LocalDateTime.now()));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
