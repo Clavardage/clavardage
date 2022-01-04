@@ -17,7 +17,7 @@ public class Clavardage
         return Objects.requireNonNull(Clavardage.class.getResourceAsStream(path));
     }
 
-    public final static boolean machine1 = false; // FOR TESTS, will be deleted
+    public static boolean machine1; // FOR TESTS, will be deleted
 
     /** Starting point
      * @author Romain MONIER
@@ -25,6 +25,8 @@ public class Clavardage
      */
     public static void main(String[] args)
     {
+        machine1 = args.length > 0 && args[0].equals("m1"); // FOR TESTS, will be deleted
+
         //createTestUsers(); // uncomment to create 50 more users at the next run (test, will be deleted)
 
         /* MAIN WINDOW */

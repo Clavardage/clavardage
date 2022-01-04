@@ -57,15 +57,34 @@ public class UserManager extends DatabaseManager {
     }
 
     /**
-     * @param user
+     * @param uuid
      * @param newLogin
      */
-    public void updateLogin(UserPrivate user, String newLogin) throws Exception {
-        String req = "UPDATE user SET user.login = ? WHERE user.uuid = ?";
+    public void updateLogin(UUID uuid, String newLogin) throws Exception {
+        String req = "UPDATE user SET login = ? WHERE uuid = ?";
         PreparedStatement pstmt = getConnection().prepareStatement(req);
 
         pstmt.setString(1, newLogin);
-        pstmt.setString(2, user.getUUID().toString());
+        pstmt.setString(2, uuid.toString());
+
+        if(pstmt.executeUpdate() == 0) { // if no user edited
+            pstmt.close();
+            throw new Exception("User not found");
+        }
+
+        pstmt.close();
+    }
+
+    /**
+     * @param uuid
+     * @param newLastIp
+     */
+    public void updateLastIp(UUID uuid, InetAddress newLastIp) throws Exception {
+        String req = "UPDATE user SET last_ip = ? WHERE uuid = ?";
+        PreparedStatement pstmt = getConnection().prepareStatement(req);
+
+        pstmt.setString(1, newLastIp.getHostAddress());
+        pstmt.setString(2, uuid.toString());
 
         if(pstmt.executeUpdate() == 0) { // if no user edited
             pstmt.close();

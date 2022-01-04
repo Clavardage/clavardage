@@ -1,5 +1,6 @@
 package clavardage.controller.connectivity;
 
+import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.objects.User;
 
@@ -13,8 +14,8 @@ public class DiscoveryService implements Activity {
 
     public DiscoveryService() throws Exception {
         super();
-        udpSender = new UDPConnector();
-        udpListener = new UDPConnector();
+        udpSender = new UDPConnector(Clavardage.machine1 ? 4242 : 4243);
+        udpListener = new UDPConnector(Clavardage.machine1 ? 4243 : 4242);
     }
 
     public void sendHello() throws Exception {

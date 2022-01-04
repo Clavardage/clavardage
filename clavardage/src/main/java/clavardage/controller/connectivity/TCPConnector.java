@@ -58,10 +58,10 @@ public class TCPConnector extends NetworkConnector implements ConversationActivi
 
     private Thread getClient() throws IOException {
         if(Objects.isNull(servSocket) || servSocket.isClosed()) {
-            servSocket = new ServerSocket(FORCED_TCP_PORT, MAX_SERVER_REQUESTS, InetAddress.getByName(LOCAL_IP_ADDRESS));
-            System.out.println("Log: TCP accepting on " + LOCAL_IP_ADDRESS + ":" + FORCED_TCP_PORT + "...");
+            servSocket = new ServerSocket(FORCED_TCP_PORT, MAX_SERVER_REQUESTS);
+            System.out.println("Log: TCP accepting on *:" + FORCED_TCP_PORT + "...");
         } else {
-            System.out.println("Log: Continuing TCP accepting on " + LOCAL_IP_ADDRESS + ":" + FORCED_TCP_PORT + "...");
+            System.out.println("Log: Continuing TCP accepting on *:" + FORCED_TCP_PORT + "...");
         }
         Socket link = servSocket.accept();
         return new Thread(new RunnableTCPThread() {

@@ -1,5 +1,6 @@
 package clavardage.controller.connectivity;
 
+import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.managers.ConversationManager;
@@ -97,6 +98,9 @@ public class ConnectivityDaemon {
                                     if (!user_mngr.isUserExist(u.getUUID())) {
                                         // TODO: send userprivate !!!!!!!!!!!!!!!!!
                                         user_mngr.addExistingUser(u.getUUID(), u.getLogin(), "", u.getUUID() + "@clav.com", u.getLastIp());
+                                    } else {
+                                        user_mngr.updateLogin(u.getUUID(), u.getLogin());
+                                        user_mngr.updateLastIp(u.getUUID(), u.getLastIp());
                                     }
                                     usersConnected.add(u.getUUID());
                                     new Thread(() -> {

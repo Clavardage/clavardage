@@ -1,5 +1,6 @@
 package clavardage.controller.connectivity;
 
+import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
@@ -22,7 +23,7 @@ public class ConversationService implements Activity {
     public ConversationService() throws Exception {
         super();
         convList = new HashMap<UUID, RunnableTCPThread>();
-        tcpServer = new TCPConnector() {
+        tcpServer = new TCPConnector(Clavardage.machine1 ? 4342 : 4343) {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {
@@ -44,7 +45,7 @@ public class ConversationService implements Activity {
                 }
             }
         };
-        tcpClient = new TCPConnector() {
+        tcpClient = new TCPConnector(Clavardage.machine1 ? 4343 : 4342) {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {
