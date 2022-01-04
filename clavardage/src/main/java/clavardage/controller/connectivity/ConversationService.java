@@ -1,9 +1,11 @@
 package clavardage.controller.connectivity;
 
 import clavardage.controller.authentification.AuthOperations;
+import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
+import clavardage.model.objects.User;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,6 +16,7 @@ public class ConversationService implements Activity {
 
     private final TCPConnector tcpServer, tcpClient;
     private final HashMap<UUID, RunnableTCPThread> convList;
+    private Conversation newConversation;
 
     public ConversationService() throws Exception {
         super();
@@ -27,9 +30,11 @@ public class ConversationService implements Activity {
                     Object obj = r.getPacketData();
                     if(Objects.nonNull(obj) && obj instanceof Conversation) {
                         currentConv = (Conversation)obj;
-                        done();
+                        newConversation = currentConv;
+                        done(); // notify main daemon
                     } else {
                         System.err.println("Conversation data error");
+                        done(); // notify main daemon
                         throw new Exception("Conversation data error");
                     }
                     handleConversation(r, currentConv);
@@ -63,17 +68,15 @@ public class ConversationService implements Activity {
      * @param conv
      * @throws IOException
      */
-    public void openConversation(Conversation conv) throws IOException {
+    public void openConversation(Conversation conv) throws IOException, UserNotConnectedException {
+        User uDest = null;
         if(conv.isWithOneUserOnly()) { // TCP for conversation with 1 user
-            conv.getListUsers().removeIf(u -> { // filter to get the other user ip
-                try {
-                    return u.getUUID() == AuthOperations.getConnectedUser().getUUID();
-                } catch (UserNotConnectedException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            });
-            tcpClient.askServer(conv, conv.getListUsers().get(0).getLastIp().getHostAddress()).start();
+            for(User u : conv.getListUsers()) { // filter to get the other user ip
+                if(u.getUUID() == AuthOperations.getConnectedUser().getUUID())
+                    continue;
+                uDest = u;
+            }
+            tcpClient.askServer(conv, uDest.getLastIp().getHostAddress()).start();
         } else { // multicast for groups
             System.err.println("NOT IMPLEMENTED");
         }
@@ -92,7 +95,9 @@ public class ConversationService implements Activity {
 
                 /* HANDLE MESSAGE */
                 System.out.println("Test: from: " + msg.getUser().getLogin() + " msg = " + msg.getText());
-                //TODO
+                //TODO: save in DB
+                // send it to GUI
+                MainGUI.addNewMessage(currentConv, msg);
             }
         } catch (Exception e) {
             System.err.println("Log: Conversation error: " + e);
@@ -168,6 +173,12 @@ public class ConversationService implements Activity {
         }
     }
 
+    public Conversation getNewConversation() {
+        return newConversation;
+    }
+
     @Override
-    public void done() { }
+    public void done() {
+        ConnectivityDaemon.notifyConversationDaemon();
+    }
 }

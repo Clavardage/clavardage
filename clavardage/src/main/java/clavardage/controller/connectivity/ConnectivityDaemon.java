@@ -1,14 +1,13 @@
 package clavardage.controller.connectivity;
 
-import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
+import clavardage.controller.gui.MainGUI;
+import clavardage.model.managers.ConversationManager;
+import clavardage.model.managers.UserManager;
 import clavardage.model.objects.Conversation;
-import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
 
 import java.net.BindException;
-import java.net.InetAddress;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -17,11 +16,15 @@ import java.util.UUID;
  */
 public class ConnectivityDaemon {
 
-    private static final Thread daemon, discoveryDaemon, conversationServerDaemon;
+    private static final Thread daemon, discoveryDaemon, helloDaemon, conversationServerDaemon;
     private static boolean kill;
+    private static final ConversationService convService;
+    private static final ArrayList<UUID> usersConnected;
+    private static final int USER_CONNECTION_TIMEOUT_MS = 10000;
 
     static {
         kill = false;
+        usersConnected = new ArrayList<UUID>();
 
         /* MAIN DAEMON */
 
@@ -53,22 +56,70 @@ public class ConnectivityDaemon {
         DiscoveryService disc = null;
         try {
             disc = new DiscoveryService();
-            disc.sendHello(); // indicate we are alive
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         DiscoveryService finalDisc = disc;
-        discoveryDaemon = new Thread(() -> {
-            while(keepDaemonAlive()) {
+
+        helloDaemon = new Thread(() -> {
+            while (keepDaemonAlive()) {
+                if(AuthOperations.isUserConnected()) {
+                    try {
+                        finalDisc.sendHello(); // indicate we are alive
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 try {
-                    finalDisc.listen(); // wait for new connected users
-                    System.out.println(finalDisc.getNewUser().getUUID());
-                } catch (BindException e) {
+                    Thread.sleep(USER_CONNECTION_TIMEOUT_MS);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
-                    waitForRetryConnection();
-                } catch(Exception e) {
-                    e.printStackTrace();
+                }
+            }
+        });
+
+        discoveryDaemon = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UserManager user_mngr = new UserManager();
+                synchronized (discoveryDaemon) {
+                    while (keepDaemonAlive()) {
+                        try {
+                            finalDisc.listen(); // wait for new connected users
+                            System.out.println("Log: Exiting UDP listener, waiting for signal...");
+                            // FIXME: wait UDP
+                            //discoveryDaemon.wait();
+                            System.out.println("Log: UDP signal received!");
+                            User u = finalDisc.getNewUser();
+                            if (u != null && AuthOperations.isUserConnected()) {
+                                if(!usersConnected.contains(u.getUUID())) {
+                                    if (!user_mngr.isUserExist(u.getUUID())) {
+                                        // TODO: send userprivate !!!!!!!!!!!!!!!!!
+                                        user_mngr.addExistingUser(u.getUUID(), u.getLogin(), "", u.getUUID() + "@clav.com", u.getLastIp());
+                                    }
+                                    usersConnected.add(u.getUUID());
+                                    new Thread(() -> {
+                                        try {
+                                            MainGUI.setUserState(u, true); // alert the GUI
+                                            Thread.sleep(USER_CONNECTION_TIMEOUT_MS-1000);
+                                            usersConnected.remove(u.getUUID());
+                                            MainGUI.setUserState(u, false); // alert the GUI
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }).start();
+                                }
+                            } else {
+                                System.err.println("Server discovery error: User is null!");
+                            }
+                        } catch (BindException e) {
+                            e.printStackTrace();
+                            waitForRetryConnection();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         });
@@ -83,56 +134,49 @@ public class ConnectivityDaemon {
         }
 
         ConversationService finalConv = conv;
-        conversationServerDaemon = new Thread(() -> {
-            while(keepDaemonAlive()) {
-                try {
-                    finalConv.listen();
-                } catch (BindException e) {
-                    e.printStackTrace();
-                    waitForRetryConnection();
-                } catch(Exception e) {
-                    System.err.println("Server error: " + e);
-                    System.out.println("Log: Relaunching server...");
+        conversationServerDaemon = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ConversationManager conv_mngr = new ConversationManager();
+                synchronized (conversationServerDaemon) {
+                    while (keepDaemonAlive()) {
+                        try {
+                            finalConv.listen();
+                            conversationServerDaemon.wait();
+                            Conversation c = finalConv.getNewConversation();
+                            if (c != null && AuthOperations.isUserConnected()) {
+                                if (!conv_mngr.isConversationExist(c.getUUID())) {
+                                    conv_mngr.addExistingConversation(c.getUUID(), c.getName(), c.getDateCreated(), c.getListUsers());
+                                }
+                                new Thread(() -> {
+                                    try {
+                                        MainGUI.askForConversationOpening(c); // alert the GUI
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }).start();
+                            } else if(!AuthOperations.isUserConnected()) {
+                                System.err.println("Server error: no connected user!");
+                            } else {
+                                System.err.println("Server error: Conversation is null!");
+                            }
+                        } catch (BindException e) {
+                            e.printStackTrace();
+                            waitForRetryConnection();
+                        } catch (Exception e) {
+                            System.err.println("Server error: " + e);
+                            System.out.println("Log: Relaunching server...");
+                        }
+                    }
                 }
             }
         });
 
-        // tests
-        ConversationService finalConv1 = conv;
-        new Thread(() -> {
-            try {
-                ArrayList<User> testarr = new ArrayList<User>();
-                User alice = new User(UUID.randomUUID(), "test1", InetAddress.getByName("127.0.0.1"));
-                User bob = new User(UUID.randomUUID(), "test2", InetAddress.getByName("127.0.0.2"));
-                testarr.add(alice);
-                testarr.add(bob);
-                Conversation c = new Conversation(UUID.fromString("7275cad1-d551-4e84-9eb3-fc2dc5812f32"), "test", LocalDateTime.of(12,12,1,1,1), testarr);
-                if(!Clavardage.machine1) {
-                    try {
-                        AuthOperations.connectUser("mail_1@clav.com", "pass_1");
-                        finalConv1.openConversation(c);
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        finalConv1.sendMessageToConversation(c, new Message(1, "Nouveau msg test !!!!!!! \\n\\tblablou", alice, c));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    AuthOperations.connectUser("mail_2@clav.com", "pass_2");
-                    try {
-                        Thread.sleep(15000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    finalConv1.sendMessageToConversation(c, new Message(2, "Bien recu bro", bob, c));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        })/*.start()*/;
+        convService = finalConv;
+    }
+
+    public static ConversationService getConversationService() {
+        return convService;
     }
 
     private static boolean keepDaemonAlive() {
@@ -142,6 +186,9 @@ public class ConnectivityDaemon {
     public static void stop() {
         kill = true;
         notifyThread();
+        synchronized (helloDaemon) {
+            helloDaemon.interrupt();
+        }
         synchronized (discoveryDaemon) {
             discoveryDaemon.interrupt();
         }
@@ -152,6 +199,7 @@ public class ConnectivityDaemon {
 
     public static void start() {
         daemon.start();
+        helloDaemon.start();
         discoveryDaemon.start();
         conversationServerDaemon.start();
     }
@@ -159,6 +207,18 @@ public class ConnectivityDaemon {
     public static void notifyThread() {
         synchronized (daemon) {
             daemon.notify();
+        }
+    }
+
+    public static void notifyDiscoveryDaemon() {
+        synchronized (discoveryDaemon) {
+            discoveryDaemon.notify();
+        }
+    }
+
+    public static void notifyConversationDaemon() {
+        synchronized (conversationServerDaemon) {
+            conversationServerDaemon.notify();
         }
     }
 

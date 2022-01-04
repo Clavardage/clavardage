@@ -1,33 +1,34 @@
 package clavardage.model.objects;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Message implements Serializable {
 
-    private int id;
+    private UUID uuid;
     private String text;
     private User user;
     private Conversation conversation;
 
     /**
-     * @param id
+     * @param uuid
      * @param text
      * @param user
      * @param conversation
      */
-    public Message(int id, String text, User user, Conversation conversation) {
-        this.id = id;
+    public Message(UUID uuid, String text, User user, Conversation conversation) {
+        this.uuid = uuid;
         this.text = text;
         this.user = user;
         this.conversation = conversation;
     }
 
-    public int getId() {
-        return id;
+    public UUID getUUID() {
+        return uuid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUUID(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getText() {

@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS conversation (
     uuid CHAR(36) PRIMARY KEY NOT NULL,
     name VARCHER(255),
-    date_created TEXT NOT NULL
+    date_created DATETIME NOT NULL
 )
 """);
             pstmt.executeUpdate();
@@ -81,11 +81,11 @@ CREATE TABLE IF NOT EXISTS conversation (
 
             pstmt = getConnection().prepareStatement("""
 CREATE TABLE IF NOT EXISTS user_in_conversation (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    uuid CHAR(36) PRIMARY KEY NOT NULL,
     uuid_user CHAR(36) NOT NULL,
-    id_conversation INT(11) NOT NULL,
+    uuid_conversation CHAR(36) NOT NULL,
     FOREIGN KEY(uuid_user) REFERENCES user(uuid),
-    FOREIGN KEY(id_conversation) REFERENCES conversation(id)
+    FOREIGN KEY(uuid_conversation) REFERENCES conversation(uuid)
 )
 """);
             pstmt.executeUpdate();
@@ -93,12 +93,10 @@ CREATE TABLE IF NOT EXISTS user_in_conversation (
 
             pstmt = getConnection().prepareStatement("""
 CREATE TABLE IF NOT EXISTS message (
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    uuid CHAR(36) PRIMARY KEY NOT NULL,
     text VARCHAR(255) NOT NULL,
-    uuid_user CHAR(36) NOT NULL,
-    id_conversation INT(11) NOT NULL,
-    FOREIGN KEY(uuid_user) REFERENCES user(uuid),
-    FOREIGN KEY(id_conversation) REFERENCES conversation(id)
+    user_conv CHAR(36) NOT NULL,
+    FOREIGN KEY(user_conv) REFERENCES user_in_conversation(uuid)
 )
 """);
             pstmt.executeUpdate();

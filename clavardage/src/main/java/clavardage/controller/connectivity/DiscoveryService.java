@@ -1,12 +1,10 @@
 package clavardage.controller.connectivity;
 
-import clavardage.controller.Clavardage;
+import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.objects.User;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.Objects;
-import java.util.UUID;
 
 public class DiscoveryService implements Activity {
 
@@ -21,7 +19,7 @@ public class DiscoveryService implements Activity {
 
     public void sendHello() throws Exception {
         // bonjour routine
-        udpSender.sendBroadcastPacket(new User(UUID.randomUUID(), "test", InetAddress.getByName(NetworkConnector.getLocalAddress())));
+        udpSender.sendBroadcastPacket(AuthOperations.getConnectedUser());
     }
 
     /**
@@ -34,7 +32,11 @@ public class DiscoveryService implements Activity {
             Object obj = udpListener.getPacketData();
             if(Objects.nonNull(obj) && obj instanceof User) {
                 newUser = (User)obj;
-                done();
+                done(); // notify main daemon
+            } else {
+                System.err.println("User discovery data error");
+                done(); // notify main daemon
+                throw new Exception("User discovery data error");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,5 +48,7 @@ public class DiscoveryService implements Activity {
     }
 
     @Override
-    public void done() { }
+    public void done() {
+        ConnectivityDaemon.notifyDiscoveryDaemon();
+    }
 }

@@ -55,7 +55,7 @@ public class Clavardage
         System.out.print("/!\\ TEST /!\\ : Processing the creation of 50 users.");
         for(int i = 0 ; i < 50 ; i++) {
             try {
-                um.createUser("user_" + i, "pass_" + i, "mail_" + i + "@clav.com", InetAddress.getByName(NetworkConnector.getLocalAddress()));
+                um.createUser("user_" + i, "pass_" + i, "mail_" + i + "@clav.com", InetAddress.getByName("127.0.0." + (i+1)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
