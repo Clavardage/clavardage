@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS user_in_conversation (
     uuid CHAR(36) PRIMARY KEY NOT NULL,
     uuid_user CHAR(36) NOT NULL,
     uuid_conversation CHAR(36) NOT NULL,
-    still_in BOOLEAN NOT NULL,
+    still_in BOOLEAN NOT NULL DEFAULT 1,
     FOREIGN KEY(uuid_user) REFERENCES user(uuid),
     FOREIGN KEY(uuid_conversation) REFERENCES conversation(uuid)
 )

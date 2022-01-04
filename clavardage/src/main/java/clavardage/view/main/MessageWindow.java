@@ -459,6 +459,36 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		}	
 	}
 	
+	public void receiveMessage(String text, UUID idContact) {
+
+	    /* create the new message */
+	    MyDate date = new MyDate();
+	    MessageBuble msg = new MessageBuble(TypeBuble.THEIR, text, new MyDate());
+
+	    /* see if we need a DayPanel */
+	    boolean newDay = needDayPanel(date);
+	    MyDayInfo day = new MyDayInfo(date);
+
+	    /* add the msg to the discussion of the destinataire */
+	    MessagesPanel contactConversation = null;
+
+	    for (MessagesPanel conv : allMessagesUsers) {
+	        if (conv.getIdConversation().equals(idContact)) {
+	            contactConversation = conv ;
+	        }
+	    }
+
+	    if (contactConversation.isEmptyDiscussion()) {
+	        contactConversation.startConversation(); //we start the conversation if it is the first msg
+	    }
+	    if (newDay) {
+	        contactConversation.add(day);  //we add the DayPanel if we need it
+	    }
+	    contactConversation.add(msg); //we add the new msg
+
+	    messageContainer.validate();
+	}
+	
 	public boolean needDayPanel(MyDate date) {
 		boolean newDay = false;
 		if (!discussionDisplay.isEmptyDiscussion()) {

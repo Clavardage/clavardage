@@ -172,9 +172,22 @@ public class MainGUI {
      * Used by Conversation Service
      * @param c
      * @param msg
+     * @throws UserNotConnectedException 
      */
-    public static void addNewMessage(Conversation c, Message msg) {
-        // TODO: handle message display in GUI
+    public static void addNewMessage(Conversation c, Message msg) throws UserNotConnectedException {
+        // handle message display in GUI
+    	User uDest = null;
+        if(c.isWithOneUserOnly()) { // 1 to 1
+            for(User u : c.getListUsers()) {
+                if(u.getUUID().equals(AuthOperations.getConnectedUser().getUUID())) {
+                    continue;
+                }
+                uDest = u;
+            }
+        } else { // Groups
+            System.err.println("NOT IMPLEMENTED");
+        }
+    	Application.getMessageWindow().receiveMessage(msg.getText(), uDest.getUUID());
     }
 
     public static void testConversation2() throws Exception {
