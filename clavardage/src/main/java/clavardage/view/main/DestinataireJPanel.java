@@ -12,6 +12,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -29,15 +30,14 @@ public class DestinataireJPanel extends JPanel {
 	private JPanel connectPanel, namePanel;
 	private JTextArea nameUser;
 	private JLabel connectLabel;
-	private int id;
+	private UUID id;
 	private boolean conversationOpen, connect ;
 	private Image openImage, connectImage;
 	private ImageIcon openIcon, connectIcon ;
 	private Destinataire type;
 	 
-	public DestinataireJPanel(String name, int i, boolean c, Destinataire d, MessageWindow window) throws IOException {
+	public DestinataireJPanel(String name, UUID i, boolean c, Destinataire d) throws IOException {
 		super();
-		
 		this.conversationOpen = false;
 		this.id = i;
 		this.type = d;
@@ -113,113 +113,24 @@ public class DestinataireJPanel extends JPanel {
 		nameUser.setOpaque(false);
 		this.namePanel.add(nameUser);
 					
-		super.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {	
-				window.openConversation(nameUser.getText(), id, type);
-				try {
-					openMyConversation(window);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				nameUser.setForeground(Application.COLOR_RED);
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				nameUser.setForeground(namePanel.getForeground());		    
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-        });
-		
-		
-		namePanel.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				nameUser.setForeground(Application.COLOR_RED);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				nameUser.setForeground(namePanel.getForeground());		    
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				window.openConversation(nameUser.getText(), id, type);
-				try {
-					openMyConversation(window);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-        });
-		
-		nameUser.addMouseListener(new MouseListener() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				nameUser.setForeground(Application.COLOR_RED);
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				nameUser.setForeground(namePanel.getForeground());		    
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				window.openConversation(nameUser.getText(), id, type);
-				try {
-					openMyConversation(window);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}				
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-        });
-		
+		super.addMouseListener(new MouseOpenConversation(this));
+		namePanel.addMouseListener(new MouseOpenConversation(this));
+		nameUser.addMouseListener(new MouseOpenConversation(this));		
 	}
 	
-	public int getIdDestinataire() {
+	public JTextArea getPanelName() {
+		return nameUser;
+	}
+	
+	public JPanel getPanel() {
+		return namePanel;
+	}
+	
+	public Destinataire getTypeDestinataire() {
+		return type;
+	}
+	
+	public UUID getIdDestinataire() {
 		return id;
 	}
 	
@@ -231,25 +142,31 @@ public class DestinataireJPanel extends JPanel {
 		return nameUser.getText();
 	}
 	
+	public void setNameDestinataire(String newName) {
+		nameUser.setText(newName);
+	}
+	
 	public void setForegroundNamePanel() {
 			namePanel.setForeground(Application.COLOR_TEXT); //pour le mouseExited
 			nameUser.setForeground(Application.COLOR_TEXT);
 	}
 	
-	public void openMyConversation(MessageWindow window) throws IOException {
-		for (Component panel : window.getListUsers().getComponents()) {
+	public void openMyConversation() throws IOException {
+		for (Component panel : Application.getMessageWindow().getListUsers().getComponents()) {
 			((DestinataireJPanel) panel).closeMyConversation();
 		}
-		for (Component panel : window.getListGroups().getComponents()) {
+		for (Component panel : Application.getMessageWindow().getListGroups().getComponents()) {
 			((DestinataireJPanel) panel).closeMyConversation();
 		}
 		this.conversationOpen = true ;
 		connectLabel.setIcon(openIcon);
-		window.moveInTopOfList(this.type, this.id);
+		Application.getMessageWindow().moveInTopOfList(this.type, this.id);
 	}
 	
 	public void closeMyConversation() {
 		this.conversationOpen = false ;
 		connectLabel.setIcon(connectIcon);	
 	}
+
+
 }

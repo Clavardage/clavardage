@@ -11,8 +11,6 @@ public class MyListDestinataires extends JPanel {
 	public MyListDestinataires() {
 		setBorder(new EmptyBorder(0, 20, 10, 20));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-
 	}
 
 }

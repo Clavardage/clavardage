@@ -12,7 +12,7 @@ import javax.swing.JTextArea;
 
 public class MyUsersPanel extends JPanel {
 
-	public MyUsersPanel(JTextArea titleUsers, JScrollPane usersContainer) {
+	public MyUsersPanel(MyTitle titleUsers, MyJScrollPane usersContainer) {
 		super();
 		setOpaque(false);
 		setLayout(new BorderLayout(0, 0));

@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 public class MyBodyApp extends JPanel {
 	
-	public MyBodyApp(JPanel destinatairePanel,JPanel discussionContainer ) {
+	public MyBodyApp(MyDestinatairesPanel destinatairePanel, MyDiscussionContainer discussionContainer ) {
 		super();
 		
 		/* Set the GridBagLayout */

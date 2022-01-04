@@ -16,10 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.view.main.MessageWindow.Destinataire;
+
 public class MyGroupsPanel extends JPanel {
 	
-	public MyGroupsPanel(MessageWindow window, JPanel northGroups, JTextArea titleGroups, JButton addGroup, JScrollPane groupsContainer) throws IOException {
+	public MyGroupsPanel(JPanel northGroups, MyTitle titleGroups, MyJButton addGroup, MyJScrollPane groupsContainer) throws IOException {
 		super();
+		
+		MessageWindow window = Application.getMessageWindow(); 
 		setOpaque(false);
 		setLayout(new BorderLayout(0, 0));
 		
@@ -44,7 +49,10 @@ public class MyGroupsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					window.addNewGroupToList("New Group", true);
-				} catch (IOException e1) {
+					DestinataireJPanel newGroup = (DestinataireJPanel) window.getListGroups().getComponent( window.getListGroups().getComponentCount()-1) ;
+					window.openConversation(newGroup.getNameDestinataire(), newGroup.getIdDestinataire(), Destinataire.Group);
+					window.setNameGroup();
+				} catch (IOException | UserNotConnectedException e1) {
 					e1.printStackTrace();
 				}
 				groupsContainer.validate();

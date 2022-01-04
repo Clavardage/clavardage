@@ -1,8 +1,10 @@
 package clavardage.view.main;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
-import javax.swing.*;
+
+import javax.swing.JTextField;
 
 public class MyRoundJTextField extends JTextField {
 
@@ -10,7 +12,7 @@ public class MyRoundJTextField extends JTextField {
 	
 	private Shape shape;
 	private boolean empty ;
-    private static int radius;
+    private int radius;
     
     public MyRoundJTextField(int r) {
         super();
@@ -26,11 +28,11 @@ public class MyRoundJTextField extends JTextField {
     }
     protected void paintBorder(Graphics g) {
          g.setColor(getBackground());
-         g.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, this.radius,this.radius);
+         g.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, this.radius, this.radius);
     }
     public boolean contains(int x, int y) {
          if (shape == null || !shape.getBounds().equals(getBounds())) {
-             shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, this.radius,this.radius);
+             shape = new RoundRectangle2D.Float(0, 0, getWidth()-1, getHeight()-1, this.radius, this.radius);
          }
          return shape.contains(x, y);
     }

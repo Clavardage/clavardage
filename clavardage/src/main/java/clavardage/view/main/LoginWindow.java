@@ -22,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -34,7 +35,9 @@ import clavardage.view.main.Application.ColorThemeApp;
 
 public class LoginWindow extends JPanel implements ActionListener, MouseListener {
 	
-	private JPanel logPanel, headPanel, logoPanel, sections, logButtonPanel, logButtonSection;
+	private MyRoundJPanel logPanel;
+	private JPanel headPanel, logoPanel, sections, logButtonSection;
+	private MyRoundJPanel logButtonPanel;
 	private JButton signInButton ;
 	private JScrollPane sectionContainer;
 	private JLabel textError, logButton;
@@ -130,10 +133,16 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 			}
 		};
 		headPanel.add(logoPanel, gbc_logoPanel);
-
-		signInButton = new JButton("Sign In");
-		customButton(signInButton);
-		//headPanel.add(signInButton);		
+		
+		GridBagConstraints gbc_signInButton = new GridBagConstraints();
+		gbc_signInButton.insets = new Insets(0, 0, 0, 0);
+		gbc_signInButton.anchor = GridBagConstraints.FIRST_LINE_END;
+		gbc_signInButton.gridx = 0;
+		gbc_signInButton.gridy = 0;
+		gbc_signInButton.gridwidth = 3 ;
+		signInButton = new MyJButtonText("Sign In");
+		signInButton.addMouseListener(this);
+		headPanel.add(signInButton,gbc_signInButton);
 	}
 
 	/**
@@ -206,20 +215,6 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 	}
 
 	/**
-	 * Custom button.
-	 * */
-	private void customButton(JButton button) {
-		button.setForeground(Application.COLOR_BLUE);
-		button.setFont(new Font("Dialog", Font.PLAIN, 20));
-		button.setOpaque(false);
-		button.setBorderPainted(false);
-		button.setFocusPainted(false);
-		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		button.setContentAreaFilled(false);
-		button.setMargin(new Insets(0, 0, 0, 0));
-	}
-
-	/**
 	 * Custom theme Login.
 	 * */
 	public void customThemeLogin(ColorThemeApp c) {
@@ -235,7 +230,9 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 				((SectionTextJPanel) panel).setColorTextSession(Application.COLOR_EDIT_MESSAGE, Application.COLOR_TEXT_EDIT);
 			}
 		}
-		sectionContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2); 		
+		sectionContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2);
+		
+		logButton.setForeground(Application.COLOR_BACKGROUND2);
 	}
 	
 
@@ -252,14 +249,21 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 					}
 					Application.displayContent(Application.getApp(), Application.getMessageWindow());
 					textError.setText(" ");
-					System.out.println("CONNECTED!!!!");
-
 				}
 			} catch (Exception e1) {
-				//textError.setText(e1.getMessage());
+				textError.setText(e1.getMessage());
 				e1.printStackTrace();
-
 			}
+		} else if (e.getSource()== signInButton) {
+			if (Application.getSignInWindow() == null) {
+				try {
+					Application.createSignInWindow();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			Application.displayContent(Application.getApp(), Application.getSignInWindow());
+			
 		}
 	}
 	
@@ -281,6 +285,14 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+	}
+
+	public JPanel getSections() {
+		return sections;
+	}
+
+	public JButton getSignInButton() {
+		return signInButton;
 	}
 
 }

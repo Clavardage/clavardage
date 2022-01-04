@@ -12,7 +12,7 @@ import javax.swing.JTextArea;
 
 public class MyDestinatairesPanel extends JPanel {
 	
-	public MyDestinatairesPanel(JPanel users, JPanel groups) throws IOException {
+	public MyDestinatairesPanel(MyUsersPanel users, MyGroupsPanel groups) throws IOException {
 		
 		super();
 		setOpaque(false);

@@ -21,7 +21,9 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
 
 	/* **  ** */
-	private static JPanel message, login;
+	private static MessageWindow message;
+	private static LoginWindow login;
+	private static SignInWindow signIn;
 	private static JFrame app;
 	
 	/* ** Colors ** */
@@ -40,21 +42,22 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	protected static Color COLOR_TEXT_THEIR_MESSAGE = new Color(255,255,255);
 	protected static Color COLOR_BLUE = new Color(72,125,244) ;
 	protected static Color COLOR_RED = new Color(238,34,34) ;
-
-	private static ColorThemeApp colorThemeApp ;
+	protected static Color COLOR_GREEN = new Color(11,177,58) ;
 	
+	private static ColorThemeApp colorThemeApp ;	
 
 
 	public Application(String title, ImageIcon icon) {
-		app = this;
-		this.setTitle(title);
+		
+		this.app = this;
+		this.setTitle(title); 
 		this.setIconImage(icon.getImage());
 		this.setSize(1200, 800);
-//		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+//		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH); //full size
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
+		this.setLocationRelativeTo(null); //center
 		this.setMinimumSize(new Dimension(600,600));
-		colorThemeApp = ColorThemeApp.LIGHT; 
+		colorThemeApp = ColorThemeApp.LIGHT; //default theme
 
 		try {
 			createLoginWindow();
@@ -73,7 +76,6 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	 * */
 	public static void createLoginWindow() throws IOException {
 		login = new LoginWindow();
-;
 	}
 	
 	/**
@@ -85,11 +87,23 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		message = new MessageWindow();
 	}
 	
+	public static void createSignInWindow() throws IOException {
+		signIn = new SignInWindow();		
+	}
+
+	
+	/**
+	 * Change the theme of all windows
+	 * */
 	public static void setColorTheme(ColorThemeApp color) {
-		((MessageWindow) message).customThemeMessage(color);
-		((LoginWindow) login).customThemeLogin(color);
+		message.customThemeMessage(color);
+		login.customThemeLogin(color);
+		signIn.customThemeLogin(color);
 	}
 	
+	/**
+	 * Change the display window
+	 * */
 	public static void displayContent(JFrame app, JPanel content) {
 		app.setContentPane(content);
 		app.revalidate();
@@ -100,18 +114,25 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		return app;
 	}
 	
-	public static JPanel getMessageWindow() {
+	public static MessageWindow getMessageWindow() {
 		return message;
 	}
 	
-	public static JPanel getLoginWindow() {
+	public static LoginWindow getLoginWindow() {
 		return login;
+	}
+	
+	public static SignInWindow getSignInWindow() {
+		return signIn;
 	}
 	
 	public static ColorThemeApp getColorThemeApp() {
 		return colorThemeApp;
 	}
 	
+	/**
+	 * Change all colors according to the chosen theme
+	 * */
 	public void changeColorThemeApp(ColorThemeApp color) {
 		if (color == ColorThemeApp.LIGHT) {
 			COLOR_BACKGROUND = new Color(247,249,251) ;
@@ -178,6 +199,12 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	public void mouseExited(MouseEvent e) {
 
 	}
+
+
+
+
+
+
 
 
 

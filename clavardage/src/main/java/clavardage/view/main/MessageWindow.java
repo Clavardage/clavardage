@@ -2,55 +2,44 @@ package clavardage.view.main;
 
 /* TODO
  * -button hover à centrer
- * -editMsg : si on clique autre par et que getText().isEmpty() ou isBlanck() alors on revient sur le truc initial
- * -rajouter heure des messages devant les buble + noms des expediters dans les conversataions de groupes
+ * -rajouter noms des expediters dans les conversataions de groupes
  * -nom utilisateur fixé à gauche quand réduction (pour le moment, c'est réduit au milieu)
  * -les noms de destinataires de plus de 16 caractères font bouger la mise en page à l'ouverture de leur conversation
  * -modifier MyAlertMessage pour retour à la ligne (transformer en JtextArea ?)
  */
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Insets;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultHighlighter;
 
 import clavardage.controller.Clavardage;
@@ -59,14 +48,11 @@ import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.main.Application.ColorThemeApp;
 import clavardage.view.main.LoginWindow.TypeBuble;
-import clavardage.view.main.MessageWindow.Destinataire;
-
-import javax.swing.JMenuItem;
 
 public class MessageWindow extends JPanel implements ActionListener, MouseListener {
 	
 	/* ** Menu Bar ** */
-	private JMenuBar menuBar;
+	private MyMenuBar menuBar;
 	private JPanel logoPanel;
 	private JLabel logo;
 	private JMenu settings, colorApp, account;
@@ -75,32 +61,40 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	private JMenuItem disconnect;
 
 	/* ** Body's App ** */
-	private JPanel bodyApp;
-	private JPanel destinataires, discussionContainer;
+	private MyBodyApp bodyApp;
+	private MyDestinatairesPanel destinataires;
+	private MyDiscussionContainer discussionContainer;
 	// -- Destinataires -- //
-	private JPanel users, groups, northGroups;
-	private JTextArea titleUsers, titleGroups;
-	private JButton addGroup;
-	private JScrollPane usersContainer, groupsContainer;
-	private JPanel listUsers, listGroups ;
+	private MyJScrollPane usersContainer, groupsContainer;
+	private MyTitle titleUsers, titleGroups;
+	private MyUsersPanel users ;
+	private MyGroupsPanel groups;
+	private JPanel northGroups;
+	private MyJButton addGroup;
+	private MyListDestinataires listUsers, listGroups ;
 	private int nbUsers, nbGroups;
 	private ArrayList<DestinataireJPanel> allUsers, allGroups ;
 	enum Destinataire {User,Group;}
 	// -- Discussion -- //
-	private JPanel discussion, discussionDisplay, northDiscussion, allDiscussionClose, newMsg;
-	private JLabel chooseDestinataire;
-	private JTextArea nameDestinataire;
-	private JScrollPane messageContainer;
-	private JButton editGroup, addUser, sendFile, sendPicture, sendMsg;
-	private JTextField editMsg;
-	private ArrayList<MessagesPanel> allMessagesUsers, allMessagesGroups;
+	private MyDiscussionPanel discussion;
+	private JMenuBar northDiscussion;
+	private JMenu settingsGroups, seeMembersGroup, addMemberInGroup;
+	private JMenuItem leaveGroup,backUsers, nextUsers, backMembers,nextMembers;
+	private MyTitle nameDestinataire;
+	private MyJScrollPane messageContainer;
+	private MyAlertMessage chooseDestinataire;
+	private MessagesPanel discussionDisplay, allDiscussionClose;
+	private MyNewMsgPanel newMsg;
+	private MyJButton editNameGroup, sendFile, sendPicture, sendMsg;
+	private MyEditMsg editMsg;
+	private int membersDisplay, usersDisplay;
 	private boolean conversationOpen ;
+	private ArrayList<MessagesPanel> allMessagesUsers, allMessagesGroups;
 
 	/* ** Pictures and Icons ** */
-	private Image logoImage, settingsImage, accountImage, addGroupImage, addGroupImageHover, sendFileImage, sendFileImageHover, sendPictureImage, sendPictureImageHover, sendMsgImage, sendMsgImageHover, addUserImage, addUserImageHover, editGroupImage, editGroupImageHover;
-	private ImageIcon logoIcon, settingsIcon, accountIcon, addGroupIcon, addGroupIconHover,sendFileIcon, sendFileIconHover, sendPictureIcon, sendPictureIconHover, sendMsgIcon, sendMsgIconHover, addUserIcon, addUserIconHover, editGroupIcon, editGroupIconHover;
-	;
-
+	private Image logoImage, settingsImage, accountImage, addGroupImage, addGroupImageHover, sendFileImage, sendFileImageHover, sendPictureImage, sendPictureImageHover, sendMsgImage, sendMsgImageHover, editNameGroupImage, editNameGroupImageHover, settingsGroupsImage;
+	private ImageIcon logoIcon, settingsIcon, accountIcon, addGroupIcon, addGroupIconHover,sendFileIcon, sendFileIconHover, sendPictureIcon, sendPictureIconHover, sendMsgIcon, sendMsgIconHover,editNameGroupIcon, editNameGroupIconHover, settingsGroupsIcon;
+	
 	public MessageWindow() throws IOException, UserNotConnectedException {
 		setLayout(new BorderLayout());
 
@@ -108,10 +102,9 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		add(createBodyApp(), BorderLayout.CENTER);
 		/* Add the app's body */
 		add(createMenuBar(), BorderLayout.NORTH);
-		customThemeMessage(Application.getColorThemeApp());
 		
-
-
+		/* Apply the chosen theme */
+		customThemeMessage(Application.getColorThemeApp());
 	}
 
 
@@ -119,7 +112,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	 * Create the menu bar.
 	 * @throws IOException
 	 * */
-	private JMenuBar createMenuBar() throws IOException {	
+	private MyMenuBar createMenuBar() throws IOException {	
 		logoPanel = new JPanel();
 		
 		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Logo_title.png")).getScaledInstance(130, 33, Image.SCALE_SMOOTH);
@@ -131,7 +124,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		settings = new JMenu();
 		
 		colorApp = new JMenu("Change the default color");
-		allColors = new ButtonGroup();
+		allColors = new ButtonGroup(); //Only one button pressed at the same time
 		colorAppWhite = new JRadioButton("White");
 		colorAppBlack = new JRadioButton("Black");
 		
@@ -141,7 +134,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		
 		disconnect = new JMenuItem("Disconnect");
 		
-		menuBar = new MyMenuBar(this,logoPanel, logoIcon, logo,
+		menuBar = new MyMenuBar(logoPanel, logoIcon, logo,
 								settingsIcon, settings,
 								colorApp,allColors,colorAppWhite,colorAppBlack,
 								accountIcon, account, disconnect);
@@ -153,8 +146,9 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	 * @throws IOException
 	 * @throws UserNotConnectedException
 	 * */
-	private JPanel createBodyApp() throws IOException, UserNotConnectedException {
-		bodyApp = new MyBodyApp(createDestinatairesPanel(), createDiscussionContainerPanel());
+	private MyBodyApp createBodyApp() throws IOException, UserNotConnectedException {
+		
+		bodyApp = new MyBodyApp(createDestinatairesPanel(), createDiscussionContainer());
 		return bodyApp ;
 	}
 
@@ -163,7 +157,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	 * @throws IOException
 	 * @throws UserNotConnectedException
 	 * */
-	private JPanel createDestinatairesPanel() throws IOException, UserNotConnectedException {
+	private MyDestinatairesPanel createDestinatairesPanel() throws IOException, UserNotConnectedException {
 		
 		titleUsers = new MyTitle("Users");
 		usersContainer = createListUsers();
@@ -178,7 +172,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		addGroup = new MyJButton(addGroupIcon,addGroupIconHover);
 		groupsContainer = createListGroups();
 
-		groups = new MyGroupsPanel(this, northGroups, titleGroups, addGroup, groupsContainer);
+		groups = new MyGroupsPanel(northGroups, titleGroups, addGroup, groupsContainer);
 
 		destinataires = new MyDestinatairesPanel( users, groups);
 		
@@ -190,28 +184,30 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	/**
 	 * Create the panel of the discussion container.
 	 * @throws IOException
+	 * @throws UserNotConnectedException 
 	 * */
-	private JPanel createDiscussionContainerPanel() throws IOException {
+	private MyDiscussionContainer createDiscussionContainer() throws IOException, UserNotConnectedException {
 		
-		northDiscussion = new JPanel();
+		northDiscussion = new JMenuBar();
 		
 		nameDestinataire = new MyTitle("");
 		
-		editGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-		editGroupIcon = new ImageIcon(editGroupImage, "Add Group Button");
-		editGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
-		editGroupIconHover = new ImageIcon(editGroupImageHover, "Add Group Button Hover");
-		editGroup = new MyJButton(editGroupIcon,editGroupIconHover);
-
+		editNameGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		editNameGroupIcon = new ImageIcon(editNameGroupImage, "Add Group Button");
+		editNameGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+		editNameGroupIconHover = new ImageIcon(editNameGroupImageHover, "Add Group Button Hover");
+		editNameGroup = new MyJButton(editNameGroupIcon,editNameGroupIconHover);
 		
-		addUserImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-		addUserIcon = new ImageIcon(addUserImage, "Add Group Button");
-		addUserImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
-		addUserIconHover = new ImageIcon(addUserImageHover, "Add Group Button Hover");
-		addUser = new MyJButton(addUserIcon,addUserIconHover);
+		settingsGroupsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		settingsGroupsIcon = new ImageIcon(settingsGroupsImage, "Add Group Button");
+		settingsGroups = new JMenu();
 		
-		discussion = new MyDiscussion(this, northDiscussion, nameDestinataire, editGroup, addUser, createMsgPanel(), createNewMsgPanel(), groupsContainer);
+		seeMembersGroup = new JMenu("See the members of the group");
+		addMemberInGroup = new JMenu("Add Someone to the group");
+		leaveGroup = new JMenuItem("Leave the group");
 		
+		discussion = new MyDiscussionPanel(northDiscussion, nameDestinataire, editNameGroup, settingsGroups, settingsGroupsIcon, seeMembersGroup, addMemberInGroup, leaveGroup, createMsgPanel(), createNewMsgPanel(), groupsContainer);
+						
 		discussionContainer = new MyDiscussionContainer(discussion);
 
 		return discussionContainer ;
@@ -222,15 +218,18 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	 * @throws IOException
 	 * @throws UserNotConnectedException
 	 * */
-	private JScrollPane createListUsers() throws IOException, UserNotConnectedException {
+	private MyJScrollPane createListUsers() throws IOException, UserNotConnectedException {
 		nbUsers = 0;
 
 		listUsers = new MyListDestinataires();
 		
+		/* Records all users (except myself) and their associated discussion */
 		allUsers = new ArrayList<DestinataireJPanel>();
 		allMessagesUsers = new ArrayList<MessagesPanel>();
 		for (String name : MainGUI.getAllUsernamesInDatabase()) {
-			addNewUserToList(name, true);
+			if (!(name.equals(AuthOperations.getConnectedUser().getLogin()))) {
+				addNewUserToList(name, true); //for the moment, all users are new and there is no conversation
+			}
 		}
 		
 		usersContainer = new MyJScrollPane(listUsers);
@@ -241,21 +240,22 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	/**
 	 * Create the list of Groups.
 	 * @throws IOException
+	 * @throws UserNotConnectedException 
 	 * */
-	private JScrollPane createListGroups() throws IOException {
+	private MyJScrollPane createListGroups() throws IOException, UserNotConnectedException {
 		nbGroups = 0;
 
 		listGroups = new MyListDestinataires();
 		
+		/* Records all groups and their associated discussion */
 		allGroups = new ArrayList<DestinataireJPanel>();
 		allMessagesGroups = new ArrayList<MessagesPanel>();
-
 		addNewGroupToList("Clovordoge",true);
 		addNewGroupToList("Les potos",true);
 		addNewGroupToList("Salut c'est nous",false);
 		addNewGroupToList("4IR A2 > 4IR A1",false);
 		addNewGroupToList("Je suis un groupe",true);
-		addNewGroupToList("Espionnage Industriel",false);
+		addNewGroupToList("Espionnage Industriel",false); //for the moment, all groups are new and there is no conversation (except one, see later)
 		
 		groupsContainer = new MyJScrollPane(listGroups);
 
@@ -266,7 +266,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	 * Create the panel of new message.
 	 * @throws IOException
 	 * */
-	private JPanel createNewMsgPanel() throws IOException{
+	private MyNewMsgPanel createNewMsgPanel() throws IOException{
 		
 		sendFileImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendFile.png")).getScaledInstance(14, 21, Image.SCALE_SMOOTH);
 		sendFileIcon = new ImageIcon(sendFileImage, "Send File Button");
@@ -288,7 +288,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		sendMsgIconHover = new ImageIcon(sendMsgImageHover, "Send Msg Button Hover");
 		sendMsg = new MyJButton(sendMsgIcon,sendMsgIconHover);
 				
-		newMsg = new MyNewMsgPanel(this, sendFile, sendPicture,editMsg, sendMsg);
+		newMsg = new MyNewMsgPanel(sendFile, sendPicture,editMsg, sendMsg);
 				
 		return newMsg ;
 	}
@@ -298,36 +298,448 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	/**
 	 * Create the panel of messages.
 	 * @throws IOException
+	 * @throws UserNotConnectedException 
 	 * */
-	private JScrollPane createMsgPanel() throws IOException{
+	private MyJScrollPane createMsgPanel() throws IOException{
 		conversationOpen = false ;
 		
-		allDiscussionClose = new MessagesPanel();
-		chooseDestinataire = new MyAlertMessage("Choose someone to start a conversation...", SwingConstants.CENTER);
-		allDiscussionClose.add(chooseDestinataire);
+		allDiscussionClose = new MessagesPanel("Choose someone to start a conversation...");
+
 		
 		/* SOME TEST */
-		
 		allMessagesGroups.get(1).startConversation();
 		MessageBuble msg1 = new MessageBuble(TypeBuble.THEIR,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640038517402L));
 		MessageBuble msg2 = new MessageBuble(TypeBuble.MINE,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640039918402L));
 		MessageBuble msg3 = new MessageBuble(TypeBuble.THEIR,"Hello, comment tu vas mega super bien ?", new MyDate(1640048519402L));
 		msg2.setColorPanel();
+		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640038517402L)));
 		allMessagesGroups.get(1).add(msg1);
 		allMessagesGroups.get(1).add(msg2);
-		allMessagesGroups.get(1).add(new MyDayPanel(new MyDate(1640048519402L)));
+		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640048519402L)));
 		allMessagesGroups.get(1).add(msg3);
 		
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(0).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(1).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(2).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(3).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(4).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(5).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(6).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(15).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(21).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(29).getIdDestinataire());		
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(33).getIdDestinataire());		
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(37).getIdDestinataire());		
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(40).getIdDestinataire());		
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(42).getIdDestinataire());		
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(45).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(46).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(47).getIdDestinataire());
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(48).getIdDestinataire());		
 		/* **** **** */
 		
-		
 		messageContainer = new MyJScrollPane(allDiscussionClose);
-		discussionDisplay = allDiscussionClose;
+		discussionDisplay = allDiscussionClose; //save the displayed discussion
 		
 		return messageContainer;
 	}
-	
 
+	/* --------- GET and SETTER ----------- */
+	
+	/**
+	 * Add a new user to the list of users.
+	 * @throws IOException 
+	 * @throws UserNotConnectedException 
+	 * */
+	public void addNewUserToList(String name, Boolean connect) throws IOException, UserNotConnectedException {
+		/* Create the user and his associated discussion */
+		UUID idUser = new UUID(nbUsers, nbUsers);
+		DestinataireJPanel user = new DestinataireJPanel(name,idUser,connect,Destinataire.User) ;
+		MessagesPanel noDiscussion = new MessagesPanel(this, user.getIdDestinataire(), Destinataire.User);
+		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation with " + user.getNameDestinataire() + " : send a message ! :)");
+		noDiscussion.add(startConversation);
+		
+		/* Saves the users on the conversation */
+		noDiscussion.addMemberConversation(AuthOperations.getConnectedUser().getUUID());
+		noDiscussion.addMemberConversation(user.getIdDestinataire());
+		
+		/* Saves both and displays the user in the list */
+		allUsers.add(user);
+		listUsers.add(user);
+		allMessagesUsers.add(noDiscussion);
+		
+		/* Modify the list for a suitable display */
+		nbUsers++;
+		listUsers.setPreferredSize(new Dimension(0, 30*nbUsers));
+	}
+	
+	/**
+	 * Add a new group to the list of groups.
+	 * @throws IOException 
+	 * @throws UserNotConnectedException 
+	 * */
+	public void addNewGroupToList(String name, Boolean connect) throws IOException, UserNotConnectedException {	
+		/* Create the user and his associated discussion */
+		UUID idGroup = new UUID(nbGroups, nbGroups);
+		DestinataireJPanel group = new DestinataireJPanel(name,idGroup,connect,Destinataire.Group);
+		MessagesPanel noDiscussion = new MessagesPanel(this, group.getIdDestinataire(),Destinataire.Group);
+		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation on " + group.getNameDestinataire() + " : send a message ! :)");
+		noDiscussion.add(startConversation);
+		
+		/* Saves the users on the conversation */
+		noDiscussion.addMemberConversation(AuthOperations.getConnectedUser().getUUID());
+		
+		/* Saves both and displays the user in the list */
+		allMessagesGroups.add(noDiscussion);
+		allGroups.add(group);
+		listGroups.add(group);
+		
+		/* Modify the list for a suitable display */
+		nbGroups++;
+		listGroups.setPreferredSize(new Dimension(0, 30*nbGroups));
+		group.setForegroundNamePanel(); //necessary because it can be added while using the app
+	}
+
+	/**
+	 * Display the new message on the discussion panel and reset JTextField.
+	 * */
+	public void sendMessage(int mode) {
+		/*send only if editMsg is not in default mode and there is something to send*/
+		if   ( (!editMsg.isEmptyText()) & (!(editMsg.getText().isEmpty() | editMsg.getText().isBlank())) )   {
+			
+			/* create the new message */
+			MyDate date = new MyDate();
+			MessageBuble msg = new MessageBuble(TypeBuble.MINE,editMsg.getText(), date);
+			msg.setColorPanel(); //necessary because it is send while using the app
+			
+			/* see if we need a DayPanel */
+			boolean newDay = needDayPanel(date);
+			MyDayInfo day = new MyDayInfo(date);
+
+			/* add the msg to the discussion of the chosen destinataire */
+			Destinataire typeCurrentConversation = discussionDisplay.getTypeConversation();
+			UUID idCurrentConversation = discussionDisplay.getIdConversation();
+			MessagesPanel currentConversation = null;
+			
+			if (typeCurrentConversation == Destinataire.User) {
+				for (MessagesPanel conv : allMessagesUsers) {
+					if (conv.getIdConversation() == idCurrentConversation) {
+						currentConversation = conv ;
+					}
+				}
+			} else {
+				for (MessagesPanel conv : allMessagesGroups) {
+					if (conv.getIdConversation() == idCurrentConversation) {
+						currentConversation = conv ;
+					}
+				}
+			}
+			if (discussionDisplay.isEmptyDiscussion()) {
+				currentConversation.startConversation(); //we start the conversation if it is the first msg
+			}
+			if (newDay) {
+				currentConversation.add(day);  //we add the DayPanel if we need it
+			}
+			currentConversation.add(msg); //we add the new msg
+			
+			messageContainer.validate();
+			
+			if (mode == 1) { // if it send with the button sendMsg 
+				editMsg.setEmptyText(true);
+			} else { // if it send with the keyboard 
+				editMsg.setText("");
+			}
+		}	
+	}
+	
+	public boolean needDayPanel(MyDate date) {
+		boolean newDay = false;
+		if (!discussionDisplay.isEmptyDiscussion()) {
+			int i = discussionDisplay.getComponentCount()-1 ;
+			while (!(discussionDisplay.getComponent(i).getClass().getName().equals("clavardage.view.main.MyDayInfo"))) {i--;}
+			MyDayInfo lastDateDisplay = (MyDayInfo) discussionDisplay.getComponent(i);
+			if (!(lastDateDisplay.getDate().getTheDay().equals(date.getTheDay()))) {
+				newDay = true ; //we need it if the date msg is not on the same day of the last one
+			} else {
+				newDay = false ;
+			}
+		} else {
+			newDay = true ; //we need it if the date msg is the first msg of the discussion
+		}
+		return newDay;
+	}
+		
+	public void openConversation(String newDestinataire, UUID id, Destinataire d) {
+		/* display newMsg if it is necessary */
+		if (!conversationOpen) {
+			conversationOpen = true;	
+			newMsg.setVisible(true);
+		}		                                           
+		
+		/* display the name Destinataire */
+		nameDestinataire.setText(newDestinataire);
+		
+		/* open the chosen discussion */
+		MessagesPanel chosenConversation = null;
+		if (d == Destinataire.User) {
+			for (MessagesPanel conv : allMessagesUsers) {
+				if (conv.getIdConversation() == id) {
+					chosenConversation = conv ;
+				}
+			}
+		} else {
+			for (MessagesPanel conv : allMessagesGroups) {
+				if (conv.getIdConversation() == id) {
+					chosenConversation = conv ;
+				}
+			}
+		}
+		messageContainer.setViewportView(chosenConversation);
+		discussionDisplay = chosenConversation;
+		customDiscussionDisplay(Application.getColorThemeApp()); //necessary because it is open while using the app
+		
+		/* display or hide the buttons of settings groups if it is necessary */
+		if (d == Destinataire.Group) {
+			editNameGroup.setVisible(true);
+			settingsGroups.setVisible(true);
+			seeMembersGroup.removeAll();
+			createSeeMembersGroup();
+			createAddMemberInGroup();
+		} else {
+			editNameGroup.setVisible(false);
+			settingsGroups.setVisible(false);
+		}
+		editMsg.setEmptyText(true);	
+	}
+
+	public void createAddMemberInGroup() {
+		usersDisplay = 0;
+		addMemberInGroup.removeAll();
+
+		if (discussionDisplay.getNumberNoMembers() <= 10) {
+			for (DestinataireJPanel user : discussionDisplay.getNoMembers()) {
+				JMenuItem item = new JMenuItem(user.getNameDestinataire());
+				addMemberInGroup.add(item);
+				item.addActionListener(new ActionOpenAlert(user,new ActionAddMember(item)));
+			}
+		} else {
+			backUsers = new JMenuItem("See back");
+			int i;
+			for (i=0; i<=8 ; i++) {
+				JMenuItem item = new JMenuItem(discussionDisplay.getNoMembers().get(i + 8*usersDisplay).getNameDestinataire());
+				addMemberInGroup.add(item);				
+				item.addActionListener(new ActionOpenAlert(discussionDisplay.getNoMembers().get(i + 8*usersDisplay),new ActionAddMember(item)));
+
+			}
+			nextUsers = new JMenuItem("See next");
+			addMemberInGroup.add(nextUsers);
+			
+			backUsers.addActionListener(new ActionBack(0));
+						
+			nextUsers.addActionListener(new ActionNext(0));
+		}	
+	}
+
+
+	public void createSeeMembersGroup() {
+		membersDisplay = 0;
+		seeMembersGroup.removeAll();
+
+		if (discussionDisplay.getNumberMembers() <= 10) {
+			for (DestinataireJPanel user : discussionDisplay.getMembersConversation()) {
+				JMenuItem item = new JMenuItem(user.getNameDestinataire());
+				seeMembersGroup.add(item);
+			}
+		} else {
+			backMembers = new JMenuItem("See back");
+			int i;
+			for (i=0; i<=8 ; i++) {
+				JMenuItem item = new JMenuItem(discussionDisplay.getMembersConversation().get(i + 8*membersDisplay).getNameDestinataire());
+				seeMembersGroup.add(item);
+			}
+			nextMembers = new JMenuItem("See next");
+			seeMembersGroup.add(nextMembers);
+			
+			backMembers.addActionListener(new ActionBack(1));		
+			
+			nextMembers.addActionListener(new ActionNext(1));
+		}		
+	}
+
+
+	public void closeConversation() {
+		/* hide newMsg and nameDestinataire if it is necessary */
+		if (conversationOpen) {
+			conversationOpen = false;
+			nameDestinataire.setText("");
+			newMsg.setVisible(false);
+			
+			for (Component panel : listUsers.getComponents()) {
+				((DestinataireJPanel) panel).closeMyConversation();
+			}
+			for (Component panel : listGroups.getComponents()) {
+				((DestinataireJPanel) panel).closeMyConversation();
+			}
+		}
+		
+		messageContainer.setViewportView(allDiscussionClose);
+		discussionDisplay = allDiscussionClose;
+	}
+	
+	public void setNameGroup() {
+		String currentName = nameDestinataire.getText();
+		
+		nameDestinataire.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+            	/* remove new line due to key Enter */
+            	nameDestinataire.setText(nameDestinataire.getText().replaceAll("\r", "").replaceAll("\n", ""));
+            	
+            	/* change the name only if the new name respect constraints */
+            	if (nameDestinataire.getText().isBlank() | nameDestinataire.getText().isEmpty() | (nameDestinataire.getText().length() > 20) ) {
+            		nameDestinataire.setText(currentName);
+            	}
+            	
+            	/* change the name in database */
+            	for (DestinataireJPanel group : allGroups) {
+            		if (group.getIdDestinataire() == discussionDisplay.getIdConversation()) {
+            			group.setNameDestinataire(nameDestinataire.getText());
+            		}
+            	}
+            	
+            	/* add an InfoPanel if the name has changed with a DayPanel if it is necessary */
+            	if (!(currentName.equals(nameDestinataire.getText()))) {
+					try {
+						MyDate date = new MyDate();
+						boolean newDay = needDayPanel(date);
+						if (newDay) {
+		            		if (discussionDisplay.isEmptyDiscussion()) {
+		            			discussionDisplay.startConversation();
+		            		}
+							discussionDisplay.add(new MyDayInfo(date));
+						}
+						discussionDisplay.add(new MyInfoPanel(currentName, nameDestinataire.getText()));
+					} catch (UserNotConnectedException e1) {
+						e1.printStackTrace();
+					}
+
+            	}
+				nameDestinataire.setEditable(false);
+				nameDestinataire.setHighlighter(null);
+				nameDestinataire.removeFocusListener(this);
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				nameDestinataire.setHighlighter(new DefaultHighlighter());		
+				nameDestinataire.selectAll();
+				nameDestinataire.setEditable(true);
+				nameDestinataire.setCaretColor(getForeground());
+				
+			}
+		});
+		
+		nameDestinataire.addKeyListener((KeyListener) new KeyAdapter() {
+	        @Override
+	        public void keyPressed(KeyEvent e) {
+	            if(e.getKeyCode() == KeyEvent.VK_ENTER){
+	        		northDiscussion.requestFocus();
+	        		nameDestinataire.removeKeyListener(this);
+	            }
+	        }
+	        @Override
+	        public void keyTyped(KeyEvent e) {
+	            if(nameDestinataire.getText().length() > 20){
+	        		e.consume();
+	            }
+	        }
+	    });
+		
+		nameDestinataire.requestFocus();
+	}		
+	
+	public void moveInTopOfList(Destinataire type, UUID id) throws IOException {
+		listUsers.removeAll();
+		listGroups.removeAll();
+		
+		if (type == Destinataire.User) {
+			for (DestinataireJPanel user : allUsers) {
+				if (user.getIdDestinataire() == id) {
+					listUsers.add(user);
+				}
+			} 
+			for (DestinataireJPanel user : allUsers) {
+				if (!(user.getIdDestinataire() == id)) {
+					listUsers.add(user);
+				}
+			}
+			//remove puis add(0)
+			for (DestinataireJPanel group : allGroups) {
+				listGroups.add(group);
+			}
+		} else {
+			for (DestinataireJPanel group : allGroups) {
+				if (group.getIdDestinataire() == id) {
+					listGroups.add(group);
+				}
+			}
+			for (DestinataireJPanel group : allGroups) {
+				if (!(group.getIdDestinataire() == id)) {
+					listGroups.add(group);
+				}
+			}
+			groupsContainer.getVerticalScrollBar().setValue(0);
+			for (DestinataireJPanel user : allUsers) {
+				listUsers.add(user);
+			}
+		}
+	
+	}
+	
+	public void closeAllConversation() {
+		nameDestinataire.setText("");
+		editNameGroup.setVisible(false);
+		settingsGroups.setVisible(false);
+		newMsg.setVisible(false);
+		messageContainer.setViewportView(allDiscussionClose);
+		discussionDisplay = allDiscussionClose;
+		customDiscussionDisplay(Application.getColorThemeApp());
+		conversationOpen = false ;
+	}
+	
+	public MyAlertMessage getChooseDestinataire() {
+		return this.chooseDestinataire ;  
+	}
+
+	public MyListDestinataires getListUsers() {
+		return	listUsers;
+	}
+	
+	public MyListDestinataires getListGroups() {
+		return	listGroups;
+	}
+	
+	public ArrayList<DestinataireJPanel> getAllUsers() {
+		return	allUsers;
+	}
+	
+	public ArrayList<DestinataireJPanel> getAllGroups() {
+		return	allGroups;
+	}
+	
+	public MessagesPanel getDiscussionDisplay() {
+		return discussionDisplay;
+	}
+	
+	public MyJScrollPane getMessageContainer() {
+		return messageContainer;
+	}
+	
+	public ArrayList<MessagesPanel> getAllMessagesGroups() {
+		return allMessagesGroups;
+	}
+	
+	
 	/**
 	 * Custom theme App.
 	 * */
@@ -359,246 +771,30 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		discussion.setBackground(Application.COLOR_BACKGROUND2);
 		customDiscussionDisplay(c);
 		
+		messageContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2);
+
 		editMsg.setBackground(Application.COLOR_EDIT_MESSAGE);
 		if (((MyRoundJTextField) editMsg).isEmptyText()) {
 			editMsg.setForeground(Application.COLOR_TEXT_EDIT);
 		} else {
 			editMsg.setForeground(Application.COLOR_TEXT);
 		}
-		
-		for (Component panel : messageContainer.getViewport().getComponents()) {
+	}
+	
+	public void customDiscussionDisplay(ColorThemeApp c) {
+	//	discussionDisplay.setBackground(Application.COLOR_BACKGROUND2);
+		for (Component panel : discussionDisplay.getComponents()) {
 			if (panel.getClass().getName() == "clavardage.view.main.MessageBuble") {
 				((MessageBuble) panel).setColorPanel();
 			}
 		}
-		messageContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2);
-
-	}
-	
-	public void customDiscussionDisplay(ColorThemeApp c) {
-		discussionDisplay.setBackground(Application.COLOR_BACKGROUND2);
-	}
-
-	/* --------- GET and SETTER ----------- */
-	
-	/**
-	 * Add a new user to the list of users.
-	 * @throws IOException 
-	 * */
-	public void addNewUserToList(String name, Boolean connect) throws IOException {
-		DestinataireJPanel user = new DestinataireJPanel(name,nbUsers,connect,Destinataire.User,this) ;
-		MessagesPanel noDiscussion = new MessagesPanel(user.getIdDestinataire(), Destinataire.User);
-		JLabel startConversation = new MyAlertMessage("Start the conversation with " + user.getNameDestinataire() + " : send a message ! :)", SwingConstants.CENTER);
-		noDiscussion.add(startConversation);
-		allMessagesUsers.add(noDiscussion);
-		allUsers.add(user);
-		listUsers.add(user);
-		nbUsers++;
-		listUsers.setPreferredSize(new Dimension(0, 30*nbUsers));
-			
-
-	}
-	
-	/**
-	 * Add a new group to the list of groups.
-	 * @throws IOException 
-	 * */
-	public void addNewGroupToList(String name, Boolean connect) throws IOException {
-//		String newName = name;
-//		if (name.length() > 16) {
-//			newName = name.substring(0, 16) ;
-//		}
-		DestinataireJPanel group = new DestinataireJPanel(name,nbGroups,connect,Destinataire.Group,this);
-		MessagesPanel noDiscussion = new MessagesPanel(group.getIdDestinataire(),Destinataire.Group);
-		JLabel startConversation = new MyAlertMessage("Start the conversation on " + group.getNameDestinataire() + " : send a message ! :)", SwingConstants.CENTER);
-		noDiscussion.add(startConversation);
-		allMessagesGroups.add(noDiscussion);
-		allGroups.add(group);
-		listGroups.add(group);
-		nbGroups++;
-		listGroups.setPreferredSize(new Dimension(0, 30*nbGroups));
-		group.setForegroundNamePanel();
-	}
-
-	/**
-	 * Display the new message on the discussion panel and reset JTextField.
-	 * */
-	public void sendMessage(int mode) {
-		if   ( (!((MyRoundJTextField) editMsg).isEmptyText()) & (!(editMsg.getText().isEmpty() | editMsg.getText().isBlank())) )   {
-			MyDate date = new MyDate();
-			MessageBuble msg = new MessageBuble(TypeBuble.MINE,editMsg.getText(), date);
-			msg.setColorPanel();
-			
-			boolean newDay = false;
-			MyDayPanel day = new MyDayPanel(date);
-			
-			if (!((MessagesPanel) discussionDisplay).isEmptyDiscussion()) {
-				MessageBuble lastMsg = (MessageBuble) discussionDisplay.getComponent(discussionDisplay.getComponentCount()-1);
-				if (!(lastMsg.getDay().equals(msg.getDay()))) {
-					newDay = true ;
-				}
-			} else {
-				newDay = true ;
-			}
-
-			Destinataire typeCurrentConversation = ((MessagesPanel) discussionDisplay).getTypeConversation();
-			int idCurrentConversation = ((MessagesPanel) discussionDisplay).getIdConversation();
-			
-			if (typeCurrentConversation == Destinataire.User) {
-				if (((MessagesPanel) discussionDisplay).isEmptyDiscussion()) {
-					allMessagesUsers.get(idCurrentConversation).startConversation();
-				}
-				if (newDay) {
-					allMessagesUsers.get(idCurrentConversation).add(day);
-				}
-				allMessagesUsers.get(idCurrentConversation).add(msg);
-
-			} else {
-				if (((MessagesPanel) discussionDisplay).isEmptyDiscussion()) {
-					allMessagesGroups.get(idCurrentConversation).startConversation();
-				}
-				if (newDay) {
-					allMessagesGroups.get(idCurrentConversation).add(day);
-				}
-				allMessagesGroups.get(idCurrentConversation).add(msg);
-
-			}
-
-			discussionDisplay.repaint();
-			messageContainer.validate();
-			
-			if (mode == 1) {
-				((MyRoundJTextField) editMsg).setEmptyText(true);
-			} else {
-				editMsg.setText("");
-			}
-		}	
-	}
-		
-	public void openConversation(String newDestinataire, int id, Destinataire d) {
-		if (!conversationOpen) {
-			conversationOpen = true;	
-			newMsg.setVisible(true);
-		}
-		
-		if (d == Destinataire.Group) {
-			editGroup.setVisible(true);
-			addUser.setVisible(true);
-		} else {
-			editGroup.setVisible(false);
-			addUser.setVisible(false);
-		}
-		
-		nameDestinataire.setText(newDestinataire);
-		
-		if (d == Destinataire.User) {
-			messageContainer.setViewportView(allMessagesUsers.get(id));
-			discussionDisplay = allMessagesUsers.get(id);
-		} else {
-			messageContainer.setViewportView(allMessagesGroups.get(id));
-			discussionDisplay = allMessagesGroups.get(id);
-		}
-		customDiscussionDisplay(Application.getColorThemeApp());
-		
-		((MyRoundJTextField) editMsg).setEmptyText(true);	
-	}
-
-	public void closeConversation() {
-		if (conversationOpen) {
-			conversationOpen = false;
-			nameDestinataire.setText("");
-			newMsg.setVisible(false);
-			
-			for (Component panel : listUsers.getComponents()) {
-				((DestinataireJPanel) panel).closeMyConversation();
-			}
-			for (Component panel : listGroups.getComponents()) {
-				((DestinataireJPanel) panel).closeMyConversation();
-			}
-		}
-		
-		messageContainer.setViewportView(allDiscussionClose);
-		discussionDisplay = allDiscussionClose;
-	}
-	
-	public JLabel getChooseDestinataire() {
-		return this.chooseDestinataire ;  
-	}
-	
-	public void setNameGroup() {
-//		nameDestinataire.setEditable(true);
-//		nameDestinataire.setHighlighter(new DefaultHighlighter());		
-	}		
-	
-	public void moveInTopOfList(Destinataire type, int id) throws IOException {
-		listUsers.removeAll();
-		listGroups.removeAll();
-
-		if (type == Destinataire.User) {
-			for (DestinataireJPanel user : allUsers) {
-				if (user.getIdDestinataire() == id) {
-					listUsers.add(user);
-				}
-			}
-			for (DestinataireJPanel user : allUsers) {
-				if (!(user.getIdDestinataire() == id)) {
-					listUsers.add(user);
-				}
-			}
-			for (DestinataireJPanel group : allGroups) {
-				listGroups.add(group);
-			}
-		} else {
-			for (DestinataireJPanel group : allGroups) {
-				if (group.getIdDestinataire() == id) {
-					listGroups.add(group);
-				}
-			}
-			for (DestinataireJPanel group : allGroups) {
-				if (!(group.getIdDestinataire() == id)) {
-					listGroups.add(group);
-				}
-			}
-			groupsContainer.getVerticalScrollBar().setValue(0);
-			for (DestinataireJPanel user : allUsers) {
-				listUsers.add(user);
-			}
-		}
-	
-	}
-
-	public JPanel getListUsers() {
-		return	listUsers;
-	}
-	
-	public JPanel getListGroups() {
-		return	listGroups;
-	}
-	
-	public ArrayList<DestinataireJPanel> getAllUsers() {
-		return	allUsers;
-	}
-	
-	public ArrayList<DestinataireJPanel> getAllGroups() {
-		return	allGroups;
+		messageContainer.getViewport().getView().setBackground(Application.COLOR_BACKGROUND2);
 	}
 
 	/* --------- GLOBAL LISTENERS ----------- */
 
 	@Override
-	public void mouseClicked(MouseEvent e) {	
-		if (e.getSource()==editMsg) {
-			if (((MyRoundJTextField) editMsg).isEmptyText()) {
-				editMsg.setText("");
-				editMsg.setForeground(Application.COLOR_TEXT);
-				((MyRoundJTextField) editMsg).setEmptyText(false);
-			}
-		} else {
-//			if ( editMsg.getText().isEmpty() |  editMsg.getText().isBlank()) {
-//				((MyRoundJTextField) editMsg).setEmptyText(true);
-//			}
-//			Utiliser Is Focusable !!!
-		}
+	public void mouseClicked(MouseEvent e) {
 	}
 
 	@Override
@@ -622,6 +818,84 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	@Override
 	public void actionPerformed(ActionEvent e) {		
 	}
+
+
+	public MessagesPanel getAllDiscussionClose() {
+		return allDiscussionClose;
+	}
+
+
+	public JMenu getAddMemberInGroup() {
+		return addMemberInGroup;
+	}
+
+
+	public JMenu getSettingsGroups() {
+		return settingsGroups;
+	}
+
+
+	public int getUsersDisplay() {
+		return usersDisplay;
+	}
+
+
+	public JMenuItem getBackUsers() {
+		return backUsers;
+	}
+
+
+	public JMenuItem getNextUsers() {
+		return nextUsers;
+	}
+
+
+	public int getMembersDisplay() {
+		return membersDisplay;
+	}
+
+
+	public JMenuItem getBackMembers() {
+		return backMembers;
+	}
+
+
+	public JMenuItem getNextMembers() {
+		return nextMembers;
+	}
+
+
+	public JMenu getSeeMembersGroup() {
+		return seeMembersGroup;
+	}
+
+
+	public void setDisplay(int mode, int i) {
+		if (mode == 0) {
+			usersDisplay=i;
+		} else if (mode == 1) {
+			membersDisplay=i;
+		}
+		
+	}
+
+
+	public MyJButton getEditNameGroup() {
+		return editNameGroup;
+	}
+
+
+	public MyNewMsgPanel getNewMsg() {
+		return newMsg;
+	}
+
+
+
+
+
+
+
+
 
 
 

@@ -20,16 +20,17 @@ public class MessageBuble extends JPanel {
 	private String text ;
 	private TypeBuble type ;
 	private int heightPanel ;
-	private JTextArea buble,zoneDate;
-	private Date dateMsg;
+	private MyRoundJTextArea buble;
+	private JTextArea zoneDate;
+	private MyDate dateMsg;
 	private Dimension sizeBuble;
 	
-	public MessageBuble(TypeBuble type, String msg, Date date) {
+	public MessageBuble(TypeBuble type, String msg, MyDate date) {
 		this.setOpaque(false);
 		this.type = type ;
 		this.text = msg;	
 		this.dateMsg = date;
-		this.zoneDate = new JTextArea(((MyDate) dateMsg).myHoureToString());
+		this.zoneDate = new JTextArea(dateMsg.myHoureToString());
 		zoneDate.setMargin(new Insets(12, 0, 0, 0));
 		zoneDate.setEditable(false);
 		zoneDate.setOpaque(false);
@@ -105,7 +106,7 @@ public class MessageBuble extends JPanel {
 	}
 	
 	public String getDay() {
-		return ((MyDate) dateMsg).getTheDay();
+		return dateMsg.getTheDay();
 	}
 	
 	public String getText() {

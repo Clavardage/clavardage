@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
@@ -49,21 +51,20 @@ public class SectionTextJPanel extends JPanel {
 		if (type == SectionText.PW) {
 			password = new MyRoundJPanel(40);
 			password.setPreferredSize(new Dimension(0,40));
-			FlowLayout flowLayout = (FlowLayout) password.getLayout();
-			flowLayout.setVgap(0);
-			flowLayout.setHgap(0);
+			password.setLayout(new BoxLayout(password, BoxLayout.X_AXIS));
 			this.add(password);
 			textSection = new JPasswordField(40);
 			textSection.setPreferredSize(new Dimension(0,40));
 			textSection.setOpaque(false);
 			textSection.setBorder(null);
+			password.add(createMargin(15,0));
 			password.add(textSection);
+			password.add(createMargin(15,0));
 		} else {
 			textSection = new MyRoundJTextField(40);
 			textSection.setPreferredSize(new Dimension(0,40));
-			textSection.setMargin(new Insets(0, 15, 0, 10));
+			textSection.setMargin(new Insets(0, 15, 0, 15));
 			this.add(textSection);
-
 		}
 
 		textSection.setText(text);

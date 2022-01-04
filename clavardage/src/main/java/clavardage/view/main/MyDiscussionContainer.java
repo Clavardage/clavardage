@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 public class MyDiscussionContainer extends JPanel {
 	
-	public MyDiscussionContainer(Component d) {
+	public MyDiscussionContainer(MyDiscussionPanel d) {
 		super();
 		setOpaque(false);
 		setBorder(new EmptyBorder(15, 15, 15, 15));
