@@ -113,9 +113,15 @@ public class DestinataireJPanel extends JPanel {
 		nameUser.setOpaque(false);
 		this.namePanel.add(nameUser);
 					
-		super.addMouseListener(new MouseOpenConversation(this));
-		namePanel.addMouseListener(new MouseOpenConversation(this));
-		nameUser.addMouseListener(new MouseOpenConversation(this));		
+		if (connected) {
+			super.addMouseListener(new MouseOpenConversation(this));
+			namePanel.addMouseListener(new MouseOpenConversation(this));
+			nameUser.addMouseListener(new MouseOpenConversation(this));	
+		} else {
+			super.addMouseListener(null);
+			namePanel.addMouseListener(null);
+			nameUser.addMouseListener(null);	
+		}	
 	}
 	
 	public JTextArea getPanelName() {
@@ -137,7 +143,7 @@ public class DestinataireJPanel extends JPanel {
 	public boolean isConnected() {
 		return connected;
 	}
-	
+
 	public String getNameDestinataire() {
 		return nameUser.getText();
 	}
@@ -168,12 +174,12 @@ public class DestinataireJPanel extends JPanel {
 		connectLabel.setIcon(connectIcon);	
 	}
 
-	public void setConnectImage(Image connectImage) {
-		this.connectImage = connectImage;
-	}
-
 	public Image getConnectImage() {
 		return connectImage;
+	}
+	
+	public void setConnectImage(Image connectImage) {
+		this.connectImage = connectImage;
 	}
 
 	public ImageIcon getConnectIcon() {
@@ -181,11 +187,21 @@ public class DestinataireJPanel extends JPanel {
 	}
 
 	public void setConnectIcon(ImageIcon connectIcon) {
-		this.connectIcon = connectIcon;
+		this.connectIcon=connectIcon;
+		this.connectLabel.setIcon(connectIcon);
 	}
 
 	public void setConnected(boolean connect) {
 		this.connected = connect;
+		if (connect) {
+			super.addMouseListener(new MouseOpenConversation(this));
+			namePanel.addMouseListener(new MouseOpenConversation(this));
+			nameUser.addMouseListener(new MouseOpenConversation(this));	
+		} else {
+			super.addMouseListener(null);
+			namePanel.addMouseListener(null);
+			nameUser.addMouseListener(null);	
+		}
 	}
 
 

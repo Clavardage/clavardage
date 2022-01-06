@@ -1,8 +1,10 @@
 package clavardage.controller.connectivity;
 
+import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.model.managers.MessageManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
@@ -21,7 +23,7 @@ public class ConversationService implements Activity {
     public ConversationService() throws Exception {
         super();
         convList = new HashMap<UUID, RunnableTCPThread>();
-        tcpServer = new TCPConnector() {
+        tcpServer = new TCPConnector(Clavardage.machine1 ? 4342 : 4343) {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {
@@ -43,7 +45,7 @@ public class ConversationService implements Activity {
                 }
             }
         };
-        tcpClient = new TCPConnector() {
+        tcpClient = new TCPConnector(Clavardage.machine1 ? 4343 : 4342) {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {
@@ -94,8 +96,9 @@ public class ConversationService implements Activity {
                 Message msg = waitForConversationEvent(r);
 
                 /* HANDLE MESSAGE */
-                System.out.println("Test: from: " + msg.getUser().getLogin() + " msg = " + msg.getText());
-                //TODO: save in DB
+                // System.out.println("Test: from: " + msg.getUser().getLogin() + " msg = " + msg.getText()); // test display
+                // save in DB
+                (new MessageManager()).saveExistingMessage(msg.getUUID(), msg.getText(), msg.getUser(), msg.getConversation(), msg.getDateCreated());
                 // send it to GUI
                 MainGUI.addNewMessage(currentConv, msg);
             }
@@ -104,7 +107,8 @@ public class ConversationService implements Activity {
         } finally {
             try {
                 r.close();
-                System.out.println("Log: Conversation `" + currentConv.getName() + "` closed!");
+                close(currentConv);
+                //System.out.println("Log: Conversation `" + currentConv.getName() + "` closed!");
             } catch(Exception e) {
                 System.err.println("Unable to close conversation, maybe already closed?");
             }
@@ -149,14 +153,25 @@ public class ConversationService implements Activity {
     /**
      * Close conversation (unlock the handleConversation instance by closing the socket)
      * @param c
+     * @throws UserNotConnectedException 
      */
-    public void close(Conversation c) {
+    public void close(Conversation c) throws UserNotConnectedException {
         try {
             convList.get(c.getUUID()).close();
             convList.remove(c.getUUID());
             System.out.println("Log: Conversation `" + c.getName() + "` closed!");
         } catch (IOException e) {
             System.err.println("Unable to close conversation, maybe already closed?");
+        } finally {
+        	User uDest = null;
+	        if(c.isWithOneUserOnly()) {
+	            for(User u : c.getListUsers()) {
+	                if(u.getUUID() == AuthOperations.getConnectedUser().getUUID())
+	                    continue;
+	                uDest = u;
+	            }
+	            MainGUI.conversationClosed(uDest.getUUID());
+	        }
         }
     }
 

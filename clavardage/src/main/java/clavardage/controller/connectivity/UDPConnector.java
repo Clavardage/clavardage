@@ -1,5 +1,7 @@
 package clavardage.controller.connectivity;
 
+import clavardage.model.objects.User;
+
 import java.io.*;
 import java.net.*;
 import java.util.Objects;
@@ -39,16 +41,18 @@ public class UDPConnector extends NetworkConnector {
     }
 
     public void sendBroadcastPacket(Serializable obj) throws IOException {
-        sendPacket(obj, LOCAL_IP_BROADCAST, FORCED_UDP_PORT);
+        for(String ip_broadcast : LOCAL_IP_BROADCAST_LIST) {
+            sendPacket(obj, ip_broadcast, FORCED_UDP_PORT);
+        }
     }
 
     private void getPacket() throws IOException {
         if(Objects.nonNull(dgramSocketIn))
             dgramSocketIn.close();
-        dgramSocketIn = new DatagramSocket(FORCED_UDP_PORT, InetAddress.getByName(LOCAL_IP_ADDRESS));
+        dgramSocketIn = new DatagramSocket(FORCED_UDP_PORT);
         buffer = new byte[BUFFER_SIZE];
         inPacket = new DatagramPacket(buffer, buffer.length);
-        System.out.println("Log: Listening on " + LOCAL_IP_ADDRESS + ":" + FORCED_UDP_PORT + "...");
+        System.out.println("Log: Listening on *:" + FORCED_UDP_PORT + "...");
         dgramSocketIn.receive(inPacket);
         dgramSocketIn.close();
     }
@@ -60,6 +64,10 @@ public class UDPConnector extends NetworkConnector {
     public Object getPacketData() throws IOException, ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(inPacket.getData()));
         Object obj = objectInputStream.readObject();
+        if(User.class.isAssignableFrom(obj.getClass())) {
+            ((User)obj).setLastIp(inPacket.getAddress()); // quick hack to set the true address (improve this later)
+            System.out.println("Log: new user UDP IP: " + inPacket.getAddress().getHostAddress());
+        }
         return getDTO(obj);
     }
 }

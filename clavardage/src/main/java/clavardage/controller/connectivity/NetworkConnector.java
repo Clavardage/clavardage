@@ -9,46 +9,53 @@ import clavardage.model.objects.UserPrivate;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 abstract public class NetworkConnector {
-    protected final String LOCAL_IP_BROADCAST = true ? (Clavardage.machine1 ? "127.0.0.2" : "127.0.0.1") : getBroadcastAddress(); // localhost for testing
-    protected final String LOCAL_IP_ADDRESS = true ? (Clavardage.machine1 ? "127.0.0.1" : "127.0.0.2") : getLocalAddress(); // localhost for testing
+    protected final ArrayList<String> LOCAL_IP_BROADCAST_LIST = getBroadcastAddresses();
+    protected final ArrayList<String> LOCAL_IP_ADDRESS_LIST = getLocalAddresses();
 
     protected NetworkConnector() throws Exception {
     }
 
-    public static String getBroadcastAddress() throws Exception {
+    public static ArrayList<String> getBroadcastAddresses() throws Exception {
+        ArrayList<String> list = new ArrayList<String>();
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
         while (interfaces.hasMoreElements()) {
             NetworkInterface networkInterface = interfaces.nextElement();
-            if (networkInterface.isLoopback())
-                continue;
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress broadcast = interfaceAddress.getBroadcast();
                 if (broadcast == null)
                     continue;
 
-                return broadcast.getHostAddress();
+                list.add(broadcast.getHostAddress());
             }
         }
+
+        if(list.size() > 0)
+            return list;
+
         throw new Exception("Error while retrieving broadcast address");
     }
 
-    public static String getLocalAddress() throws Exception {
+    public static ArrayList<String> getLocalAddresses() throws Exception {
+        ArrayList<String> list = new ArrayList<String>();
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
         while (interfaces.hasMoreElements()) {
             NetworkInterface networkInterface = interfaces.nextElement();
-            if (networkInterface.isLoopback())
-                continue;
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress local = interfaceAddress.getAddress();
                 if (local == null)
                     continue;
 
-                return local.getHostAddress();
+                list.add(local.getHostAddress());
             }
         }
+
+        if(list.size() > 0)
+            return list;
+
         throw new Exception("Error while retrieving local address");
     }
 

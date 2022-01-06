@@ -17,6 +17,7 @@ import clavardage.controller.connectivity.ConversationService;
 import clavardage.model.exceptions.ConversationDoesNotExistException;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.managers.ConversationManager;
+import clavardage.model.managers.MessageManager;
 import clavardage.model.managers.UserManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
@@ -69,6 +70,7 @@ public class MainGUI {
         if(choice == JOptionPane.YES_OPTION) {
             // handle GUI conversation
             Application.getMessageWindow().openConversation(uDest.getLogin(), uDest.getUUID(), MessageWindow.Destinataire.User);
+            // TODO: call pastille bleu func
             //ConnectivityDaemon.getConversationService().sendMessageToConversation(c, new Message(UUID.randomUUID(), "Bien recu bro", new User(UUID.randomUUID(), "test2", InetAddress.getByName("127.0.0.2")), c));
         } else { // close conversation
             ConnectivityDaemon.getConversationService().close(c);
@@ -84,13 +86,15 @@ public class MainGUI {
         // TODO: handle user state in GUI
     	System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
     	try {
-    		if (connected) {
-
+			//set icon and connectivity
+    		if (connected) {    			
     			Application.getMessageWindow().setIconConnected(u.getUUID());
     		} else {
     			Application.getMessageWindow().setIconDisconnected(u.getUUID());
     		}
-    	} catch (IOException e) {
+			//replace (or add if new) user in the list
+			Application.getMessageWindow().reorganiseListByConnectivity(u,connected);
+    	} catch (IOException | UserNotConnectedException e) {
     		e.printStackTrace();
     	}
     }
@@ -162,6 +166,12 @@ public class MainGUI {
 
         ConversationService conv_serv = ConnectivityDaemon.getConversationService();
         conv_serv.openConversation(conv);
+        
+        // TODO: call pastille bleu func
+    }
+    
+    public static void conversationClosed(UUID uuidDestination) {
+    	// TODO: enlever pastille bleue
     }
 
     public static UUID getConversationUUIDByTwoUsersUUID(UUID u1, UUID u2) throws Exception {
@@ -172,9 +182,9 @@ public class MainGUI {
 
     public static void sendMessageInConversation(UUID uuid, String message) throws Exception {
         Conversation conv = (new ConversationManager()).getConversationByUUID(uuid);
-        Message msgObj = new Message(UUID.randomUUID(), message, AuthOperations.getConnectedUser(), conv, LocalDateTime.now());
-        // TODO: save in DB
-        // send it
+        // save in DB
+        Message msgObj = (new MessageManager()).saveNewMessage(message, AuthOperations.getConnectedUser(), conv);
+        // send it if saved
         ConnectivityDaemon.getConversationService().sendMessageToConversation(conv, msgObj);
     }
 

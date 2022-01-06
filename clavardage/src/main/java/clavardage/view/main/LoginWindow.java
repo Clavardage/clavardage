@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -244,26 +245,38 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 			try {
 				AuthOperations.connectUser(username.getText(),password.getText());
 				if(AuthOperations.isUserConnected()) {
+					//create MessageWindow one time
 					if (Application.getMessageWindow() == null) {
 						Application.createMessageWindow();
+					} else {
+						//update my conversations
+						Application.getMessageWindow().resetAllMessages();
+						Application.getMessageWindow().setUsersContainer();
+						Application.getMessageWindow().setGroupsContainer();
 					}
 					Application.displayContent(Application.getApp(), Application.getMessageWindow());
 					textError.setText(" ");
+					//TODO : d�commenter :
+					//username.setText("");
+					//password.setText("");
 				}
 			} catch (Exception e1) {
 				textError.setText(e1.getMessage());
-				e1.printStackTrace();
+				//e1.printStackTrace();
 			}
 		} else if (e.getSource()== signInButton) {
-			if (Application.getSignInWindow() == null) {
-				try {
+			try {
+				if (Application.getSignInWindow() == null) {
 					Application.createSignInWindow();
-				} catch (IOException e1) {
-					e1.printStackTrace();
 				}
+				Application.displayContent(Application.getApp(), Application.getSignInWindow());	
+				textError.setText(" ");
+				//TODO : d�commenter :
+				//username.setText("");
+				//password.setText("");
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
-			Application.displayContent(Application.getApp(), Application.getSignInWindow());
-			
 		}
 	}
 	
