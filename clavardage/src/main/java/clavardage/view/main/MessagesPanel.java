@@ -21,6 +21,7 @@ public class MessagesPanel extends JPanel {
 	private Destinataire type;
 	private ArrayList<DestinataireJPanel> membersConversation ;
 	private ArrayList<DestinataireJPanel> noMembers ;
+	private int nbMembersConnected ;
 
 	private MessageWindow window;
 	
@@ -41,6 +42,7 @@ public class MessagesPanel extends JPanel {
 		this.type = type;
 		this.membersConversation = new ArrayList<DestinataireJPanel>();
 		this.noMembers = (ArrayList<DestinataireJPanel>) this.window.getAllUsers().clone();
+		this.nbMembersConnected = 1 ;
 		this.setBorder(new EmptyBorder(0, 0, 0, 0));
 		this.setLayout(new GridBagLayout());
 	}
@@ -77,6 +79,9 @@ public class MessagesPanel extends JPanel {
 			for (DestinataireJPanel user : window.getAllUsers()) {
 				if (user.getIdDestinataire() == newUser) {
 					membersConversation.add(user);
+					if (user.isConnected()) {
+						nbMembersConnected++ ;
+					}
 					noMembers.remove(user);
 					membersConversation.sort(new Comparator<DestinataireJPanel>() {
 						@Override
@@ -122,6 +127,14 @@ public class MessagesPanel extends JPanel {
 	
 	public int getNumberNoMembers() {
 		return this.noMembers.size();
+	}
+
+	public int getNbMembersConnected() {
+		return nbMembersConnected;
+	}
+
+	public void setNbMembersConnected(int nbMembersConnected) {
+		this.nbMembersConnected = nbMembersConnected;
 	}
 
 }

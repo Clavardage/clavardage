@@ -31,7 +31,7 @@ public class DestinataireJPanel extends JPanel {
 	private JTextArea nameUser;
 	private JLabel connectLabel;
 	private UUID id;
-	private boolean conversationOpen, connect ;
+	private boolean conversationOpen, connected ;
 	private Image openImage, connectImage;
 	private ImageIcon openIcon, connectIcon ;
 	private Destinataire type;
@@ -41,7 +41,7 @@ public class DestinataireJPanel extends JPanel {
 		this.conversationOpen = false;
 		this.id = i;
 		this.type = d;
-		this.connect = c;
+		this.connected = c;
 		this.connectPanel = new JPanel();
 		this.namePanel = new JPanel();
 		this.conversationOpen = false ;
@@ -51,7 +51,7 @@ public class DestinataireJPanel extends JPanel {
 		this.openIcon = new ImageIcon(openImage, "The conversation is open");
 		
 		if (this.type == Destinataire.User) {
-			if (connect) {
+			if (connected) {
 				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
 				connectIcon = new ImageIcon(connectImage, "User is connected");
 			} else {
@@ -59,8 +59,8 @@ public class DestinataireJPanel extends JPanel {
 				connectIcon = new ImageIcon(connectImage, "User is disconnected");
 			}
 		} else {
-			if (connect) {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+			if (connected) {
+				connectImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 				connectIcon = new ImageIcon(connectImage, "At least one user is connected");
 			} else {
 				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
@@ -135,7 +135,7 @@ public class DestinataireJPanel extends JPanel {
 	}
 	
 	public boolean isConnected() {
-		return connect;
+		return connected;
 	}
 	
 	public String getNameDestinataire() {
@@ -166,6 +166,26 @@ public class DestinataireJPanel extends JPanel {
 	public void closeMyConversation() {
 		this.conversationOpen = false ;
 		connectLabel.setIcon(connectIcon);	
+	}
+
+	public void setConnectImage(Image connectImage) {
+		this.connectImage = connectImage;
+	}
+
+	public Image getConnectImage() {
+		return connectImage;
+	}
+
+	public ImageIcon getConnectIcon() {
+		return connectIcon;
+	}
+
+	public void setConnectIcon(ImageIcon connectIcon) {
+		this.connectIcon = connectIcon;
+	}
+
+	public void setConnected(boolean connect) {
+		this.connected = connect;
 	}
 
 

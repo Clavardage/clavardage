@@ -18,7 +18,7 @@ public class Clavardage
         return Objects.requireNonNull(Clavardage.class.getResourceAsStream(path));
     }
 
-    public final static boolean machine1 = true; // FOR TESTS, will be deleted
+    public final static boolean machine1 = false; // FOR TESTS, will be deleted
 
     /** Starting point
      * @author Romain MONIER

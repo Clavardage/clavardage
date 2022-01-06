@@ -82,7 +82,17 @@ public class MainGUI {
      */
     public static void setUserState(User u, boolean connected) {
         // TODO: handle user state in GUI
-        System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
+    	System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
+    	try {
+    		if (connected) {
+
+    			Application.getMessageWindow().setIconConnected(u.getUUID());
+    		} else {
+    			Application.getMessageWindow().setIconDisconnected(u.getUUID());
+    		}
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
 
     /**

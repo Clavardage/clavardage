@@ -229,7 +229,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		allMessagesUsers = new ArrayList<MessagesPanel>();
 		for (User user : MainGUI.getAllUsersInDatabase()) {
 			if (!(user.getUUID().equals(AuthOperations.getConnectedUser().getUUID()))) {
-				addNewUserToList(user, true); //for the moment, all users are new and there is no conversation
+				addNewUserToList(user, false); //for the moment, all users are new and there is no conversation
 			}
 		}
 		
@@ -399,6 +399,54 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		nbGroups++;
 		listGroups.setPreferredSize(new Dimension(0, 30*nbGroups));
 		group.setForegroundNamePanel(); //necessary because it can be added while using the app
+	}
+	
+	public void setIconConnected(UUID idUser) throws IOException {
+		for (DestinataireJPanel u : allUsers) {
+			if (u.getIdDestinataire().equals(idUser)) {
+				u.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+				u.setConnectIcon(new ImageIcon(u.getConnectImage(), "User is connected"));
+				u.setConnected(true) ;
+			}
+		}
+		for (MessagesPanel m : allMessagesGroups) {
+			if (m.isMemberConversation(idUser)) {
+				for (DestinataireJPanel g : allGroups) {
+					if (g.getIdDestinataire().equals(idUser)) {	
+						if (m.getNbMembersConnected()==1) {
+							g.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+							g.setConnectIcon(new ImageIcon(g.getConnectImage(), "At least one user is connected"));
+						}
+						m.setNbMembersConnected(m.getNbMembersConnected() + 1);
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public void setIconDisconnected(UUID idUser) throws IOException {
+		for (DestinataireJPanel u : allUsers) {
+			if (u.getIdDestinataire().equals(idUser)) {
+				u.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+				u.setConnectIcon(new ImageIcon(u.getConnectImage(), "User is disconnected"));
+				u.setConnected(false) ;
+			}
+		}
+		for (MessagesPanel m : allMessagesGroups) {
+			if (m.isMemberConversation(idUser)) {
+				for (DestinataireJPanel g : allGroups) {
+					if (g.getIdDestinataire().equals(idUser)) {
+						if (m.getNbMembersConnected()==2) {
+							g.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+							g.setConnectIcon(new ImageIcon(g.getConnectImage(), "All users are disconnected"));
+						}
+						m.setNbMembersConnected(m.getNbMembersConnected() - 1);
+					}
+				}
+			}
+		}
+		
 	}
 
 	/**
