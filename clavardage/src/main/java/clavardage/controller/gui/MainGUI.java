@@ -3,6 +3,7 @@ package clavardage.controller.gui;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
@@ -22,8 +23,7 @@ import clavardage.model.managers.UserManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
-import clavardage.view.main.Application;
-import clavardage.view.main.MessageWindow;
+import clavardage.view.main.*;
 
 import static clavardage.controller.authentification.AuthOperations.cancelIfNotConnected;
 
@@ -205,6 +205,52 @@ public class MainGUI {
             System.err.println("NOT IMPLEMENTED");
         }
     	Application.getMessageWindow().receiveMessage(msg.getText(), uDest.getUUID());
+    }
+
+    /**
+     * Proxy between Model Messages (with LocalDateTime) and View Messages (with MyDate)
+     * @param uuidConversation
+     * @param num
+     * @param page
+     * @return array of MessageBubble
+     * @throws Exception
+     */
+    public static ArrayList<MessageBuble> getMessagesFrom(UUID uuidConversation, int num, int page) throws Exception {
+        ArrayList<MessageBuble> msgs = new ArrayList<>();
+        ConversationManager cm = new ConversationManager();
+        MessageManager mm = new MessageManager();
+        Conversation c = cm.getConversationByUUID(uuidConversation);
+
+        ArrayList<Message> allMsgs;
+
+        if(num > -1) {
+            if(page > -1) {
+                allMsgs = mm.getLastMessagesFromConversation(c, num, page);
+            } else {
+                allMsgs = mm.getLastMessagesFromConversation(c, num);
+            }
+        } else {
+            allMsgs = mm.getAllMessagesFromConversation(c);
+        }
+
+        for (Message m : allMsgs) {
+            msgs.add(new MessageBuble(
+                            (m.getUser().getUUID().equals(AuthOperations.getConnectedUser().getUUID()) ? LoginWindow.TypeBuble.MINE : LoginWindow.TypeBuble.THEIR),
+                            m.getText(),
+                            new MyDate(m.getDateCreated().atZone(ZoneId.systemDefault()).toEpochSecond())
+                    )
+            );
+        }
+
+        return msgs;
+    }
+
+    public static ArrayList<MessageBuble> getMessagesFrom(UUID uuidConversation, int num) throws Exception {
+        return getMessagesFrom(uuidConversation, num, -1);
+    }
+
+    public static ArrayList<MessageBuble> getAllMessagesFrom(UUID uuidConversation) throws Exception {
+        return getMessagesFrom(uuidConversation, -1);
     }
 
     public static void testConversation2() throws Exception {
