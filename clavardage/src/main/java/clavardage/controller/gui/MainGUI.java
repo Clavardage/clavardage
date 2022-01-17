@@ -87,11 +87,8 @@ public class MainGUI {
     	System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
     	try {
 			//set icon and connectivity
-    		if (connected) {    			
-    			Application.getMessageWindow().setIconConnected(u.getUUID());
-    		} else {
-    			Application.getMessageWindow().setIconDisconnected(u.getUUID());
-    		}
+    		Application.getMessageWindow().setConnected(u.getUUID(), connected);
+
 			//replace (or add if new) user in the list
 			Application.getMessageWindow().reorganiseListByConnectivity(u,connected);
     	} catch (IOException | UserNotConnectedException e) {

@@ -32,10 +32,10 @@ public class DestinataireJPanel extends JPanel {
 	private JLabel connectLabel;
 	private UUID id;
 	private boolean conversationOpen, connected ;
-	private Image openImage, connectImage;
-	private ImageIcon openIcon, connectIcon ;
+	private Image openImage, connectUserImage, disconnectUserImage, connectGroupImage, disconnectGroupImage;
+	private ImageIcon openIcon, myConnectIcon, connectUserIcon, disconnectUserIcon, connectGroupIcon, disconnectGroupIcon;
 	private Destinataire type;
-	 
+	
 	public DestinataireJPanel(String name, UUID i, boolean c, Destinataire d) throws IOException {
 		super();
 		this.conversationOpen = false;
@@ -46,37 +46,43 @@ public class DestinataireJPanel extends JPanel {
 		this.namePanel = new JPanel();
 		this.conversationOpen = false ;
 
-		
+		//pastille bleue
 		this.openImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
 		this.openIcon = new ImageIcon(openImage, "The conversation is open");
 		
+		//save images and icons
+		connectUserImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+		connectUserIcon = new ImageIcon(connectUserImage, "User is connected");	
+		disconnectUserImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+		disconnectUserIcon = new ImageIcon(disconnectUserImage, "User is disconnected");
+		connectGroupImage =  ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+		connectGroupIcon =  new ImageIcon(connectGroupImage, "At least one user is connected");
+		disconnectGroupImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+		disconnectGroupIcon = new ImageIcon(disconnectGroupImage, "All users are disconnected");
+		
+		//choose the right icon
 		if (this.type == Destinataire.User) {
 			if (connected) {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "User is connected");
+				myConnectIcon = connectUserIcon ;
 			} else {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "User is disconnected");
+				myConnectIcon = disconnectUserIcon ;
 			}
 		} else {
 			if (connected) {
-				connectImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "At least one user is connected");
+				myConnectIcon = connectGroupIcon ;
 			} else {
-				connectImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-				connectIcon = new ImageIcon(connectImage, "All users are disconnected");
+				myConnectIcon = disconnectGroupIcon ;
 			}
-		}		
+		}
 		
+		/* Specific design */	
 		this.setBorder(null);
 		this.setOpaque(false);
 		this.setMaximumSize(new Dimension (Toolkit.getDefaultToolkit().getScreenSize().width, 30));
 		this.setMinimumSize(new Dimension (0, 30));
-    	this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
 		this.connectPanel.setOpaque(false);
     	this.namePanel.setOpaque(false);
-
     	    	
 		GridBagLayout gbl_destinataireJPanel = new GridBagLayout();
 		gbl_destinataireJPanel.columnWidths = new int[]{20, 0, 0};
@@ -98,31 +104,89 @@ public class DestinataireJPanel extends JPanel {
 		gbc_namePanel.gridy = 0;
 		add(this.namePanel, gbc_namePanel);
 		
-		
 		connectLabel = new JLabel();
 		connectLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		connectLabel.setOpaque(false);
-		connectLabel.setIcon(connectIcon);
+		connectLabel.setIcon(myConnectIcon);
 		this.connectPanel.add(connectLabel);
 		
 		nameUser = new JTextArea(name);
-		nameUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		nameUser.setEditable(false);
 		nameUser.setHighlighter(null);
 		nameUser.setBorder(null);
 		nameUser.setOpaque(false);
 		this.namePanel.add(nameUser);
-					
+		/* ******** ****** */	
+
+		//clickable only if connected
 		if (connected) {
 			super.addMouseListener(new MouseOpenConversation(this));
 			namePanel.addMouseListener(new MouseOpenConversation(this));
-			nameUser.addMouseListener(new MouseOpenConversation(this));	
+			nameUser.addMouseListener(new MouseOpenConversation(this));
+	    	this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			nameUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		} else {
 			super.addMouseListener(null);
 			namePanel.addMouseListener(null);
-			nameUser.addMouseListener(null);	
+			nameUser.addMouseListener(null);
+	    	this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			nameUser.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}	
 	}
+	
+	/**
+	 * Custom color for Theme
+	 * */
+	public void setForegroundNamePanel() {
+			namePanel.setForeground(Application.COLOR_TEXT); //for mouseExited in MouseOpenConversation
+			nameUser.setForeground(Application.COLOR_TEXT);
+	}
+	
+	/**
+	 * Update the list when a conversation is open
+	 * */
+	public void openConversationInList() {
+		this.conversationOpen = true ;
+		connectLabel.setIcon(openIcon);
+		Application.getMessageWindow().moveInTopOfList(this.type, this.id);
+	}
+	
+	/**
+	 * Update the list when a conversation is close
+	 * */
+	public void closeConversationInList() {
+		this.conversationOpen = false ;
+		connectLabel.setIcon(myConnectIcon);	
+	}
+
+
+	public void setConnected(boolean connect) {
+		this.connected = connect;
+		
+		//clickable only if connected and choose the right icon
+		if (connect) {
+			this.myConnectIcon= connectUserIcon;
+			super.addMouseListener(new MouseOpenConversation(this));
+			namePanel.addMouseListener(new MouseOpenConversation(this));
+			nameUser.addMouseListener(new MouseOpenConversation(this));
+	    	this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+			nameUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		} else {
+			this.myConnectIcon= disconnectUserIcon;
+			super.addMouseListener(null);
+			namePanel.addMouseListener(null);
+			nameUser.addMouseListener(null);
+	    	this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			nameUser.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}
+		//set the right icon
+		this.connectLabel.setIcon(myConnectIcon);
+	}
+	
+	
+	
+	/* --------- GETTER AND SETTER ----------- */
+
 	
 	public JTextArea getPanelName() {
 		return nameUser;
@@ -151,58 +215,9 @@ public class DestinataireJPanel extends JPanel {
 	public void setNameDestinataire(String newName) {
 		nameUser.setText(newName);
 	}
-	
-	public void setForegroundNamePanel() {
-			namePanel.setForeground(Application.COLOR_TEXT); //pour le mouseExited
-			nameUser.setForeground(Application.COLOR_TEXT);
-	}
-	
-	public void openMyConversation() throws IOException {
-		for (Component panel : Application.getMessageWindow().getListUsers().getComponents()) {
-			((DestinataireJPanel) panel).closeMyConversation();
-		}
-		for (Component panel : Application.getMessageWindow().getListGroups().getComponents()) {
-			((DestinataireJPanel) panel).closeMyConversation();
-		}
-		this.conversationOpen = true ;
-		connectLabel.setIcon(openIcon);
-		Application.getMessageWindow().moveInTopOfList(this.type, this.id);
-	}
-	
-	public void closeMyConversation() {
-		this.conversationOpen = false ;
-		connectLabel.setIcon(connectIcon);	
-	}
-
-	public Image getConnectImage() {
-		return connectImage;
-	}
-	
-	public void setConnectImage(Image connectImage) {
-		this.connectImage = connectImage;
-	}
 
 	public ImageIcon getConnectIcon() {
-		return connectIcon;
+		return myConnectIcon;
 	}
-
-	public void setConnectIcon(ImageIcon connectIcon) {
-		this.connectIcon=connectIcon;
-		this.connectLabel.setIcon(connectIcon);
-	}
-
-	public void setConnected(boolean connect) {
-		this.connected = connect;
-		if (connect) {
-			super.addMouseListener(new MouseOpenConversation(this));
-			namePanel.addMouseListener(new MouseOpenConversation(this));
-			nameUser.addMouseListener(new MouseOpenConversation(this));	
-		} else {
-			super.addMouseListener(null);
-			namePanel.addMouseListener(null);
-			nameUser.addMouseListener(null);	
-		}
-	}
-
 
 }
