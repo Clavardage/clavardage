@@ -166,7 +166,7 @@ public class ConversationService implements Activity {
         	User uDest = null;
 	        if(c.isWithOneUserOnly()) {
 	            for(User u : c.getListUsers()) {
-	                if(u.getUUID() == AuthOperations.getConnectedUser().getUUID())
+	                if(u.getUUID().equals(AuthOperations.getConnectedUser().getUUID()))
 	                    continue;
 	                uDest = u;
 	            }

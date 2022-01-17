@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
+import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.main.Application.ColorThemeApp;
 
 public class MyMenuBar extends JMenuBar {
@@ -89,7 +90,11 @@ public class MyMenuBar extends JMenuBar {
 			public void actionPerformed(ActionEvent e) {
 				AuthOperations.disconnectUser();
 				if(!AuthOperations.isUserConnected()) {
-					Application.getMessageWindow().closeConversation();
+					try {
+						Application.getMessageWindow().closeConversation();
+					} catch (IOException | UserNotConnectedException e1) {
+						e1.printStackTrace();
+					}
 					Application.displayContent(Application.getApp(), Application.getLoginWindow());
 				}
 			}
