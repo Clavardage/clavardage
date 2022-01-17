@@ -407,8 +407,10 @@ public class MessageWindow extends JPanel {
 	public void setConnected(UUID idUser, Boolean connect) {
 		for (DestinataireJPanel u : allUsers) {
 			if (u.getIdDestinataire().equals(idUser)) {
-				u.setConnected(connect) ;
-				u.revalidate();
+				if (!u.isOpen()) {
+					u.setConnected(connect) ;
+					u.revalidate();
+				}
 			}
 		}
 		usersContainer.revalidate();
@@ -427,12 +429,17 @@ public class MessageWindow extends JPanel {
 			addNewUserToList(userUpdated, connect);
 		}
 		for (DestinataireJPanel user : allUsers) {
-			if (user.isConnected()) {
+			if (user.isOpen()) {
 				listUsers.add(user);
 			}
 		}
 		for (DestinataireJPanel user : allUsers) {
-			if (!user.isConnected()) {
+			if (!user.isOpen() && user.isConnected()) {
+				listUsers.add(user);
+			}
+		}
+		for (DestinataireJPanel user : allUsers) {
+			if (!user.isOpen() && !user.isConnected()) {
 				listUsers.add(user);
 			}
 		}	
@@ -641,7 +648,7 @@ public class MessageWindow extends JPanel {
 	}
 
 
-	public void closeConversation() {
+	public void closeConversation() throws IOException, UserNotConnectedException {
 		/* hide newMsg and nameDestinataire if it is necessary */
 		if (conversationOpen) {
 			conversationOpen = false;
@@ -1013,6 +1020,26 @@ public class MessageWindow extends JPanel {
 	public void resetAllMessages() {
 		this.allMessagesUsers.clear();
 		this.allMessagesGroups.clear();
+	}
+	
+	public DestinataireJPanel findMyDestinataireJPanel(UUID id) {
+		DestinataireJPanel myDestinataireJPanel = null ;
+		for (DestinataireJPanel user : allUsers) {
+			if (user.getIdDestinataire().equals(id)) {
+				myDestinataireJPanel = user;
+			}
+		}
+		return myDestinataireJPanel;
+	}
+	
+	public User findMyUser(UUID id) throws UserNotConnectedException {
+		User myUser = null ;
+		for (User user : MainGUI.getAllUsersInDatabase()) {
+			if (user.getUUID().equals(id)) {
+				myUser = user;
+			}
+		}
+		return myUser;
 	}
 
 }

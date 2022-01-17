@@ -22,6 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import clavardage.controller.Clavardage;
+import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.objects.Message;
 import clavardage.view.main.MessageWindow.Destinataire;
 
@@ -49,7 +50,7 @@ public class DestinataireJPanel extends JPanel {
 		this.myListener = new MouseOpenConversation(this);
 		
 		//pastille bleue
-		this.openImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+		this.openImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userOpen.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
 		this.openIcon = new ImageIcon(openImage, "The conversation is open");
 		
 		//save images and icons
@@ -155,10 +156,13 @@ public class DestinataireJPanel extends JPanel {
 	
 	/**
 	 * Update the list when a conversation is close
+	 * @throws UserNotConnectedException 
+	 * @throws IOException 
 	 * */
-	public void closeConversationInList() {
+	public void closeConversationInList() throws IOException, UserNotConnectedException {
 		this.conversationOpen = false ;
-		connectLabel.setIcon(myConnectIcon);	
+		this.setConnected(false);
+		Application.getMessageWindow().reorganiseListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
 	}
 
 
@@ -208,6 +212,10 @@ public class DestinataireJPanel extends JPanel {
 	
 	public boolean isConnected() {
 		return connected;
+	}
+	
+	public boolean isOpen() {
+		return conversationOpen ;
 	}
 
 	public String getNameDestinataire() {
