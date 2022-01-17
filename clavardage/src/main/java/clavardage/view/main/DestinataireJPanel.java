@@ -35,6 +35,7 @@ public class DestinataireJPanel extends JPanel {
 	private Image openImage, connectUserImage, disconnectUserImage, connectGroupImage, disconnectGroupImage;
 	private ImageIcon openIcon, myConnectIcon, connectUserIcon, disconnectUserIcon, connectGroupIcon, disconnectGroupIcon;
 	private Destinataire type;
+	private MouseOpenConversation myListener;
 	
 	public DestinataireJPanel(String name, UUID i, boolean c, Destinataire d) throws IOException {
 		super();
@@ -45,7 +46,8 @@ public class DestinataireJPanel extends JPanel {
 		this.connectPanel = new JPanel();
 		this.namePanel = new JPanel();
 		this.conversationOpen = false ;
-
+		this.myListener = new MouseOpenConversation(this);
+		
 		//pastille bleue
 		this.openImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
 		this.openIcon = new ImageIcon(openImage, "The conversation is open");
@@ -120,9 +122,9 @@ public class DestinataireJPanel extends JPanel {
 
 		//clickable only if connected
 		if (connected) {
-			super.addMouseListener(new MouseOpenConversation(this));
-			namePanel.addMouseListener(new MouseOpenConversation(this));
-			nameUser.addMouseListener(new MouseOpenConversation(this));
+			super.addMouseListener(myListener);
+			namePanel.addMouseListener(myListener);
+			nameUser.addMouseListener(myListener);
 	    	this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			nameUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		} else {
@@ -166,16 +168,16 @@ public class DestinataireJPanel extends JPanel {
 		//clickable only if connected and choose the right icon
 		if (connect) {
 			this.myConnectIcon= connectUserIcon;
-			super.addMouseListener(new MouseOpenConversation(this));
-			namePanel.addMouseListener(new MouseOpenConversation(this));
-			nameUser.addMouseListener(new MouseOpenConversation(this));
+			super.addMouseListener(myListener);
+			namePanel.addMouseListener(myListener);
+			nameUser.addMouseListener(myListener);
 	    	this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			nameUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		} else {
 			this.myConnectIcon= disconnectUserIcon;
-			super.addMouseListener(null);
-			namePanel.addMouseListener(null);
-			nameUser.addMouseListener(null);
+			super.removeMouseListener(myListener);
+			namePanel.removeMouseListener(myListener);
+			nameUser.removeMouseListener(myListener);
 	    	this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			nameUser.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
