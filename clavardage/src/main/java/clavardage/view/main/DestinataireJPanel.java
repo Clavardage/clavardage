@@ -128,9 +128,9 @@ public class DestinataireJPanel extends JPanel {
 	    	this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			nameUser.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		} else {
-			super.addMouseListener(null);
-			namePanel.addMouseListener(null);
-			nameUser.addMouseListener(null);
+			super.removeMouseListener(myListener);
+			namePanel.removeMouseListener(myListener);
+			nameUser.removeMouseListener(myListener);
 	    	this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			nameUser.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}	
