@@ -23,7 +23,7 @@ public class ConversationService implements Activity {
     public ConversationService() throws Exception {
         super();
         convList = new HashMap<UUID, RunnableTCPThread>();
-        tcpServer = new TCPConnector(Clavardage.machine1 ? 4342 : 4343) {
+        tcpServer = new TCPConnector() {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {
@@ -45,7 +45,7 @@ public class ConversationService implements Activity {
                 }
             }
         };
-        tcpClient = new TCPConnector(Clavardage.machine1 ? 4343 : 4342) {
+        tcpClient = new TCPConnector() {
             @Override
             public final void conversationHandler(RunnableTCPThread r, Conversation currentConv) {
                 try {

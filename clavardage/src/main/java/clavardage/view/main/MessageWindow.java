@@ -307,7 +307,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		allDiscussionClose = new MessagesPanel("Choose someone to start a conversation...");
 
 		
-		/* SOME TEST */
+		/* SOME TEST *//*
 		allMessagesGroups.get(1).startConversation();
 		MessageBuble msg1 = new MessageBuble(TypeBuble.THEIR,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640038517402L));
 		MessageBuble msg2 = new MessageBuble(TypeBuble.MINE,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640039918402L));

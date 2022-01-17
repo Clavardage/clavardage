@@ -1,6 +1,5 @@
 package clavardage.controller.connectivity;
 
-import clavardage.controller.Clavardage;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;

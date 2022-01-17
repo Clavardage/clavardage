@@ -58,12 +58,15 @@ public class UDPConnector extends NetworkConnector {
     }
 
     public void waitPacket() throws IOException {
-        getPacket();
+        //do {
+            getPacket();
+        //} while(LOCAL_IP_ADDRESS_LIST.contains(inPacket.getAddress().getHostAddress()));
     }
 
     public Object getPacketData() throws IOException, ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(inPacket.getData()));
         Object obj = objectInputStream.readObject();
+        objectInputStream.close();
         if(User.class.isAssignableFrom(obj.getClass())) {
             ((User)obj).setLastIp(inPacket.getAddress()); // quick hack to set the true address (improve this later)
             System.out.println("Log: new user UDP IP: " + inPacket.getAddress().getHostAddress());
