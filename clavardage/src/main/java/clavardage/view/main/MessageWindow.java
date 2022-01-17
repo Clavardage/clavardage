@@ -423,7 +423,7 @@ public class MessageWindow extends JPanel {
 				isNew = false;
 			}
 		} 
-		if (isNew) {
+		if (isNew && !userUpdated.getUUID().equals(AuthOperations.getConnectedUser().getUUID())) {
 			addNewUserToList(userUpdated, connect);
 		}
 		for (DestinataireJPanel user : allUsers) {
