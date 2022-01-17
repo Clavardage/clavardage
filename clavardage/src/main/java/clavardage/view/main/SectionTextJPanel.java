@@ -99,6 +99,9 @@ public class SectionTextJPanel extends JPanel {
 		return textSection.getText();
 	}
 	
+	public void setText(String t) {
+		textSection.setText(t);
+	}
 	
 	
 }

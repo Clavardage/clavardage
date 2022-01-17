@@ -107,7 +107,8 @@ public class ConversationService implements Activity {
         } finally {
             try {
                 r.close();
-                System.out.println("Log: Conversation `" + currentConv.getName() + "` closed!");
+                close(currentConv);
+                //System.out.println("Log: Conversation `" + currentConv.getName() + "` closed!");
             } catch(Exception e) {
                 System.err.println("Unable to close conversation, maybe already closed?");
             }
@@ -152,14 +153,25 @@ public class ConversationService implements Activity {
     /**
      * Close conversation (unlock the handleConversation instance by closing the socket)
      * @param c
+     * @throws UserNotConnectedException 
      */
-    public void close(Conversation c) {
+    public void close(Conversation c) throws UserNotConnectedException {
         try {
             convList.get(c.getUUID()).close();
             convList.remove(c.getUUID());
             System.out.println("Log: Conversation `" + c.getName() + "` closed!");
         } catch (IOException e) {
             System.err.println("Unable to close conversation, maybe already closed?");
+        } finally {
+        	User uDest = null;
+	        if(c.isWithOneUserOnly()) {
+	            for(User u : c.getListUsers()) {
+	                if(u.getUUID() == AuthOperations.getConnectedUser().getUUID())
+	                    continue;
+	                uDest = u;
+	            }
+	            MainGUI.conversationClosed(uDest.getUUID());
+	        }
         }
     }
 

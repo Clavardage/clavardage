@@ -6,6 +6,11 @@ package clavardage.view.main;
  * -nom utilisateur fixé à gauche quand réduction (pour le moment, c'est réduit au milieu)
  * -les noms de destinataires de plus de 16 caractères font bouger la mise en page à l'ouverture de leur conversation
  * -modifier MyAlertMessage pour retour à la ligne (transformer en JtextArea ?)
+ * _truc pour chenger mon login
+ * -plusieurs fenetre ouverte (pastilles bleues) + pastille bleue superieur à déconnexion !!! close conversation envele pastille bleue
+ * -ajout des gens en dynamiques
+ * -connecteed devant pas connected
+ * -on pet pas cliquer sur un disconnected
  */
 
 import java.awt.BorderLayout;
@@ -221,7 +226,6 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	 * */
 	private MyJScrollPane createListUsers() throws IOException, UserNotConnectedException {
 		nbUsers = 0;
-
 		listUsers = new MyListDestinataires();
 		
 		/* Records all users (except myself) and their associated discussion */
@@ -229,7 +233,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		allMessagesUsers = new ArrayList<MessagesPanel>();
 		for (User user : MainGUI.getAllUsersInDatabase()) {
 			if (!(user.getUUID().equals(AuthOperations.getConnectedUser().getUUID()))) {
-				addNewUserToList(user, true); //for the moment, all users are new and there is no conversation
+				addNewUserToList(user, false); //all users are new and no connected, for the moment there is no conversation
 			}
 		}
 		
@@ -259,7 +263,6 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		addNewGroupToList("Espionnage Industriel",false); //for the moment, all groups are new and there is no conversation (except one, see later)
 		
 		groupsContainer = new MyJScrollPane(listGroups);
-
 		return groupsContainer ;
 	}
 
@@ -307,36 +310,36 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		allDiscussionClose = new MessagesPanel("Choose someone to start a conversation...");
 
 		
-		/* SOME TEST *//*
-		allMessagesGroups.get(1).startConversation();
-		MessageBuble msg1 = new MessageBuble(TypeBuble.THEIR,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640038517402L));
-		MessageBuble msg2 = new MessageBuble(TypeBuble.MINE,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640039918402L));
-		MessageBuble msg3 = new MessageBuble(TypeBuble.THEIR,"Hello, comment tu vas mega super bien ?", new MyDate(1640048519402L));
-		msg2.setColorPanel();
-		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640038517402L)));
-		allMessagesGroups.get(1).add(msg1);
-		allMessagesGroups.get(1).add(msg2);
-		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640048519402L)));
-		allMessagesGroups.get(1).add(msg3);
-		
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(0).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(1).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(2).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(3).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(4).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(5).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(6).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(15).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(21).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(29).getIdDestinataire());		
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(33).getIdDestinataire());		
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(37).getIdDestinataire());		
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(40).getIdDestinataire());		
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(42).getIdDestinataire());		
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(45).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(46).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(47).getIdDestinataire());
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(48).getIdDestinataire());		
+		/* SOME TEST */
+//		allMessagesGroups.get(1).startConversation();
+//		MessageBuble msg1 = new MessageBuble(TypeBuble.THEIR,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640038517402L));
+//		MessageBuble msg2 = new MessageBuble(TypeBuble.MINE,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640039918402L));
+//		MessageBuble msg3 = new MessageBuble(TypeBuble.THEIR,"Hello, comment tu vas mega super bien ?", new MyDate(1640048519402L));
+//		msg2.setColorPanel();
+//		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640038517402L)));
+//		allMessagesGroups.get(1).add(msg1);
+//		allMessagesGroups.get(1).add(msg2);
+//		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640048519402L)));
+//		allMessagesGroups.get(1).add(msg3);
+//		
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(0).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(1).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(2).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(3).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(4).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(5).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(6).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(15).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(21).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(29).getIdDestinataire());		
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(33).getIdDestinataire());		
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(37).getIdDestinataire());		
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(40).getIdDestinataire());		
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(42).getIdDestinataire());		
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(45).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(46).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(47).getIdDestinataire());
+//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(48).getIdDestinataire());		
 		/* **** **** */
 		
 		messageContainer = new MyJScrollPane(allDiscussionClose);
@@ -399,6 +402,88 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		nbGroups++;
 		listGroups.setPreferredSize(new Dimension(0, 30*nbGroups));
 		group.setForegroundNamePanel(); //necessary because it can be added while using the app
+	}
+	
+	public void setIconConnected(UUID idUser) throws IOException {
+		/*for users*/
+		for (DestinataireJPanel u : allUsers) {
+			if (u.getIdDestinataire().equals(idUser)) {
+				u.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+				u.setConnectIcon(new ImageIcon(u.getConnectImage(), "User is connected"));
+				u.setConnected(true) ;
+				u.revalidate();
+			}
+		}
+		/*for groups*/
+		for (MessagesPanel m : allMessagesGroups) {
+			if (m.isMemberConversation(idUser)) {
+				for (DestinataireJPanel g : allGroups) {
+					if (g.getIdDestinataire().equals(idUser)) {	
+						if (m.getNbMembersConnected()==1) {
+							g.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+							g.setConnectIcon(new ImageIcon(g.getConnectImage(), "At least one user is connected"));
+						}
+						m.setNbMembersConnected(m.getNbMembersConnected() + 1);
+					}
+				}
+			}
+		}
+		usersContainer.revalidate();
+		groupsContainer.revalidate();
+	}
+	
+	public void setIconDisconnected(UUID idUser) throws IOException {	
+		/*for users*/
+		for (DestinataireJPanel u : allUsers) {
+			if (u.getIdDestinataire().equals(idUser)) {
+				u.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+				u.setConnectIcon(new ImageIcon(u.getConnectImage(), "User is disconnected"));
+				u.setConnected(false) ;
+							}
+		}
+		/*for groups*/
+		for (MessagesPanel m : allMessagesGroups) {
+			if (m.isMemberConversation(idUser)) {
+				for (DestinataireJPanel g : allGroups) {
+					if (g.getIdDestinataire().equals(idUser)) {
+						if (m.getNbMembersConnected()==2) {
+							g.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
+							g.setConnectIcon(new ImageIcon(g.getConnectImage(), "All users are disconnected"));
+						}
+						m.setNbMembersConnected(m.getNbMembersConnected() - 1);
+					}
+				}
+			}
+		}
+		usersContainer.revalidate();
+		groupsContainer.revalidate();
+		
+	}
+	
+	public void reorganiseListByConnectivity(User userUpdated, boolean connect) throws IOException, UserNotConnectedException {
+		listUsers.removeAll();
+		listGroups.removeAll();
+		boolean isNew = true ;
+		for (DestinataireJPanel user : allUsers) {
+			if (user.getIdDestinataire().equals(userUpdated.getUUID())) {
+				isNew = false;
+				System.out.println(userUpdated.getLogin() + " est connu de ma liste");
+			}
+		} 
+		if (isNew) {
+			System.out.println(userUpdated.getLogin() + " est nouveau");
+			addNewUserToList(userUpdated, connect);
+		}
+		for (DestinataireJPanel user : allUsers) {
+			if (user.isConnected()) {
+				listUsers.add(user);
+			}
+		}
+		for (DestinataireJPanel user : allUsers) {
+			if (!user.isConnected()) {
+				listUsers.add(user);
+			}
+		}	
 	}
 
 	/**
@@ -696,39 +781,59 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	}		
 	
 	public void moveInTopOfList(Destinataire type, UUID id) throws IOException {
-		listUsers.removeAll();
-		listGroups.removeAll();
-		
+//		listUsers.removeAll();
+//		listGroups.removeAll();
+//		
+//		if (type == Destinataire.User) {
+//			for (DestinataireJPanel user : allUsers) {
+//				if (user.getIdDestinataire().equals(id)) {
+//					listUsers.add(user);
+//				}
+//			} 
+//			for (DestinataireJPanel user : allUsers) {
+//				if (!(user.getIdDestinataire().equals(id))) {
+//					listUsers.add(user);
+//				}
+//			}
+//			//remove puis add(0)
+//			for (DestinataireJPanel group : allGroups) {
+//				listGroups.add(group);
+//			}
+//		} else {
+//			for (DestinataireJPanel group : allGroups) {
+//				if (group.getIdDestinataire().equals(id)) {
+//					listGroups.add(group);
+//				}
+//			}
+//			for (DestinataireJPanel group : allGroups) {
+//				if (!(group.getIdDestinataire().equals(id))) {
+//					listGroups.add(group);
+//				}
+//			}
+//			groupsContainer.getVerticalScrollBar().setValue(0);
+//			for (DestinataireJPanel user : allUsers) {
+//				listUsers.add(user);
+//			}
+//		}
+
 		if (type == Destinataire.User) {
+			DestinataireJPanel userConcerned = null;
 			for (DestinataireJPanel user : allUsers) {
 				if (user.getIdDestinataire().equals(id)) {
-					listUsers.add(user);
-				}
-			} 
-			for (DestinataireJPanel user : allUsers) {
-				if (!(user.getIdDestinataire().equals(id))) {
-					listUsers.add(user);
+					userConcerned = user ;
+					listUsers.remove(userConcerned);
 				}
 			}
-			//remove puis add(0)
-			for (DestinataireJPanel group : allGroups) {
-				listGroups.add(group);
-			}
+			listUsers.add(userConcerned, 0);
 		} else {
-			for (DestinataireJPanel group : allGroups) {
+			DestinataireJPanel groupConcerned = null;
+			for (DestinataireJPanel group : allUsers) {
 				if (group.getIdDestinataire().equals(id)) {
-					listGroups.add(group);
+					groupConcerned = group ;
+					listGroups.remove(groupConcerned);
 				}
 			}
-			for (DestinataireJPanel group : allGroups) {
-				if (!(group.getIdDestinataire().equals(id))) {
-					listGroups.add(group);
-				}
-			}
-			groupsContainer.getVerticalScrollBar().setValue(0);
-			for (DestinataireJPanel user : allUsers) {
-				listUsers.add(user);
-			}
+			listGroups.add(groupConcerned, 0);
 		}
 	
 	}
@@ -925,6 +1030,70 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 	public MyNewMsgPanel getNewMsg() {
 		return newMsg;
 	}
+
+
+	public MyJScrollPane getUsersContainer() {
+		return usersContainer;
+	}
+
+
+	public void setUsersContainer() throws IOException, UserNotConnectedException {
+		nbUsers = 0;
+
+		listUsers.removeAll();
+		
+		/* Records all users (except myself) and their associated discussion */
+		allUsers.clear();
+		allMessagesUsers.clear();
+		for (User user : MainGUI.getAllUsersInDatabase()) {
+			if (!(user.getUUID().equals(AuthOperations.getConnectedUser().getUUID()))) {
+				addNewUserToList(user, false); //all users are new and no connected, for the moment there is no conversation
+			}
+		}
+		usersContainer.setViewportView(listUsers);
+	}
+
+
+	public MyJScrollPane getGroupsContainer() {
+		return groupsContainer;
+	}
+
+
+	public void setGroupsContainer() throws IOException, UserNotConnectedException {
+		nbGroups = 0;
+
+		listGroups.removeAll();
+		
+		/* Records all groups and their associated discussion */
+		allGroups.clear();
+		allMessagesGroups.clear();
+		addNewGroupToList("Clovordoge",true);
+		addNewGroupToList("Les potos",true);
+		addNewGroupToList("Salut c'est nous",false);
+		addNewGroupToList("4IR A2 > 4IR A1",false);
+		addNewGroupToList("Je suis un groupe",true);
+		addNewGroupToList("Espionnage Industriel",false); //for the moment, all groups are new and there is no conversation (except one, see later)
+		
+		groupsContainer.setViewportView(listGroups);
+
+	}
+
+
+	public ArrayList<MessagesPanel> getAllMessagesUsers() {
+		return allMessagesUsers;
+	}
+
+
+	public void resetAllMessages() {
+		this.allMessagesUsers = new ArrayList<MessagesPanel>();
+		this.allMessagesGroups = new ArrayList<MessagesPanel>();
+	}
+
+
+
+
+
+
 
 
 

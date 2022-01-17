@@ -52,11 +52,11 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		this.app = this;
 		this.setTitle(title); 
 		this.setIconImage(icon.getImage());
-		this.setSize(1200, 800);
+		this.setSize(600, 400);
 //		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH); //full size
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null); //center
-		this.setMinimumSize(new Dimension(600,600));
+		this.setMinimumSize(new Dimension(800,600));
 		colorThemeApp = ColorThemeApp.LIGHT; //default theme
 
 		try {

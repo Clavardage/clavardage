@@ -70,6 +70,7 @@ public class MainGUI {
         if(choice == JOptionPane.YES_OPTION) {
             // handle GUI conversation
             Application.getMessageWindow().openConversation(uDest.getLogin(), uDest.getUUID(), MessageWindow.Destinataire.User);
+            // TODO: call pastille bleu func
             //ConnectivityDaemon.getConversationService().sendMessageToConversation(c, new Message(UUID.randomUUID(), "Bien recu bro", new User(UUID.randomUUID(), "test2", InetAddress.getByName("127.0.0.2")), c));
         } else { // close conversation
             ConnectivityDaemon.getConversationService().close(c);
@@ -83,7 +84,19 @@ public class MainGUI {
      */
     public static void setUserState(User u, boolean connected) {
         // TODO: handle user state in GUI
-        System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
+    	System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
+    	try {
+			//set icon and connectivity
+    		if (connected) {    			
+    			Application.getMessageWindow().setIconConnected(u.getUUID());
+    		} else {
+    			Application.getMessageWindow().setIconDisconnected(u.getUUID());
+    		}
+			//replace (or add if new) user in the list
+			Application.getMessageWindow().reorganiseListByConnectivity(u,connected);
+    	} catch (IOException | UserNotConnectedException e) {
+    		e.printStackTrace();
+    	}
     }
 
     /**
@@ -153,6 +166,12 @@ public class MainGUI {
 
         ConversationService conv_serv = ConnectivityDaemon.getConversationService();
         conv_serv.openConversation(conv);
+        
+        // TODO: call pastille bleu func
+    }
+    
+    public static void conversationClosed(UUID uuidDestination) {
+    	// TODO: enlever pastille bleue
     }
 
     public static UUID getConversationUUIDByTwoUsersUUID(UUID u1, UUID u2) throws Exception {
