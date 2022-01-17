@@ -55,7 +55,7 @@ import clavardage.model.objects.User;
 import clavardage.view.main.Application.ColorThemeApp;
 import clavardage.view.main.LoginWindow.TypeBuble;
 
-public class MessageWindow extends JPanel implements ActionListener, MouseListener {
+public class MessageWindow extends JPanel {
 	
 	/* ** Menu Bar ** */
 	private MyMenuBar menuBar;
@@ -404,60 +404,14 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		group.setForegroundNamePanel(); //necessary because it can be added while using the app
 	}
 	
-	public void setIconConnected(UUID idUser) throws IOException {
-		/*for users*/
+	public void setConnected(UUID idUser, Boolean connect) {
 		for (DestinataireJPanel u : allUsers) {
 			if (u.getIdDestinataire().equals(idUser)) {
-				u.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
-				u.setConnectIcon(new ImageIcon(u.getConnectImage(), "User is connected"));
-				u.setConnected(true) ;
+				u.setConnected(connect) ;
 				u.revalidate();
 			}
 		}
-		/*for groups*/
-		for (MessagesPanel m : allMessagesGroups) {
-			if (m.isMemberConversation(idUser)) {
-				for (DestinataireJPanel g : allGroups) {
-					if (g.getIdDestinataire().equals(idUser)) {	
-						if (m.getNbMembersConnected()==1) {
-							g.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
-							g.setConnectIcon(new ImageIcon(g.getConnectImage(), "At least one user is connected"));
-						}
-						m.setNbMembersConnected(m.getNbMembersConnected() + 1);
-					}
-				}
-			}
-		}
 		usersContainer.revalidate();
-		groupsContainer.revalidate();
-	}
-	
-	public void setIconDisconnected(UUID idUser) throws IOException {	
-		/*for users*/
-		for (DestinataireJPanel u : allUsers) {
-			if (u.getIdDestinataire().equals(idUser)) {
-				u.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
-				u.setConnectIcon(new ImageIcon(u.getConnectImage(), "User is disconnected"));
-				u.setConnected(false) ;
-							}
-		}
-		/*for groups*/
-		for (MessagesPanel m : allMessagesGroups) {
-			if (m.isMemberConversation(idUser)) {
-				for (DestinataireJPanel g : allGroups) {
-					if (g.getIdDestinataire().equals(idUser)) {
-						if (m.getNbMembersConnected()==2) {
-							g.setConnectImage(ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH));
-							g.setConnectIcon(new ImageIcon(g.getConnectImage(), "All users are disconnected"));
-						}
-						m.setNbMembersConnected(m.getNbMembersConnected() - 1);
-					}
-				}
-			}
-		}
-		usersContainer.revalidate();
-		groupsContainer.revalidate();
-		
 	}
 	
 	public void reorganiseListByConnectivity(User userUpdated, boolean connect) throws IOException, UserNotConnectedException {
@@ -467,11 +421,9 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		for (DestinataireJPanel user : allUsers) {
 			if (user.getIdDestinataire().equals(userUpdated.getUUID())) {
 				isNew = false;
-				System.out.println(userUpdated.getLogin() + " est connu de ma liste");
 			}
 		} 
 		if (isNew) {
-			System.out.println(userUpdated.getLogin() + " est nouveau");
 			addNewUserToList(userUpdated, connect);
 		}
 		for (DestinataireJPanel user : allUsers) {
@@ -697,10 +649,10 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 			newMsg.setVisible(false);
 			
 			for (Component panel : listUsers.getComponents()) {
-				((DestinataireJPanel) panel).closeMyConversation();
+				((DestinataireJPanel) panel).closeConversationInList();
 			}
 			for (Component panel : listGroups.getComponents()) {
-				((DestinataireJPanel) panel).closeMyConversation();
+				((DestinataireJPanel) panel).closeConversationInList();
 			}
 		}
 		
@@ -780,7 +732,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 		nameDestinataire.requestFocus();
 	}		
 	
-	public void moveInTopOfList(Destinataire type, UUID id) throws IOException {
+	public void moveInTopOfList(Destinataire type, UUID id) {
 //		listUsers.removeAll();
 //		listGroups.removeAll();
 //		
@@ -935,33 +887,6 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 
 	/* --------- GLOBAL LISTENERS ----------- */
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {		
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {		
-	}
-
-
 	public MessagesPanel getAllDiscussionClose() {
 		return allDiscussionClose;
 	}
@@ -1050,6 +975,7 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 				addNewUserToList(user, false); //all users are new and no connected, for the moment there is no conversation
 			}
 		}
+		
 		usersContainer.setViewportView(listUsers);
 	}
 
@@ -1085,26 +1011,8 @@ public class MessageWindow extends JPanel implements ActionListener, MouseListen
 
 
 	public void resetAllMessages() {
-		this.allMessagesUsers = new ArrayList<MessagesPanel>();
-		this.allMessagesGroups = new ArrayList<MessagesPanel>();
+		this.allMessagesUsers.clear();
+		this.allMessagesGroups.clear();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

@@ -31,11 +31,7 @@ public class MouseOpenConversation implements MouseListener {
 
 			MessageWindow window = Application.getMessageWindow();
 			window.openConversation(dest.getNameDestinataire(), dest.getIdDestinataire(), dest.getTypeDestinataire());
-			try {
-				dest.openMyConversation();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			dest.openConversationInList();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			// TODO: remove loading in thread

@@ -243,32 +243,46 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource()==logButton | e.getSource()==logButtonPanel) {
 			try {
+				//try the connection with username and password
 				AuthOperations.connectUser(username.getText(),password.getText());
+				
+				//if the connection is established
 				if(AuthOperations.isUserConnected()) {
-					//create MessageWindow one time
 					if (Application.getMessageWindow() == null) {
+						//create MessageWindow if it doesn't exist
 						Application.createMessageWindow();
 					} else {
-						//update my conversations
+						//update the conversations for the current user if MessageWindow already exist
 						Application.getMessageWindow().resetAllMessages();
 						Application.getMessageWindow().setUsersContainer();
 						Application.getMessageWindow().setGroupsContainer();
 					}
+					
+					//open the MessageWindow
 					Application.displayContent(Application.getApp(), Application.getMessageWindow());
+					
+					//visual details
 					textError.setText(" ");
+					username.setNoError();
+					password.setNoError();
 					//TODO : d�commenter :
 					//username.setText("");
 					//password.setText("");
 				}
 			} catch (Exception e1) {
+				//if the connection isn't established, inform the customers
 				textError.setText(e1.getMessage());
-				//e1.printStackTrace();
+				sectionContainer.getVerticalScrollBar().setValue(0);
+				username.setError();
+				password.setError();
 			}
 		} else if (e.getSource()== signInButton) {
 			try {
 				if (Application.getSignInWindow() == null) {
+					//create SignInWindow if it doesn't exist
 					Application.createSignInWindow();
 				}
+				//open the SignInWindow
 				Application.displayContent(Application.getApp(), Application.getSignInWindow());	
 				textError.setText(" ");
 				//TODO : d�commenter :

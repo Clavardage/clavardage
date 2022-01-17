@@ -102,6 +102,16 @@ public class SectionTextJPanel extends JPanel {
 	public void setText(String t) {
 		textSection.setText(t);
 	}
+
+	public void setError() {
+		textSection.setFont(new Font("Dialog", Font.ITALIC, 12));
+		textSection.setForeground(Application.COLOR_RED);		
+	}
+
+	public void setNoError() {
+		textSection.setFont(new Font("Dialog", Font.PLAIN, 12));
+		textSection.setForeground(Application.COLOR_TEXT_EDIT);			
+	}
 	
 	
 }
