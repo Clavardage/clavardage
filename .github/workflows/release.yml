@@ -1,0 +1,75 @@
+name: Build Binaries
+
+on:
+  release:
+    types: [released, prereleased]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Grant execute permission for gradlew on UNIX platform
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+      run: chmod +x gradlew
+      
+    - name: jpackage with Gradle
+      run: ./gradlew jpackage
+      
+    - name: Upload JAR archive (from Windows generation platform)
+      if: matrix.os == 'windows-latest'
+      uses: softprops/action-gh-release@v1
+      with: 
+        files: clavardage/build/libs/*.jar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+    - name: Upload Windows binaries
+      if: matrix.os == 'windows-latest'
+      uses: softprops/action-gh-release@v1
+      with: 
+        files: clavardage/build/dist/*.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload Linux binaries
+      if: matrix.os == 'ubuntu-latest'
+      uses: softprops/action-gh-release@v1
+      with: 
+        files: clavardage/build/dist/*.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload macOS binaries
+      if: matrix.os == 'macos-latest'
+      uses: softprops/action-gh-release@v1
+      with: 
+        files: clavardage/build/dist/*.dmg
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          
+#      - if: failure() 
+#        name: Delete release
+#        run: |
+#          curl -s -X DELETE \
+#            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#            -H "Accept: application/vnd.github.v3+json" \
+#            https://api.github.com/repos/${{ github.event.repository.full_name }}/releases/${{ github.event.release.id }}
+#          curl -s -X DELETE \
+#            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+#            -H "Accept: application/vnd.github.v3+json" \
+#            https://api.github.com/repos/${{ github.event.repository.full_name }}/git/refs/tags/${{ github.event.release.tag_name }}
