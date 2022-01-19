@@ -1,8 +1,6 @@
 package clavardage.view.main;
 
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -12,17 +10,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.DefaultHighlighter;
 
-import clavardage.controller.Clavardage;
-
+@SuppressWarnings("serial")
 public class MyNewMsgPanel extends JPanel {
 	
 	public MyNewMsgPanel(MyJButton sendFile, MyJButton sendPicture, MyEditMsg editMsg, MyJButton sendMsg) throws IOException {

@@ -16,14 +16,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -33,7 +31,7 @@ import javax.swing.border.EmptyBorder;
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.view.main.Application.ColorThemeApp;
-
+@SuppressWarnings("serial")
 public class LoginWindow extends JPanel implements ActionListener, MouseListener {
 	
 	private MyRoundJPanel logPanel;
@@ -158,10 +156,10 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 		textError.setForeground(Application.COLOR_RED);
 		sections.add(textError);
 		
-		username = new SectionTextJPanel("Mail","mail_0@clav.com", SectionText.LOG);
+		username = new SectionTextJPanel("Mail","celestine@clav.com", SectionText.LOG);
 		sections.add(username);
 		
-		password = new SectionTextJPanel("Password","pass_0", SectionText.PW);
+		password = new SectionTextJPanel("Password","celestine", SectionText.PW);
 		sections.add(password);
 		
 		sections.add(createMargin(0, 20));
@@ -275,6 +273,7 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 				sectionContainer.getVerticalScrollBar().setValue(0);
 				username.setError();
 				password.setError();
+				e1.printStackTrace();
 			}
 		} else if (e.getSource()== signInButton) {
 			try {

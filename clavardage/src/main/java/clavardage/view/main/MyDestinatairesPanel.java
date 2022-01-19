@@ -1,15 +1,11 @@
 package clavardage.view.main;
 
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.io.IOException;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
+@SuppressWarnings("serial")
 public class MyDestinatairesPanel extends JPanel {
 	
 	public MyDestinatairesPanel(MyUsersPanel users, MyGroupsPanel groups) throws IOException {

@@ -14,7 +14,7 @@ public class ActionLeaveGroup implements ActionListener {
 		try {
 			UUID idConv = Application.getMessageWindow().getDiscussionDisplay().getIdConversation()	;
 			MyDate date = new MyDate();
-			boolean newDay = Application.getMessageWindow().needDayPanel(date);
+			boolean newDay = Application.getMessageWindow().needDayPanel(date, Application.getMessageWindow().getDiscussionDisplay());
 			if (newDay) {
 				if (Application.getMessageWindow().getDiscussionDisplay().isEmptyDiscussion()) {
 					Application.getMessageWindow().getDiscussionDisplay().startConversation();

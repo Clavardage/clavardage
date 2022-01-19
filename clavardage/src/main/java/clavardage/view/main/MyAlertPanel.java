@@ -1,19 +1,15 @@
 package clavardage.view.main;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractButton;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+@SuppressWarnings("serial")
 public class MyAlertPanel extends JPanel {
 	
 	private MyJButtonText cancel, confirm;

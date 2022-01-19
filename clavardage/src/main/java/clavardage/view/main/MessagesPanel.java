@@ -7,13 +7,10 @@ import java.util.UUID;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
-import clavardage.controller.authentification.AuthOperations;
-import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.main.MessageWindow.Destinataire;
 
+@SuppressWarnings("serial")
 public class MessagesPanel extends JPanel {
 	
 	private boolean emptyDiscussion;
@@ -25,10 +22,10 @@ public class MessagesPanel extends JPanel {
 
 	private MessageWindow window;
 	
-	public MessagesPanel(String text) {
+	public MessagesPanel() {
 		super();
 		this.emptyDiscussion = true ;
-		this.setBorder(new EmptyBorder(0, 0, 0, 0));
+		this.setBorder(null);
 		this.setLayout(new GridBagLayout());
 		this.add(new MyAlertMessage("Choose someone to start a conversation..."));
 	}
@@ -43,7 +40,7 @@ public class MessagesPanel extends JPanel {
 		this.membersConversation = new ArrayList<DestinataireJPanel>();
 		this.noMembers = (ArrayList<DestinataireJPanel>) this.window.getAllUsers().clone();
 		this.nbMembersConnected = 1 ;
-		this.setBorder(new EmptyBorder(0, 0, 0, 0));
+		this.setBorder(null);
 		this.setLayout(new GridBagLayout());
 	}
 	
@@ -52,26 +49,6 @@ public class MessagesPanel extends JPanel {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.remove(0);
 		this.repaint();
-	}
-	
-	public boolean isEmptyDiscussion() {
-		return emptyDiscussion ;
-	}
-	
-	public Destinataire getTypeConversation() {
-		return type;
-	}
-	
-	public UUID getIdConversation() {
-		return idConversation;
-	}
-	
-	public ArrayList<DestinataireJPanel> getMembersConversation() {
-		return membersConversation;
-	}
-	
-	public ArrayList<DestinataireJPanel> getNoMembers() {
-		return noMembers;
 	}
 	
 	public void addMemberConversation(UUID newUser) {
@@ -135,6 +112,30 @@ public class MessagesPanel extends JPanel {
 
 	public void setNbMembersConnected(int nbMembersConnected) {
 		this.nbMembersConnected = nbMembersConnected;
+	}
+	
+	public boolean isEmptyDiscussion() {
+		return emptyDiscussion ;
+	}
+	
+	public Destinataire getTypeConversation() {
+		return type;
+	}
+	
+	public UUID getIdConversation() {
+		return idConversation;
+	}
+	
+	public ArrayList<DestinataireJPanel> getMembersConversation() {
+		return membersConversation;
+	}
+	
+	public ArrayList<DestinataireJPanel> getNoMembers() {
+		return noMembers;
+	}
+
+	public void setIdConversation(UUID idConversation) {
+		this.idConversation = idConversation;
 	}
 
 }

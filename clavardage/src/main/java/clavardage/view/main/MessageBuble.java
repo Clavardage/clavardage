@@ -7,13 +7,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.util.Date;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import clavardage.view.main.LoginWindow.TypeBuble;
 
+@SuppressWarnings("serial")
 public class MessageBuble extends JPanel {
 	
 	private JPanel zoneBuble ;
@@ -23,7 +23,6 @@ public class MessageBuble extends JPanel {
 	private MyRoundJTextArea buble;
 	private JTextArea zoneDate;
 	private MyDate dateMsg;
-	private Dimension sizeBuble;
 	
 	public MessageBuble(TypeBuble type, String msg, MyDate date) {
 		this.setOpaque(false);
@@ -61,6 +60,8 @@ public class MessageBuble extends JPanel {
 		
 		zoneDate.setMaximumSize(new Dimension(20,this.heightPanel));
 		zoneDate.setMinimumSize(new Dimension(0,this.heightPanel));
+		
+		this.setMaximumSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, this.heightPanel));
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{30, 0, 0, 0};
@@ -111,6 +112,10 @@ public class MessageBuble extends JPanel {
 	
 	public String getText() {
 		return text;
+	}
+
+	public MyDate getDate() {
+		return dateMsg;
 	}
 
 }

@@ -6,6 +6,7 @@ import java.awt.Insets;
 
 import javax.swing.JButton;
 
+@SuppressWarnings("serial")
 public class MyJButtonText extends JButton {
 	
 	public MyJButtonText(String text) {

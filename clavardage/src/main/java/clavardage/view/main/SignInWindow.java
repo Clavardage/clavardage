@@ -1,14 +1,10 @@
 package clavardage.view.main;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
-import clavardage.controller.authentification.AuthOperations;
-import clavardage.view.main.Application.ColorThemeApp;
-import clavardage.view.main.LoginWindow.SectionText;
-
+@SuppressWarnings("serial")
 public class SignInWindow extends LoginWindow {
 
 	private SectionTextJPanel confirmPassword;

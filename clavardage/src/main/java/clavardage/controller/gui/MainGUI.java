@@ -84,16 +84,18 @@ public class MainGUI {
      * @param connected
      */
     public static void setUserState(User u, boolean connected) {
-        //handle user state in GUI
-    	System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
-    	try {
-			//set icon and connectivity
-    		Application.getMessageWindow().setConnected(u.getUUID(), connected);
+    	if (!(Application.getMessageWindow() == null)) {	
+    		//handle user state in GUI
+    		System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
+    		try {
+    			//set icon and connectivity
+    			Application.getMessageWindow().setConnected(u.getUUID(), connected);
 
-			//replace (or add if new) user in the list
-			Application.getMessageWindow().reorganiseListByConnectivity(u,connected);
-    	} catch (IOException | UserNotConnectedException e) {
-    		e.printStackTrace();
+    			//replace (or add if new) user in the list
+    			Application.getMessageWindow().reorganiseListByConnectivity(u,connected);
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
     	}
     }
 
@@ -176,7 +178,7 @@ public class MainGUI {
 			Application.getMessageWindow().findMyDestinataireJPanel(uuidDestination).closeConversationInList();
 	    	// handle GUI conversation
 			Application.getMessageWindow().closeConversation();
-		} catch (IOException | UserNotConnectedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
@@ -199,9 +201,9 @@ public class MainGUI {
      * Used by Conversation Service
      * @param c
      * @param msg
-     * @throws UserNotConnectedException 
+     * @throws Exception 
      */
-    public static void addNewMessage(Conversation c, Message msg) throws UserNotConnectedException {
+    public static void addNewMessage(Conversation c, Message msg) throws Exception {
         // handle message display in GUI
     	User uDest = null;
         if(c.isWithOneUserOnly()) { // 1 to 1

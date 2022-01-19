@@ -4,8 +4,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import clavardage.controller.gui.MainGUI;
-
+@SuppressWarnings("serial")
 public class MyListDestinataires extends JPanel {
 	
 	public MyListDestinataires() {

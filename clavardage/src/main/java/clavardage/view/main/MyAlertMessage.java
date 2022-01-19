@@ -1,12 +1,11 @@
 package clavardage.view.main;
 
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+@SuppressWarnings("serial")
 public class MyAlertMessage extends JLabel {
 	
 	public MyAlertMessage(String text) {

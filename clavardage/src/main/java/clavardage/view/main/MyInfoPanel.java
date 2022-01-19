@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,6 +11,7 @@ import javax.swing.JPanel;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.exceptions.UserNotConnectedException;
 
+@SuppressWarnings("serial")
 public class MyInfoPanel extends JPanel {
 	
 	private JLabel zoneText ;

@@ -1,7 +1,5 @@
 package clavardage.view.main;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -9,8 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -22,10 +18,9 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import clavardage.controller.Clavardage;
-import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.model.objects.Message;
 import clavardage.view.main.MessageWindow.Destinataire;
 
+@SuppressWarnings("serial")
 public class DestinataireJPanel extends JPanel {
 	
 	private JPanel connectPanel, namePanel;
@@ -150,16 +145,17 @@ public class DestinataireJPanel extends JPanel {
 	 * */
 	public void openConversationInList() {
 		this.conversationOpen = true ;
-		connectLabel.setIcon(openIcon);
+		if (this.type == Destinataire.User) {
+			connectLabel.setIcon(openIcon);
+		}
 		Application.getMessageWindow().moveInTopOfList(this.type, this.id);
 	}
 	
 	/**
 	 * Update the list when a conversation is close
-	 * @throws UserNotConnectedException 
-	 * @throws IOException 
+	 * @throws Exception 
 	 * */
-	public void closeConversationInList() throws IOException, UserNotConnectedException {
+	public void closeConversationInList() throws Exception {
 		this.conversationOpen = false ;
 		this.setConnected(false);
 		Application.getMessageWindow().reorganiseListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
@@ -228,6 +224,14 @@ public class DestinataireJPanel extends JPanel {
 
 	public ImageIcon getConnectIcon() {
 		return myConnectIcon;
+	}
+
+	public Destinataire getType() {
+		return type;
+	}
+
+	public void setType(Destinataire type) {
+		this.type = type;
 	}
 
 }

@@ -3,28 +3,22 @@ package clavardage.view.main;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
-import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.main.MessageWindow.Destinataire;
 
+@SuppressWarnings("serial")
 public class MyGroupsPanel extends JPanel {
 	
-	public MyGroupsPanel(JPanel northGroups, MyTitle titleGroups, MyJButton addGroup, MyJScrollPane groupsContainer) throws IOException {
+	public MyGroupsPanel(MessageWindow window, JPanel northGroups, MyTitle titleGroups, MyJButton addGroup, MyJScrollPane groupsContainer) throws IOException {
 		super();
 		
-		MessageWindow window = Application.getMessageWindow(); 
 		setOpaque(false);
 		setLayout(new BorderLayout(0, 0));
 		
@@ -52,7 +46,7 @@ public class MyGroupsPanel extends JPanel {
 					DestinataireJPanel newGroup = (DestinataireJPanel) window.getListGroups().getComponent( window.getListGroups().getComponentCount()-1) ;
 					window.openConversation(newGroup.getNameDestinataire(), newGroup.getIdDestinataire(), Destinataire.Group);
 					window.setNameGroup();
-				} catch (IOException | UserNotConnectedException e1) {
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 				groupsContainer.validate();

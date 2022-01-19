@@ -1,9 +1,7 @@
 package clavardage.view.main;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -15,10 +13,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.view.main.Application.ColorThemeApp;
 
+@SuppressWarnings("serial")
 public class Application extends JFrame implements ActionListener, MouseListener {
-
 
 	/* **  ** */
 	private static MessageWindow message;
@@ -49,7 +46,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 
 	public Application(String title, ImageIcon icon) {
 		
-		this.app = this;
+		Application.app = this;
 		this.setTitle(title); 
 		this.setIconImage(icon.getImage());
 		this.setSize(600, 400);
@@ -80,10 +77,9 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	
 	/**
 	 * Create the message Window.
-	 * @throws IOException
-	 * @throws UserNotConnectedException 
+	 * @throws Exception 
 	 * */
-	public static void createMessageWindow() throws IOException, UserNotConnectedException {
+	public static void createMessageWindow() throws Exception {
 		message = new MessageWindow();
 	}
 	

@@ -1,11 +1,11 @@
 package clavardage.view.main;
 
-import java.awt.Component;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+@SuppressWarnings("serial")
 public class MyDiscussionContainer extends JPanel {
 	
 	public MyDiscussionContainer(MyDiscussionPanel d) {

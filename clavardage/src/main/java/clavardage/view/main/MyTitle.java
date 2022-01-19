@@ -5,6 +5,7 @@ import java.awt.Font;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+@SuppressWarnings("serial")
 public class MyTitle extends JTextArea {
 	
 	public MyTitle(String text) {

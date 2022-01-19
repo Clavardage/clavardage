@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.UUID;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
@@ -13,9 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import clavardage.controller.authentification.AuthOperations;
-import clavardage.model.exceptions.UserNotConnectedException;
-
+@SuppressWarnings("serial")
 public class MyDiscussionPanel extends MyRoundJPanel {
 
 	public MyDiscussionPanel(JMenuBar northDiscussion, MyTitle nameDestinataire, MyJButton editNameGroup, JMenu settingsGroups, ImageIcon settingsGroupsIcon, 

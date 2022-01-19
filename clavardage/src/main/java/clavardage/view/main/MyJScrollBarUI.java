@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.util.Hashtable;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -15,6 +13,7 @@ import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
+@SuppressWarnings("serial")
 public class MyJScrollBarUI extends BasicScrollBarUI {
 
 	private final Dimension d = new Dimension();

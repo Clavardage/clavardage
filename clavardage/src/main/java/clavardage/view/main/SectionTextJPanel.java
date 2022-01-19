@@ -2,10 +2,7 @@ package clavardage.view.main;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
@@ -17,8 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.view.main.LoginWindow.SectionText;
-import clavardage.view.main.LoginWindow.TypeBuble;
 
+@SuppressWarnings("serial")
 public class SectionTextJPanel extends JPanel {
 	private JTextField textSection;
 	private JTextArea titleSection;

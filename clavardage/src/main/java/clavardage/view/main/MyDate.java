@@ -2,6 +2,7 @@ package clavardage.view.main;
 
 import java.util.Date;
 
+@SuppressWarnings("serial")
 public class MyDate extends Date {
 	
 	public MyDate() {
@@ -13,13 +14,13 @@ public class MyDate extends Date {
 	}
 	
 	public String myHoureToString() {
-        String date =  this.toString();         // "EEE MMM dd HH:mm:ss zzz yyyy";
-        String myDate =  date.substring(11, 16); // "HH:mm";
+        String date = this.toString();         // "EEE MMM dd HH:mm:ss zzz yyyy";
+        String myDate = date.substring(11, 16); // "HH:mm";
         return myDate;
     }
 	
 	public String myDateToString() {
-        String date =  this.toString();         // "EEE MMM dd HH:mm:ss zzz yyyy";
+        String date = this.toString();         // "EEE MMM dd HH:mm:ss zzz yyyy";
         String myDate = "";
 
         //day
@@ -101,13 +102,13 @@ public class MyDate extends Date {
         
 
         //year
-    	myDate = myDate.concat(date.substring(24, 28));
+    	myDate = myDate.concat(date.substring(date.length()-4, date.length())); // "E...E dd M...M yyyy";
 
         return myDate;
     }
 	
 	public String getTheDay() {
-        return this.toString().substring(0,11).concat(this.toString().substring(24,28)); // "EEE MMM dd yyyy";
+        return this.toString().substring(0,11).concat(this.toString().substring(this.toString().length()-4, this.toString().length())); // "EEE MMM dd yyyy";
     }
 	
 

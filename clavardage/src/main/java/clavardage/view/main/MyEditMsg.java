@@ -2,6 +2,7 @@ package clavardage.view.main;
 
 import java.awt.Insets;
 
+@SuppressWarnings("serial")
 public class MyEditMsg extends MyRoundJTextField {
 
 	public MyEditMsg() {

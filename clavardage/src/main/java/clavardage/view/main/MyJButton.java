@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
+@SuppressWarnings("serial")
 public class MyJButton extends JButton {
 
 	public MyJButton(ImageIcon icon, ImageIcon iconHover) {

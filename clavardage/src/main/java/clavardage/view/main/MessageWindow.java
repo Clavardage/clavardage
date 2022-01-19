@@ -6,45 +6,35 @@ package clavardage.view.main;
  * -nom utilisateur fixé à gauche quand réduction (pour le moment, c'est réduit au milieu)
  * -les noms de destinataires de plus de 16 caractères font bouger la mise en page à l'ouverture de leur conversation
  * -modifier MyAlertMessage pour retour à la ligne (transformer en JtextArea ?)
- * _truc pour chenger mon login
- * -plusieurs fenetre ouverte (pastilles bleues) + pastille bleue superieur à déconnexion !!! close conversation envele pastille bleue
- * -ajout des gens en dynamiques
- * -connecteed devant pas connected
- * -on pet pas cliquer sur un disconnected
+ * -truc pour chenger mon login
+ * -plusieurs fenetre ouverte (pastilles bleues) A Verifier
+ * -message alert pour confirmer la déconnexion
+ * -entre pour se connecter
+ * -pb color SignIn et scroll login et couleur texte DestinataireJPanel
  */
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.text.DefaultHighlighter;
 
 import clavardage.controller.Clavardage;
@@ -55,6 +45,7 @@ import clavardage.model.objects.User;
 import clavardage.view.main.Application.ColorThemeApp;
 import clavardage.view.main.LoginWindow.TypeBuble;
 
+@SuppressWarnings("serial")
 public class MessageWindow extends JPanel {
 	
 	/* ** Menu Bar ** */
@@ -101,7 +92,7 @@ public class MessageWindow extends JPanel {
 	private Image logoImage, settingsImage, accountImage, addGroupImage, addGroupImageHover, sendFileImage, sendFileImageHover, sendPictureImage, sendPictureImageHover, sendMsgImage, sendMsgImageHover, editNameGroupImage, editNameGroupImageHover, settingsGroupsImage;
 	private ImageIcon logoIcon, settingsIcon, accountIcon, addGroupIcon, addGroupIconHover,sendFileIcon, sendFileIconHover, sendPictureIcon, sendPictureIconHover, sendMsgIcon, sendMsgIconHover,editNameGroupIcon, editNameGroupIconHover, settingsGroupsIcon;
 	
-	public MessageWindow() throws IOException, UserNotConnectedException {
+	public MessageWindow() throws Exception {
 		setLayout(new BorderLayout());
 
 		/* Add the menu bar */
@@ -149,10 +140,9 @@ public class MessageWindow extends JPanel {
 
 	/**
 	 * Create the app's body.
-	 * @throws IOException
-	 * @throws UserNotConnectedException
+	 * @throws Exception 
 	 * */
-	private MyBodyApp createBodyApp() throws IOException, UserNotConnectedException {
+	private MyBodyApp createBodyApp() throws Exception {
 		
 		bodyApp = new MyBodyApp(createDestinatairesPanel(), createDiscussionContainer());
 		return bodyApp ;
@@ -160,10 +150,9 @@ public class MessageWindow extends JPanel {
 
 	/**
 	 * Create the panel of the destinataires.
-	 * @throws IOException
-	 * @throws UserNotConnectedException
+	 * @throws Exception 
 	 * */
-	private MyDestinatairesPanel createDestinatairesPanel() throws IOException, UserNotConnectedException {
+	private MyDestinatairesPanel createDestinatairesPanel() throws Exception {
 		
 		titleUsers = new MyTitle("Users");
 		usersContainer = createListUsers();
@@ -178,7 +167,7 @@ public class MessageWindow extends JPanel {
 		addGroup = new MyJButton(addGroupIcon,addGroupIconHover);
 		groupsContainer = createListGroups();
 
-		groups = new MyGroupsPanel(northGroups, titleGroups, addGroup, groupsContainer);
+		groups = new MyGroupsPanel(this, northGroups, titleGroups, addGroup, groupsContainer);
 
 		destinataires = new MyDestinatairesPanel( users, groups);
 		
@@ -221,10 +210,9 @@ public class MessageWindow extends JPanel {
 
 	/**
 	 * Create the list of Users.
-	 * @throws IOException
-	 * @throws UserNotConnectedException
+	 * @throws Exception 
 	 * */
-	private MyJScrollPane createListUsers() throws IOException, UserNotConnectedException {
+	private MyJScrollPane createListUsers() throws Exception {
 		nbUsers = 0;
 		listUsers = new MyListDestinataires();
 		
@@ -256,11 +244,11 @@ public class MessageWindow extends JPanel {
 		allGroups = new ArrayList<DestinataireJPanel>();
 		allMessagesGroups = new ArrayList<MessagesPanel>();
 		addNewGroupToList("Clovordoge",true);
-		addNewGroupToList("Les potos",true);
-		addNewGroupToList("Salut c'est nous",false);
-		addNewGroupToList("4IR A2 > 4IR A1",false);
 		addNewGroupToList("Je suis un groupe",true);
-		addNewGroupToList("Espionnage Industriel",false); //for the moment, all groups are new and there is no conversation (except one, see later)
+		addNewGroupToList("Les potos",true);
+		addNewGroupToList("4IR A2 > 4IR A1",false);
+		addNewGroupToList("Espionnage Industriel",false);
+		addNewGroupToList("Salut c'est nous",false); //for the moment, all groups are new and there is no conversation (except one, see later)
 		
 		groupsContainer = new MyJScrollPane(listGroups);
 		return groupsContainer ;
@@ -307,44 +295,26 @@ public class MessageWindow extends JPanel {
 	private MyJScrollPane createMsgPanel() throws IOException{
 		conversationOpen = false ;
 		
-		allDiscussionClose = new MessagesPanel("Choose someone to start a conversation...");
-
+		allDiscussionClose = new MessagesPanel();
 		
 		/* SOME TEST */
-//		allMessagesGroups.get(1).startConversation();
-//		MessageBuble msg1 = new MessageBuble(TypeBuble.THEIR,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640038517402L));
-//		MessageBuble msg2 = new MessageBuble(TypeBuble.MINE,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640039918402L));
-//		MessageBuble msg3 = new MessageBuble(TypeBuble.THEIR,"Hello, comment tu vas mega super bien ?", new MyDate(1640048519402L));
-//		msg2.setColorPanel();
-//		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640038517402L)));
-//		allMessagesGroups.get(1).add(msg1);
-//		allMessagesGroups.get(1).add(msg2);
-//		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640048519402L)));
-//		allMessagesGroups.get(1).add(msg3);
-//		
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(0).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(1).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(2).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(3).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(4).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(5).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(6).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(15).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(21).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(29).getIdDestinataire());		
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(33).getIdDestinataire());		
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(37).getIdDestinataire());		
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(40).getIdDestinataire());		
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(42).getIdDestinataire());		
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(45).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(46).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(47).getIdDestinataire());
-//		allMessagesGroups.get(1).addMemberConversation(allUsers.get(48).getIdDestinataire());		
+		allMessagesGroups.get(1).startConversation();
+		MessageBuble msg1 = new MessageBuble(TypeBuble.THEIR,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640038517402L));
+		MessageBuble msg2 = new MessageBuble(TypeBuble.MINE,"Ceci est la largeur maximum d'un message, elle fait environ 2/3 de la zone de dialogue.  Il n'y a pas de longueur maximum pour un message.", new MyDate(1640039918402L));
+		MessageBuble msg3 = new MessageBuble(TypeBuble.THEIR,"Hello, comment tu vas mega super bien ?", new MyDate(1640048519402L));
+		msg2.setColorPanel();
+		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640038517402L)));
+		allMessagesGroups.get(1).add(msg1);
+		allMessagesGroups.get(1).add(msg2);
+		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640048519402L)));
+		allMessagesGroups.get(1).add(msg3);
+		
+		allMessagesGroups.get(1).addMemberConversation(allUsers.get(0).getIdDestinataire());
 		/* **** **** */
 		
 		messageContainer = new MyJScrollPane(allDiscussionClose);
 		discussionDisplay = allDiscussionClose; //save the displayed discussion
-		
+
 		return messageContainer;
 	}
 
@@ -352,25 +322,47 @@ public class MessageWindow extends JPanel {
 	
 	/**
 	 * Add a new user to the list of users.
-	 * @throws IOException 
-	 * @throws UserNotConnectedException 
+	 * @throws Exception 
 	 * */
-	public void addNewUserToList(User userInDb, Boolean connect) throws IOException, UserNotConnectedException {
-		/* Create the user and his associated discussion */
-		UUID idUser = userInDb.getUUID();
-		DestinataireJPanel user = new DestinataireJPanel(userInDb.getLogin(),idUser,connect,Destinataire.User) ;
-		MessagesPanel noDiscussion = new MessagesPanel(this, user.getIdDestinataire(), Destinataire.User);
-		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation with " + user.getNameDestinataire() + " : send a message ! :)");
-		noDiscussion.add(startConversation);
+	public void addNewUserToList(User userInDb, Boolean connect) throws Exception {
+		/* Create the user and the future conversation */
+		DestinataireJPanel user = new DestinataireJPanel(userInDb.getLogin(),userInDb.getUUID(),connect,Destinataire.User) ;
+		MessagesPanel conversation = new MessagesPanel(this, userInDb.getUUID(), Destinataire.User); //WARNING in GUI, the UUID conv == UUID user dest
 		
 		/* Saves the users on the conversation */
-		noDiscussion.addMemberConversation(AuthOperations.getConnectedUser().getUUID());
-		noDiscussion.addMemberConversation(user.getIdDestinataire());
+		conversation.addMemberConversation(AuthOperations.getConnectedUser().getUUID());
+		conversation.addMemberConversation(userInDb.getUUID());
+		
+		/* Get messages on the conversation */
+		UUID idConvInDb = null;
+		try {
+			idConvInDb = MainGUI.getConversationUUIDByTwoUsersUUID(AuthOperations.getConnectedUser().getUUID(), userInDb.getUUID());
+		} catch (Exception ex ){
+			System.out.println("PAS ENCORE DE CONVERSATION EXISTANTE ENTRE " + AuthOperations.getConnectedUser().getLogin() + " ET " + userInDb.getLogin());
+		}
+		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation with " + userInDb.getLogin() + " : send a message ! :)");
+		conversation.add(startConversation);
+		if (!(idConvInDb == null)) {
+			ArrayList<MessageBuble> allMessagesConv = MainGUI.getAllMessagesFrom(idConvInDb);
+			if (!allMessagesConv.isEmpty()) {
+				conversation.startConversation();
+				for (MessageBuble msg : allMessagesConv) {
+					/* see if we need a DayPanel */
+					MyDate date = msg.getDate();
+					boolean newDay = needDayPanel(date, conversation);
+					MyDayInfo day = new MyDayInfo(date);
+					if (newDay) {
+						conversation.add(day);  //we add the DayPanel if we need it
+					}
+					conversation.add(msg);
+				}
+			}
+		} else 
 		
 		/* Saves both and displays the user in the list */
 		allUsers.add(user);
 		listUsers.add(user);
-		allMessagesUsers.add(noDiscussion);
+		allMessagesUsers.add(conversation);
 		
 		/* Modify the list for a suitable display */
 		nbUsers++;
@@ -416,9 +408,8 @@ public class MessageWindow extends JPanel {
 		usersContainer.revalidate();
 	}
 	
-	public void reorganiseListByConnectivity(User userUpdated, boolean connect) throws IOException, UserNotConnectedException {
+	public void reorganiseListByConnectivity(User userUpdated, boolean connect) throws Exception {
 		listUsers.removeAll();
-		listGroups.removeAll();
 		boolean isNew = true ;
 		for (DestinataireJPanel user : allUsers) {
 			if (user.getIdDestinataire().equals(userUpdated.getUUID())) {
@@ -458,7 +449,7 @@ public class MessageWindow extends JPanel {
 			msg.setColorPanel(); //necessary because it is send while using the app
 			
 			/* see if we need a DayPanel */
-			boolean newDay = needDayPanel(date);
+			boolean newDay = needDayPanel(date, discussionDisplay);
 			MyDayInfo day = new MyDayInfo(date);
 
 			/* add the msg to the discussion of the chosen destinataire */
@@ -489,10 +480,12 @@ public class MessageWindow extends JPanel {
 			
 			messageContainer.validate();
 
-			try {
-				MainGUI.sendMessageInConversation(MainGUI.getConversationUUIDByTwoUsersUUID(AuthOperations.getConnectedUser().getUUID(), currentConversation.getIdConversation()), editMsg.getText());
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (currentConversation.getTypeConversation() == Destinataire.User) {
+				try {
+					MainGUI.sendMessageInConversation(MainGUI.getConversationUUIDByTwoUsersUUID(AuthOperations.getConnectedUser().getUUID(), currentConversation.getIdConversation()), editMsg.getText());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			if (mode == 1) { // if it send with the button sendMsg 
@@ -503,19 +496,18 @@ public class MessageWindow extends JPanel {
 		}	
 	}
 	
-	public void receiveMessage(String text, UUID idContact) {
+	public void receiveMessage(String text, UUID idContact) throws UserNotConnectedException {
 
 	    /* create the new message */
 	    MyDate date = new MyDate();
 	    MessageBuble msg = new MessageBuble(TypeBuble.THEIR, text, new MyDate());
 
 	    /* see if we need a DayPanel */
-	    boolean newDay = needDayPanel(date);
+	    boolean newDay = needDayPanel(date, discussionDisplay);
 	    MyDayInfo day = new MyDayInfo(date);
 
 	    /* add the msg to the discussion of the destinataire */
 	    MessagesPanel contactConversation = null;
-
 	    for (MessagesPanel conv : allMessagesUsers) {
 	        if (conv.getIdConversation().equals(idContact)) {
 	            contactConversation = conv ;
@@ -533,12 +525,12 @@ public class MessageWindow extends JPanel {
 	    messageContainer.validate();
 	}
 	
-	public boolean needDayPanel(MyDate date) {
+	public boolean needDayPanel(MyDate date, MessagesPanel conv) {
 		boolean newDay = false;
-		if (!discussionDisplay.isEmptyDiscussion()) {
-			int i = discussionDisplay.getComponentCount()-1 ;
-			while (!(discussionDisplay.getComponent(i).getClass().getName().equals("clavardage.view.main.MyDayInfo"))) {i--;}
-			MyDayInfo lastDateDisplay = (MyDayInfo) discussionDisplay.getComponent(i);
+		if (!conv.isEmptyDiscussion() && (conv.getComponentCount() != 0)) {
+			int i = conv.getComponentCount()-1 ;
+			while (!(conv.getComponent(i).getClass().getName().equals("clavardage.view.main.MyDayInfo"))) {i--;}
+			MyDayInfo lastDateDisplay = (MyDayInfo) conv.getComponent(i);
 			if (!(lastDateDisplay.getDate().getTheDay().equals(date.getTheDay()))) {
 				newDay = true ; //we need it if the date msg is not on the same day of the last one
 			} else {
@@ -550,7 +542,7 @@ public class MessageWindow extends JPanel {
 		return newDay;
 	}
 		
-	public void openConversation(String newDestinataire, UUID id, Destinataire d) {
+	public void openConversation(String newDestinataire, UUID id, Destinataire d) throws UserNotConnectedException, Exception {
 		/* display newMsg if it is necessary */
 		if (!conversationOpen) {
 			conversationOpen = true;	
@@ -648,7 +640,7 @@ public class MessageWindow extends JPanel {
 	}
 
 
-	public void closeConversation() throws IOException, UserNotConnectedException {
+	public void closeConversation() throws Exception {
 		/* hide newMsg and nameDestinataire if it is necessary */
 		if (conversationOpen) {
 			conversationOpen = false;
@@ -692,7 +684,7 @@ public class MessageWindow extends JPanel {
             	if (!(currentName.equals(nameDestinataire.getText()))) {
 					try {
 						MyDate date = new MyDate();
-						boolean newDay = needDayPanel(date);
+						boolean newDay = needDayPanel(date, discussionDisplay);
 						if (newDay) {
 		            		if (discussionDisplay.isEmptyDiscussion()) {
 		            			discussionDisplay.startConversation();
@@ -786,7 +778,7 @@ public class MessageWindow extends JPanel {
 			listUsers.add(userConcerned, 0);
 		} else {
 			DestinataireJPanel groupConcerned = null;
-			for (DestinataireJPanel group : allUsers) {
+			for (DestinataireJPanel group : allGroups) {
 				if (group.getIdDestinataire().equals(id)) {
 					groupConcerned = group ;
 					listGroups.remove(groupConcerned);
@@ -969,7 +961,7 @@ public class MessageWindow extends JPanel {
 	}
 
 
-	public void setUsersContainer() throws IOException, UserNotConnectedException {
+	public void setUsersContainer() throws Exception {
 		nbUsers = 0;
 
 		listUsers.removeAll();

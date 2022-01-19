@@ -3,12 +3,10 @@ package clavardage.view.main;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -19,11 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
-import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
-import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.main.Application.ColorThemeApp;
 
+@SuppressWarnings("serial")
 public class MyMenuBar extends JMenuBar {
 	
 	public MyMenuBar(JPanel logoPanel, ImageIcon logoIcon, JLabel logo,
@@ -92,7 +89,7 @@ public class MyMenuBar extends JMenuBar {
 				if(!AuthOperations.isUserConnected()) {
 					try {
 						Application.getMessageWindow().closeConversation();
-					} catch (IOException | UserNotConnectedException e1) {
+					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 					Application.displayContent(Application.getApp(), Application.getLoginWindow());

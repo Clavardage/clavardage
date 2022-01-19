@@ -3,7 +3,6 @@ package clavardage.view.main;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 import clavardage.model.exceptions.UserNotConnectedException;
@@ -28,7 +27,7 @@ public class ActionAddMember implements ActionListener {
 		Application.getMessageWindow().getDiscussionDisplay().addMemberConversation(newMember.getIdDestinataire());
 		
 		MyDate date = new MyDate();
-		boolean newDay = Application.getMessageWindow().needDayPanel(date);
+		boolean newDay = Application.getMessageWindow().needDayPanel(date, Application.getMessageWindow().getDiscussionDisplay());
 		if (newDay) {
     		if (Application.getMessageWindow().getDiscussionDisplay().isEmptyDiscussion()) {
     			Application.getMessageWindow().getDiscussionDisplay().startConversation();

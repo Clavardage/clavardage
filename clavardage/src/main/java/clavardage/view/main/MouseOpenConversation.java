@@ -2,14 +2,9 @@ package clavardage.view.main;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
-import java.util.UUID;
-
-import javax.swing.JTextArea;
 
 import clavardage.controller.gui.MainGUI;
 import clavardage.view.main.MessageWindow.Destinataire;
-import com.sun.tools.javac.Main;
 
 public class MouseOpenConversation implements MouseListener {
 	
@@ -23,12 +18,13 @@ public class MouseOpenConversation implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO: if user dest not connected throw exception because non clickable
-		try {
-			// TODO: display a loading in thread
-			MainGUI.openConversation(dest.getIdDestinataire()); // open network communication
-			// TODO: remove loading in thread
-
+		try {		
+			if (dest.getType() == Destinataire.User) {
+				// TODO: display a loading in thread
+				// TODO seulement si pastille pas bleue
+				MainGUI.openConversation(dest.getIdDestinataire()); // open network communication
+				// TODO: remove loading in thread
+			}
 			MessageWindow window = Application.getMessageWindow();
 			window.openConversation(dest.getNameDestinataire(), dest.getIdDestinataire(), dest.getTypeDestinataire());
 			dest.openConversationInList();
@@ -51,14 +47,10 @@ public class MouseOpenConversation implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

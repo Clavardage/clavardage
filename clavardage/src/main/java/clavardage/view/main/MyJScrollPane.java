@@ -1,11 +1,11 @@
 package clavardage.view.main;
 
 import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+@SuppressWarnings("serial")
 public class MyJScrollPane extends JScrollPane {
 	
 	public MyJScrollPane(Component o) {
