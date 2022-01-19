@@ -56,7 +56,7 @@ tasks.jpackage {
     appName = rootProject.name
     appVersion = project.version
     type = org.panteleyev.jpackage.ImageType.DEFAULT
-    vendor = "rmonier"
+    vendor = "clavardage"
 
     mainJar = jar.archiveFileName.get()
     mainClass = application.mainClass.get()
@@ -87,6 +87,12 @@ tasks.jpackage {
 
     mac {
         icon = "${buildDir}/resources/main/img/icons/icon.icns"
+        // Fix macOS illegal pre-release version in binaries
+        appVersion = (
+                (appVersion.substring(0, appVersion.indexOf(".")).equals("0")) ?
+                "1.0.${appVersion.replaceAll("[.]", "")}" :
+                appVersion
+        )
     }
 }
 
