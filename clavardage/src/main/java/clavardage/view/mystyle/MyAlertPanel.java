@@ -101,4 +101,8 @@ public class MyAlertPanel extends JPanel {
 		return marge ;
 	}
 
+	public JPanel getAlert() {
+		return alert;
+	}
+
 }

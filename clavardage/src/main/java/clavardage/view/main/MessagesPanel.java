@@ -27,7 +27,7 @@ public class MessagesPanel extends JPanel {
 		super();
 		this.emptyDiscussion = true ;
 		this.setLayout(new GridBagLayout());
-		this.add(new MyAlertMessage("Choose someone to start a conversation..."));
+		this.add(new MyAlertMessage("Choose someone to start a conversation"));
 	}
 	
 	@SuppressWarnings("unchecked")

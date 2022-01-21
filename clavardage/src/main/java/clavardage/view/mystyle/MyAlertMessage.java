@@ -11,6 +11,8 @@ import clavardage.view.main.Application;
 public class MyAlertMessage extends JLabel {
 	
 	private Dimension maxSize ;
+	private int sizeFontChosen, sizeFont;
+	private String info;
 	
 	public MyAlertMessage(String text, int i) {
 		super(text);
@@ -18,9 +20,9 @@ public class MyAlertMessage extends JLabel {
  		setFont(new Font("Tahoma", Font.PLAIN, i));
 		setForeground(Application.getBLUE());
 		maxSize = getPreferredSize();
-
-		setOpaque(true);
-		setBackground(Application.getRED());
+		sizeFont = i ;
+		sizeFontChosen = i ;
+		info = text;
 	}
 	
 	public MyAlertMessage(String text) {
@@ -29,5 +31,25 @@ public class MyAlertMessage extends JLabel {
 
 	public Dimension getMaxSize() {
 		return maxSize;
+	}
+	
+	public int getSizeFont() {
+		return sizeFont;
+	}
+	
+	public int getSizeFontChosen() {
+		return sizeFontChosen;
+	}
+	
+	public void setSizeFont(int i) {
+		sizeFont = i;
+ 		setFont(new Font("Tahoma", Font.PLAIN, i));
+ 		JLabel newInfo = new JLabel(info);
+ 		newInfo.setFont(new Font("Tahoma", Font.PLAIN, i));
+		maxSize = newInfo.getPreferredSize();
+	}
+
+	public String getInfo() {
+		return info;
 	}
 }

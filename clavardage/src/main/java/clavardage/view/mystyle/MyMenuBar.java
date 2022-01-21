@@ -17,7 +17,9 @@ import javax.swing.border.EmptyBorder;
 
 import clavardage.view.listener.ActionDisconnect;
 import clavardage.view.listener.ActionSetColorTheme;
+import clavardage.view.listener.ActionSetLanguage;
 import clavardage.view.main.Application.ColorThemeApp;
+import clavardage.view.main.Application.LanguageApp;
 
 @SuppressWarnings("serial")
 public class MyMenuBar extends JMenuBar {
@@ -25,6 +27,7 @@ public class MyMenuBar extends JMenuBar {
 	public MyMenuBar(JPanel logoPanel, ImageIcon logoIcon, JLabel logo,
 			ImageIcon settingsIcon, JMenu settings,
 			JMenu colorApp, ButtonGroup allColors, JRadioButton colorAppWhite, JRadioButton colorAppBlack,
+			JMenu languageApp, ButtonGroup allLanguages, JRadioButton english,
 			ImageIcon accountIcon, JMenu account, JMenuItem disconnect) throws IOException {
 		
 		super();
@@ -46,11 +49,11 @@ public class MyMenuBar extends JMenuBar {
 		settings.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		settings.setIcon(settingsIcon);
 		add(settings);
-				
+						
 		colorApp.setBorder(null);
 		colorApp.setFocusPainted(false);
 		colorApp.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		settings.add(colorApp);
+		settings.add(colorApp);		
 
 		colorAppWhite.setFocusPainted(false);
 		colorAppWhite.setSelected(true);
@@ -64,6 +67,55 @@ public class MyMenuBar extends JMenuBar {
 		colorAppBlack.addActionListener(new ActionSetColorTheme(ColorThemeApp.DARK));
 		allColors.add(colorAppBlack);
 		colorApp.add(colorAppBlack);
+		
+		allLanguages = new ButtonGroup();
+		JRadioButton french = new JRadioButton("French");
+		JRadioButton spanish = new JRadioButton("Spanish");
+		JRadioButton german = new JRadioButton("German");
+		JRadioButton chinese = new JRadioButton("Chinese");
+		JRadioButton japanese = new JRadioButton("Japanese");
+
+		languageApp.setBorder(null);
+		languageApp.setFocusPainted(false);
+		languageApp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		settings.add(languageApp);
+		
+		english.setFocusPainted(false);
+		english.setSelected(true);
+		english.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		english.addActionListener(new ActionSetLanguage(LanguageApp.ENGLISH));
+		allLanguages.add(english);
+		languageApp.add(english);
+		
+		french.setFocusPainted(false);
+		french.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		french.addActionListener(new ActionSetLanguage(LanguageApp.FRENCH));
+		allLanguages.add(french);
+		languageApp.add(french);
+		
+		spanish.setFocusPainted(false);
+		spanish.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		spanish.addActionListener(new ActionSetLanguage(LanguageApp.SPANISH));
+		allLanguages.add(spanish);
+		languageApp.add(spanish);
+		
+		german.setFocusPainted(false);
+		german.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		german.addActionListener(new ActionSetLanguage(LanguageApp.GERMAN));
+		allLanguages.add(german);
+		languageApp.add(german);
+		
+		chinese.setFocusPainted(false);
+		chinese.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		chinese.addActionListener(new ActionSetLanguage(LanguageApp.CHINESE));
+		allLanguages.add(chinese);
+		languageApp.add(chinese);
+		
+		japanese.setFocusPainted(false);
+		japanese.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		japanese.addActionListener(new ActionSetLanguage(LanguageApp.JAPANESE));
+		allLanguages.add(japanese);
+		languageApp.add(japanese);
 		
 		account.setBorder(null);
 		account.setIcon(accountIcon);

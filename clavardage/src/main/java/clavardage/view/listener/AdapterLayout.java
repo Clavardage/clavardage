@@ -2,12 +2,16 @@ package clavardage.view.listener;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+
+import javax.swing.JLabel;
 
 import clavardage.view.main.Application;
 import clavardage.view.main.MessageBuble;
 import clavardage.view.mystyle.MyAlertMessage;
+import clavardage.view.mystyle.MyAlertPanel;
 import clavardage.view.mystyle.MyRoundJTextArea;
 
 public class AdapterLayout implements ComponentListener {
@@ -28,11 +32,41 @@ public class AdapterLayout implements ComponentListener {
 	}
 	
 	public static void redimDiscussion() {
-		if (Application.getMessageWindow().getDiscussionDisplay().isEmptyDiscussion()) {
-			redimAlert();
+		if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.mystyle.MyAlertPanel")) {
+			redimAlertPanel();
 		} else {
-			redimConv();
-		}		
+			if (Application.getMessageWindow().getDiscussionDisplay().isEmptyDiscussion()) {
+				MyAlertMessage alert = (MyAlertMessage) Application.getMessageWindow().getDiscussionDisplay().getComponent(0);
+				redimAlert(alert);
+			} else {
+				redimConv();
+			}
+		}
+	}
+
+	private static void redimAlertPanel() {
+		MyAlertPanel panel = (MyAlertPanel) Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0);
+
+		MyAlertMessage alert1 = (MyAlertMessage) (MyAlertMessage) panel.getAlert().getComponent(0);
+		redimAlert(alert1);
+		
+		MyAlertMessage alert2 = (MyAlertMessage) (MyAlertMessage) panel.getAlert().getComponent(1);
+		redimAlert(alert2);
+		
+		MyAlertMessage alert3 = (MyAlertMessage) (MyAlertMessage) panel.getAlert().getComponent(2);
+		redimAlert(alert3);
+		
+		if (alert2.getSizeFont() < alert3.getSizeFont()) {
+			alert3.setSizeFont(alert2.getSizeFont());
+		} else {
+			alert2.setSizeFont(alert3.getSizeFont());
+		}
+		
+		if (alert1.getSizeFont() < alert2.getSizeFont()) {
+			alert3.setSizeFont(alert3.getSizeFont()-2);
+			alert2.setSizeFont(alert2.getSizeFont()-2);
+		}
+		
 	}
 
 	public static void redimConv() {
@@ -48,11 +82,25 @@ public class AdapterLayout implements ComponentListener {
 		Application.getMessageWindow().getBodyApp().revalidate();		
 	}
 	
-	public static void redimAlert() {
+	public static void redimAlert(MyAlertMessage alert) {
 		Dimension sizeConv = getSizeConv();	
-		MyAlertMessage alert = (MyAlertMessage) Application.getMessageWindow().getDiscussionDisplay().getComponent(0);
 		Dimension alertDimension = new Dimension(sizeConv.width-60, alert.getMaxSize().height);
-		if (alertDimension.width > alert.getMaxSize().width) {alert.setPreferredSize(new Dimension(alert.getMaxSize()));} else {alert.setPreferredSize(alertDimension);}
+		if (alertDimension.width >= alert.getMaxSize().width) {
+			if (alert.getSizeFont() < alert.getSizeFontChosen()) {
+		 		JLabel alertWithBiggerFont = new JLabel(alert.getInfo());
+		 		alertWithBiggerFont.setFont(new Font("Tahoma", Font.PLAIN, alert.getSizeFont()+1));
+		 		int widthWithBiggerFOnt = alertWithBiggerFont.getPreferredSize().width ;
+				while (alertDimension.width >= widthWithBiggerFOnt) {
+					alert.setSizeFont(alert.getSizeFont()+1);
+			 		alertWithBiggerFont = new JLabel(alert.getInfo());
+			 		alertWithBiggerFont.setFont(new Font("Tahoma", Font.PLAIN, alert.getSizeFont()+1));
+			 		widthWithBiggerFOnt = alertWithBiggerFont.getPreferredSize().width ;
+				}
+			}
+		} else {
+			while ((sizeConv.width-60) < alert.getMaxSize().width && alert.getSizeFont()>0) {alert.setSizeFont(alert.getSizeFont()-1);}
+		}
+		alert.setPreferredSize(alert.getMaxSize());
 		alert.revalidate();
 	}
 

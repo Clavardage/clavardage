@@ -62,9 +62,9 @@ public class MessageWindow extends JPanel {
 	private MyMenuBar menuBar;
 	private JPanel logoPanel;
 	private JLabel logo;
-	private JMenu settings, colorApp, account;
-	private ButtonGroup allColors;
-	private JRadioButton colorAppWhite, colorAppBlack;
+	private JMenu settings, colorApp, account, languageApp;
+	private ButtonGroup allColors, allLanguages;
+	private JRadioButton colorAppWhite, colorAppBlack, english;
 	private JMenuItem disconnect;
 
 	/* ** Body's App ** */
@@ -89,7 +89,6 @@ public class MessageWindow extends JPanel {
 	private JMenuItem leaveGroup,backUsers, nextUsers, backMembers,nextMembers;
 	private MyTitle nameDestinataire;
 	private MyJScrollPane messageContainer;
-	private MyAlertMessage chooseDestinataire;
 	private MessagesPanel discussionDisplay, allDiscussionClose;
 	private MyNewMsgPanel newMsg;
 	private MyJButton editNameGroup, sendFile, sendPicture, sendMsg;
@@ -136,11 +135,16 @@ public class MessageWindow extends JPanel {
 		accountIcon = new ImageIcon(accountImage, "Account menu");
 		account = new JMenu();
 		
+		languageApp = new JMenu("Change the default language");
+		allLanguages = new ButtonGroup();
+		english = new JRadioButton("English");
+		
 		disconnect = new JMenuItem("Disconnect");
 		
 		menuBar = new MyMenuBar(logoPanel, logoIcon, logo,
 								settingsIcon, settings,
 								colorApp,allColors,colorAppWhite,colorAppBlack,
+								languageApp, allLanguages, english,
 								accountIcon, account, disconnect);
 		return menuBar ;
 	}
@@ -194,13 +198,13 @@ public class MessageWindow extends JPanel {
 		
 		nameDestinataire = new MyTitle("");
 		
-		editNameGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		editNameGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
 		editNameGroupIcon = new ImageIcon(editNameGroupImage, "Add Group Button");
-		editNameGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+		editNameGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
 		editNameGroupIconHover = new ImageIcon(editNameGroupImageHover, "Add Group Button Hover");
 		editNameGroup = new MyJButton(editNameGroupIcon,editNameGroupIconHover);
 		
-		settingsGroupsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		settingsGroupsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/settingGroup.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
 		settingsGroupsIcon = new ImageIcon(settingsGroupsImage, "Add Group Button");
 		settingsGroups = new JMenu();
 		
@@ -469,6 +473,7 @@ public class MessageWindow extends JPanel {
 	/* --------- GETTER AND SETTER ----------- */
 	public boolean isConversationOpen() {return conversationOpen;}
 	public MyMenuBar getMenuBar() {return menuBar;}
+	public JRadioButton getEnglish() {return english;}
 	public MyBodyApp getBodyApp() {return bodyApp;}
 	public MyDestinatairesPanel getDestinataires() {return destinataires;}
 	public MyJScrollPane getUsersContainer() {return usersContainer;}
@@ -479,7 +484,6 @@ public class MessageWindow extends JPanel {
 	public MyTitle getNameDestinataire() {return nameDestinataire;}
 	public MyNewMsgPanel getNewMsg() {return newMsg;}
 	public MyEditMsg getEditMsg() {return editMsg;}
-	public MyAlertMessage getChooseDestinataire() {return this.chooseDestinataire ;}
 	public MessagesPanel getAllDiscussionClose() {return allDiscussionClose;}
 	public MyListDestinataires getListUsers() {return listUsers;}
 	public MyListDestinataires getListGroups() {return	listGroups;}

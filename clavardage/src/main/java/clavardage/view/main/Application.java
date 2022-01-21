@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.listener.ActionSetColorTheme;
 import clavardage.view.listener.AdapterLayout;
 
@@ -42,6 +41,9 @@ public class Application extends JFrame {
 	protected static Color COLOR_GREEN = new Color(11,177,58) ;
 	
 	private static ColorThemeApp colorThemeApp ;	
+	
+	public enum LanguageApp {FRENCH, ENGLISH, SPANISH, GERMAN, CHINESE, JAPANESE;}
+	private static LanguageApp languageApp ;	
 
 
 	public Application(String title, ImageIcon icon) {
@@ -55,6 +57,7 @@ public class Application extends JFrame {
 		this.setLocationRelativeTo(null); //center
 		this.setMinimumSize(new Dimension(800,600));
 		colorThemeApp = ColorThemeApp.LIGHT; //default theme
+		setLanguageApp(LanguageApp.ENGLISH); //default language
 		
 		try {
 			createLoginWindow();
@@ -218,5 +221,15 @@ public class Application extends JFrame {
 
 	public static Color getCOLOR_EDIT_MESSAGE() {
 		return COLOR_EDIT_MESSAGE;
+	}
+
+
+	public static LanguageApp getLanguageApp() {
+		return languageApp;
+	}
+
+
+	public static void setLanguageApp(LanguageApp languageApp) {
+		Application.languageApp = languageApp;
 	}
 }
