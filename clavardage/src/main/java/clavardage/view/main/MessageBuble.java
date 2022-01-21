@@ -11,7 +11,10 @@ import java.awt.Toolkit;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import clavardage.view.listener.AdapterLayout;
 import clavardage.view.main.LoginWindow.TypeBuble;
+import clavardage.view.mystyle.MyDate;
+import clavardage.view.mystyle.MyRoundJTextArea;
 
 @SuppressWarnings("serial")
 public class MessageBuble extends JPanel {
@@ -19,53 +22,48 @@ public class MessageBuble extends JPanel {
 	private JPanel zoneBuble ;
 	private String text ;
 	private TypeBuble type ;
-	private int heightPanel ;
 	private MyRoundJTextArea buble;
 	private JTextArea zoneDate;
 	private MyDate dateMsg;
+	private Dimension sizeBuble;
+	private GridBagLayout gridBagLayout;
 	
 	public MessageBuble(TypeBuble type, String msg, MyDate date) {
 		this.setOpaque(false);
 		this.type = type ;
 		this.text = msg;	
 		this.dateMsg = date;
-		this.zoneDate = new JTextArea(dateMsg.myHoureToString());
-		zoneDate.setMargin(new Insets(12, 0, 0, 0));
-		zoneDate.setEditable(false);
-		zoneDate.setOpaque(false);
-		zoneDate.setForeground(Application.COLOR_TEXT_EDIT);
-		zoneDate.setFont(new Font("Dialog", Font.PLAIN, 10));
-
-		buble = new MyRoundJTextArea(20);
+		
+		this.buble = new MyRoundJTextArea(20);
 		buble.setText(this.text);
 		buble.setEditable(false);
 		buble.setMargin(new Insets(8, 10, 8, 10));
-//			buble.setLineWrap(true);
-//			buble.setWrapStyleWord(true);
+		
+		this.sizeBuble = buble.getPreferredSize();
 
-		zoneBuble = new JPanel();
-		//zoneBuble.setLayout(new BoxLayout(zoneBuble, BoxLayout.X_AXIS));
-
-		FlowLayout flowLayout = (FlowLayout) zoneBuble.getLayout();
-		flowLayout.setHgap(0);
-		flowLayout.setVgap(2);
+		this.zoneBuble = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) zoneBuble.getLayout(); flowLayout.setHgap(0); flowLayout.setVgap(2);
 		zoneBuble.setOpaque(false);
 		zoneBuble.setPreferredSize(new Dimension(0,0));
 		zoneBuble.add(buble);
 	
-		this.heightPanel = buble.getPreferredSize().height + (flowLayout.getVgap()*2);
+		int heightPanel = buble.getPreferredSize().height + (flowLayout.getVgap()*2);
 		
-		this.setMaximumSize(new Dimension (Toolkit.getDefaultToolkit().getScreenSize().width, this.heightPanel));
-		this.setMinimumSize(new Dimension (0, this.heightPanel));
+		this.setMaximumSize(new Dimension (Toolkit.getDefaultToolkit().getScreenSize().width, heightPanel));
+		this.setMinimumSize(new Dimension (0, heightPanel));
 		
-		zoneDate.setMaximumSize(new Dimension(20,this.heightPanel));
-		zoneDate.setMinimumSize(new Dimension(0,this.heightPanel));
-		
-		this.setMaximumSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, this.heightPanel));
-		
-		GridBagLayout gridBagLayout = new GridBagLayout();
+		this.zoneDate = new JTextArea(dateMsg.myHoureToString());
+		zoneDate.setMargin(new Insets(12, 0, 0, 0));
+		zoneDate.setEditable(false);
+		zoneDate.setOpaque(false);
+		zoneDate.setForeground(Application.getCOLOR_TEXT_EDIT());
+		zoneDate.setFont(new Font("Dialog", Font.PLAIN, 10));
+		zoneDate.setMaximumSize(new Dimension(20, heightPanel));
+		zoneDate.setMinimumSize(new Dimension(0, heightPanel));
+				
+		gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{30, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{this.heightPanel, 0};
+		gridBagLayout.rowHeights = new int[]{heightPanel, 0};
 		gridBagLayout.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 
 		GridBagConstraints gbc_zoneBuble= new GridBagConstraints();
@@ -73,17 +71,16 @@ public class MessageBuble extends JPanel {
 		gbc_zoneBuble.fill = GridBagConstraints.BOTH;
 		gbc_zoneBuble.gridy = 0;
 
-		double a = 1.0;
-		double b = 2.0;
-		if (this.type == TypeBuble.MINE) {
+		double a = 1.0, b = 2.0;
+		if (this.type == TypeBuble.MINE) { //à droite
 			flowLayout.setAlignment(FlowLayout.RIGHT);
 			gridBagLayout.columnWeights = new double[]{0.0, a, b, Double.MIN_VALUE};
 			gbc_zoneBuble.gridx = 2;
 		} else {
-			flowLayout.setAlignment(FlowLayout.LEFT);
+			flowLayout.setAlignment(FlowLayout.LEFT); //à gauche + couleur identique qu'importe le theme
 			gridBagLayout.columnWeights = new double[]{0.0, b, a, Double.MIN_VALUE};
 			gbc_zoneBuble.gridx = 1;
-			buble.setBackground(Application.COLOR_BLUE);
+			buble.setBackground(Application.getBLUE());
 			buble.setForeground(Application.COLOR_TEXT_THEIR_MESSAGE);
 		}
 		
@@ -97,6 +94,8 @@ public class MessageBuble extends JPanel {
 		gbc_zoneDate.gridx = 0;
 		
 		add(zoneDate, gbc_zoneDate);
+		
+		AdapterLayout.redimMessage(AdapterLayout.getSizeConv(), this);
 	}
 	
 	public void setColorPanel() {
@@ -116,6 +115,18 @@ public class MessageBuble extends JPanel {
 
 	public MyDate getDate() {
 		return dateMsg;
+	}
+
+	public MyRoundJTextArea getBuble() {
+		return buble;
+	}
+
+	public Dimension getSizeBuble() {
+		return sizeBuble;
+	}
+
+	public GridBagLayout getGridBagLayout() {
+		return gridBagLayout;
 	}
 
 }

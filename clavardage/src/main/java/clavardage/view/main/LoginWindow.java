@@ -1,7 +1,6 @@
 package clavardage.view.main;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -11,8 +10,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -30,9 +30,11 @@ import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
-import clavardage.view.main.Application.ColorThemeApp;
+import clavardage.view.mystyle.MyJButtonText;
+import clavardage.view.mystyle.MyJScrollBarUI;
+import clavardage.view.mystyle.MyRoundJPanel;
 @SuppressWarnings("serial")
-public class LoginWindow extends JPanel implements ActionListener, MouseListener {
+public class LoginWindow extends JPanel implements MouseListener {
 	
 	private MyRoundJPanel logPanel;
 	private JPanel headPanel, logoPanel, sections, logButtonSection;
@@ -56,7 +58,15 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 		/* Add the login panel */
 		createLoginPanel();
 		
-		customThemeLogin(Application.getColorThemeApp());
+//		this.addKeyListener((KeyListener) new KeyAdapter() {
+//	        @Override
+//	        public void keyPressed(KeyEvent e) {
+//	            if(e.getKeyCode() == KeyEvent.VK_ENTER){
+//	            	System.out.println("TEST");
+//	            	connexion();
+//	            }
+//	        }
+//	    });
 	}
 	
 	/**
@@ -153,7 +163,7 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 		
 		textError = new JLabel(" ");
 		textError.setFont(new Font("Dialog", Font.ITALIC, 14));
-		textError.setForeground(Application.COLOR_RED);
+		textError.setForeground(Application.getRED());
 		sections.add(textError);
 		
 		username = new SectionTextJPanel("Mail","celestine@clav.com", SectionText.LOG);
@@ -186,7 +196,7 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 		logButtonPanel = new MyRoundJPanel(90);
 		logButtonPanel.add(logButton);
 		logButtonPanel.setPreferredSize(new Dimension(200, 80));
-		logButtonPanel.setBackground(Application.COLOR_BLUE);
+		logButtonPanel.setBackground(Application.getBLUE());
 		logButtonPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		logButtonPanel.setLayout(new GridBagLayout());
 
@@ -198,6 +208,9 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 
 		logButton.addMouseListener(this);
 		logButtonPanel.addMouseListener(this);
+		
+		
+
 
 		return logButtonSection;
 	}
@@ -212,87 +225,73 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 		marge.setOpaque(false);
 		return marge ;
 	}
-
-	/**
-	 * Custom theme Login.
-	 * */
-	public void customThemeLogin(ColorThemeApp c) {
-		((Application) Application.getApp()).changeColorThemeApp(c);
-
-		this.setBackground(Application.COLOR_BACKGROUND);
-		logPanel.setBackground(Application.COLOR_BACKGROUND2);	
-
-		/* ** Sections ** */
-		sections.setBackground(Application.COLOR_BACKGROUND2);
-		for (Component panel : sections.getComponents()) {
-			if ( panel.getClass().getName().equals("clavardage.view.main.SectionTextJPanel")  ) {
-				((SectionTextJPanel) panel).setColorTextSession(Application.COLOR_EDIT_MESSAGE, Application.COLOR_TEXT_EDIT);
+	
+	private void connexion() {
+		try {
+			//try the connection with username and password
+			AuthOperations.connectUser(username.getText(),password.getText());
+			
+			//if the connection is established
+			if(AuthOperations.isUserConnected()) {
+				if (Application.getMessageWindow() == null) {
+					//create MessageWindow if it doesn't exist
+					Application.createMessageWindow();
+				} else {
+					//update the conversations for the current user if MessageWindow already exist
+					Application.getMessageWindow().resetAllMessages();
+					Application.getMessageWindow().setUsersContainer();
+					Application.getMessageWindow().setGroupsContainer();
+				}
+				
+				//open the MessageWindow
+				Application.displayContent(Application.getApp(), Application.getMessageWindow());
+				
+				//visual details
+				textError.setText(" ");
+				username.setNoError();
+				password.setNoError();
+				//TODO : d�commenter :
+				//username.setText("");
+				//password.setText("");
 			}
+		} catch (Exception e1) {
+			//if the connection isn't established, inform the customers
+			textError.setText(e1.getMessage());
+			sectionContainer.getVerticalScrollBar().setValue(0);
+			username.setError();
+			password.setError();
+			e1.printStackTrace();
 		}
-		sectionContainer.getVerticalScrollBar().setBackground(Application.COLOR_BACKGROUND2);
-		
-		logButton.setForeground(Application.COLOR_BACKGROUND2);
 	}
 	
+	private void goToSignIn() {
+		try {
+			if (Application.getSignInWindow() == null) {
+				//create SignInWindow if it doesn't exist
+				Application.createSignInWindow();
+			}
+			//open the SignInWindow
+			Application.displayContent(Application.getApp(), Application.getSignInWindow());	
+			textError.setText(" ");
+			//TODO : d�commenter :
+			//username.setText("");
+			//password.setText("");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}		
+	}
 
 	/* --------- GLOBAL LISTENERS ----------- */
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource()==logButton | e.getSource()==logButtonPanel) {
-			try {
-				//try the connection with username and password
-				AuthOperations.connectUser(username.getText(),password.getText());
-				
-				//if the connection is established
-				if(AuthOperations.isUserConnected()) {
-					if (Application.getMessageWindow() == null) {
-						//create MessageWindow if it doesn't exist
-						Application.createMessageWindow();
-					} else {
-						//update the conversations for the current user if MessageWindow already exist
-						Application.getMessageWindow().resetAllMessages();
-						Application.getMessageWindow().setUsersContainer();
-						Application.getMessageWindow().setGroupsContainer();
-					}
-					
-					//open the MessageWindow
-					Application.displayContent(Application.getApp(), Application.getMessageWindow());
-					
-					//visual details
-					textError.setText(" ");
-					username.setNoError();
-					password.setNoError();
-					//TODO : d�commenter :
-					//username.setText("");
-					//password.setText("");
-				}
-			} catch (Exception e1) {
-				//if the connection isn't established, inform the customers
-				textError.setText(e1.getMessage());
-				sectionContainer.getVerticalScrollBar().setValue(0);
-				username.setError();
-				password.setError();
-				e1.printStackTrace();
-			}
+			connexion();
 		} else if (e.getSource()== signInButton) {
-			try {
-				if (Application.getSignInWindow() == null) {
-					//create SignInWindow if it doesn't exist
-					Application.createSignInWindow();
-				}
-				//open the SignInWindow
-				Application.displayContent(Application.getApp(), Application.getSignInWindow());	
-				textError.setText(" ");
-				//TODO : d�commenter :
-				//username.setText("");
-				//password.setText("");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			goToSignIn();
 		}
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 	}
@@ -309,9 +308,6 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 	public void mouseExited(MouseEvent e) {
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	}
 
 	public JPanel getSections() {
 		return sections;
@@ -319,6 +315,18 @@ public class LoginWindow extends JPanel implements ActionListener, MouseListener
 
 	public JButton getSignInButton() {
 		return signInButton;
+	}
+
+	public MyRoundJPanel getLogPanel() {
+		return logPanel;
+	}
+
+	public JScrollPane getSectionContainer() {
+		return sectionContainer;
+	}
+
+	public JLabel getLogButton() {
+		return logButton;
 	}
 
 }

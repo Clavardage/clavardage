@@ -16,7 +16,6 @@ public class SignInWindow extends LoginWindow {
 		
 		super.getSignInButton().setText("Login");
 		getSignInButton().addMouseListener(this);
-		customThemeLogin(Application.getColorThemeApp());
 	}
 
 	@Override
@@ -48,9 +47,5 @@ public class SignInWindow extends LoginWindow {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
 	}
 }

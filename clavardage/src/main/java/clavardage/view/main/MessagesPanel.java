@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import clavardage.view.main.MessageWindow.Destinataire;
+import clavardage.view.mystyle.MyAlertMessage;
 
 @SuppressWarnings("serial")
 public class MessagesPanel extends JPanel {
@@ -25,7 +26,6 @@ public class MessagesPanel extends JPanel {
 	public MessagesPanel() {
 		super();
 		this.emptyDiscussion = true ;
-		this.setBorder(null);
 		this.setLayout(new GridBagLayout());
 		this.add(new MyAlertMessage("Choose someone to start a conversation..."));
 	}
@@ -40,7 +40,6 @@ public class MessagesPanel extends JPanel {
 		this.membersConversation = new ArrayList<DestinataireJPanel>();
 		this.noMembers = (ArrayList<DestinataireJPanel>) this.window.getAllUsers().clone();
 		this.nbMembersConnected = 1 ;
-		this.setBorder(null);
 		this.setLayout(new GridBagLayout());
 	}
 	

@@ -18,6 +18,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import clavardage.controller.Clavardage;
+import clavardage.view.listener.ActionConnectivity;
+import clavardage.view.listener.MouseOpenConversation;
 import clavardage.view.main.MessageWindow.Destinataire;
 
 @SuppressWarnings("serial")
@@ -136,8 +138,8 @@ public class DestinataireJPanel extends JPanel {
 	 * Custom color for Theme
 	 * */
 	public void setForegroundNamePanel() {
-			namePanel.setForeground(Application.COLOR_TEXT); //for mouseExited in MouseOpenConversation
-			nameUser.setForeground(Application.COLOR_TEXT);
+			namePanel.setForeground(Application.getCOLOR_TEXT()); //for mouseExited in MouseOpenConversation
+			nameUser.setForeground(Application.getCOLOR_TEXT());
 	}
 	
 	/**
@@ -148,7 +150,7 @@ public class DestinataireJPanel extends JPanel {
 		if (this.type == Destinataire.User) {
 			connectLabel.setIcon(openIcon);
 		}
-		Application.getMessageWindow().moveInTopOfList(this.type, this.id);
+		MouseOpenConversation.moveInTopOfList(this.type, this.id);
 	}
 	
 	/**
@@ -158,7 +160,7 @@ public class DestinataireJPanel extends JPanel {
 	public void closeConversationInList() throws Exception {
 		this.conversationOpen = false ;
 		this.setConnected(false);
-		Application.getMessageWindow().reorganiseListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
+		ActionConnectivity.reorganiseListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
 	}
 
 

@@ -1,11 +1,8 @@
 package clavardage.view.main;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -13,18 +10,21 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.view.listener.ActionSetColorTheme;
+import clavardage.view.listener.AdapterLayout;
 
 @SuppressWarnings("serial")
-public class Application extends JFrame implements ActionListener, MouseListener {
+public class Application extends JFrame {
 
 	/* **  ** */
 	private static MessageWindow message;
 	private static LoginWindow login;
 	private static SignInWindow signIn;
 	private static JFrame app;
+	private static JPanel displayContent = new JPanel();
 	
 	/* ** Colors ** */
-	enum ColorThemeApp {LIGHT, DARK;}
+	public enum ColorThemeApp {LIGHT, DARK;}
 	protected static Color COLOR_BACKGROUND ;
 	protected static Color COLOR_BACKGROUND2 ;
 	protected static Color COLOR_EDIT_MESSAGE ;
@@ -55,7 +55,7 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		this.setLocationRelativeTo(null); //center
 		this.setMinimumSize(new Dimension(800,600));
 		colorThemeApp = ColorThemeApp.LIGHT; //default theme
-
+		
 		try {
 			createLoginWindow();
 		} catch (IOException e) {
@@ -63,13 +63,15 @@ public class Application extends JFrame implements ActionListener, MouseListener
 		}
 		
 		displayContent(app, login);
+		
+		AdapterLayout listener = new AdapterLayout();
+		this.addComponentListener(listener);
 	}
 
 	
 	/**
 	 * Create the login Window.
 	 * @throws IOException
-	 * @throws UserNotConnectedException 
 	 * */
 	public static void createLoginWindow() throws IOException {
 		login = new LoginWindow();
@@ -92,44 +94,43 @@ public class Application extends JFrame implements ActionListener, MouseListener
 	 * Change the theme of all windows
 	 * */
 	public static void setColorTheme(ColorThemeApp color) {
-		message.customThemeMessage(color);
-		login.customThemeLogin(color);
-		signIn.customThemeLogin(color);
+		ActionSetColorTheme.customThemeMessage(color);
+		ActionSetColorTheme.customThemeLogin(color);
 	}
 	
 	/**
 	 * Change the display window
 	 * */
 	public static void displayContent(JFrame app, JPanel content) {
+		displayContent = content;
 		app.setContentPane(content);
+		
+		/* Apply the chosen theme */
+		if(content.getClass().getName().equals("clavardage.view.main.LoginWindow")) {
+			ActionSetColorTheme.customThemeLogin(Application.getColorThemeApp());
+		} else if (content.getClass().getName().equals("clavardage.view.main.MessageWindow")) {
+			ActionSetColorTheme.customThemeMessage(Application.getColorThemeApp());
+		} else if (content.getClass().getName().equals("clavardage.view.main.SignInWindow")) {
+			ActionSetColorTheme.customThemeSignIn(Application.getColorThemeApp());
+		}
+		
 		app.revalidate();
 		app.repaint();
 	}
 	
-	public static JFrame getApp() {
-		return app;
-	}
-	
-	public static MessageWindow getMessageWindow() {
-		return message;
-	}
-	
-	public static LoginWindow getLoginWindow() {
-		return login;
-	}
-	
-	public static SignInWindow getSignInWindow() {
-		return signIn;
-	}
-	
-	public static ColorThemeApp getColorThemeApp() {
-		return colorThemeApp;
-	}
+	public static Component getContentDisplay() {return displayContent;}
+	public static JFrame getApp() {return app;}
+	public static MessageWindow getMessageWindow() {return message;}
+	public static LoginWindow getLoginWindow() {return login;}
+	public static SignInWindow getSignInWindow() {return signIn;}
+	public static ColorThemeApp getColorThemeApp() {return colorThemeApp;}
+	public static Dimension getGlobalSize() {return app.getSize();}
 	
 	/**
 	 * Change all colors according to the chosen theme
 	 * */
 	public void changeColorThemeApp(ColorThemeApp color) {
+		colorThemeApp = color;
 		if (color == ColorThemeApp.LIGHT) {
 			COLOR_BACKGROUND = new Color(247,249,251) ;
 			COLOR_BACKGROUND2 = new Color(255,255,255) ;
@@ -163,46 +164,59 @@ public class Application extends JFrame implements ActionListener, MouseListener
 			COLOR_TEXT = new Color (217,217,217);
 		}
 	}
-	
-	/* --------- GLOBAL LISTENERS ----------- */
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
 
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-
+	public static Color getBLUE() {
+		return COLOR_BLUE;
 	}
 
 
+	public static Color getRED() {
+		return COLOR_RED;
+	}
 
 
+	public static Color getGREEN() {
+		return COLOR_GREEN;
+	}
 
 
+	public static Color getCOLOR_TEXT_EDIT() {
+		return COLOR_TEXT_EDIT;
+	}
 
 
+	public static Color getCOLOR_SCROLL_BAR() {
+		return COLOR_SCROLL_BAR;
+	}
 
 
+	public static Color getCOLOR_BACKGROUND() {
+		return COLOR_BACKGROUND;
+	}
+
+
+	public static Color getCOLOR_CURSOR_SCROLL_HOVER() {
+		return COLOR_CURSOR_SCROLL_HOVER;
+	}
+
+
+	public static Color getCOLOR_CURSOR_SCROLL() {
+		return COLOR_CURSOR_SCROLL;
+	}
+
+
+	public static Color getCOLOR_TEXT() {
+		return COLOR_TEXT;
+	}
+
+
+	public static Color getCOLOR_BACKGROUND2() {
+		return COLOR_BACKGROUND2;
+	}
+
+
+	public static Color getCOLOR_EDIT_MESSAGE() {
+		return COLOR_EDIT_MESSAGE;
+	}
 }

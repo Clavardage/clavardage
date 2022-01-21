@@ -1,5 +1,7 @@
 package clavardage.controller.gui;
 
+import static clavardage.controller.authentification.AuthOperations.cancelIfNotConnected;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
@@ -9,7 +11,9 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
@@ -23,9 +27,15 @@ import clavardage.model.managers.UserManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
-import clavardage.view.main.*;
-
-import static clavardage.controller.authentification.AuthOperations.cancelIfNotConnected;
+import clavardage.view.listener.ActionConnectivity;
+import clavardage.view.listener.ActionSendMessage;
+import clavardage.view.listener.MouseCloseConversation;
+import clavardage.view.listener.MouseOpenConversation;
+import clavardage.view.main.Application;
+import clavardage.view.main.LoginWindow;
+import clavardage.view.main.MessageBuble;
+import clavardage.view.main.MessageWindow;
+import clavardage.view.mystyle.MyDate;
 
 /**
  *
@@ -69,7 +79,7 @@ public class MainGUI {
 
         if(choice == JOptionPane.YES_OPTION) {
             // handle GUI conversation
-            Application.getMessageWindow().openConversation(uDest.getLogin(), uDest.getUUID(), MessageWindow.Destinataire.User);
+            MouseOpenConversation.openConversation(uDest.getLogin(), uDest.getUUID(), MessageWindow.Destinataire.User);
             // call pastille bleu func
             Application.getMessageWindow().findMyDestinataireJPanel(uDest.getUUID()).openConversationInList();
             //ConnectivityDaemon.getConversationService().sendMessageToConversation(c, new Message(UUID.randomUUID(), "Bien recu bro", new User(UUID.randomUUID(), "test2", InetAddress.getByName("127.0.0.2")), c));
@@ -89,10 +99,10 @@ public class MainGUI {
     		System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
     		try {
     			//set icon and connectivity
-    			Application.getMessageWindow().setConnected(u.getUUID(), connected);
+    			ActionConnectivity.setConnected(u.getUUID(), connected);
 
     			//replace (or add if new) user in the list
-    			Application.getMessageWindow().reorganiseListByConnectivity(u,connected);
+    			ActionConnectivity.reorganiseListByConnectivity(u,connected);
     		} catch (Exception e) {
     			e.printStackTrace();
     		}
@@ -177,7 +187,7 @@ public class MainGUI {
         	//enlever pastille bleue
 			Application.getMessageWindow().findMyDestinataireJPanel(uuidDestination).closeConversationInList();
 	    	// handle GUI conversation
-			Application.getMessageWindow().closeConversation();
+			MouseCloseConversation.closeConversation();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -216,7 +226,7 @@ public class MainGUI {
         } else { // Groups
             System.err.println("NOT IMPLEMENTED");
         }
-    	Application.getMessageWindow().receiveMessage(msg.getText(), uDest.getUUID());
+    	ActionSendMessage.receiveMessage(msg.getText(), uDest.getUUID());
     }
 
     /**

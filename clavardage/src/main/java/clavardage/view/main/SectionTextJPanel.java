@@ -14,6 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.view.main.LoginWindow.SectionText;
+import clavardage.view.mystyle.MyRoundJPanel;
+import clavardage.view.mystyle.MyRoundJTextField;
 
 @SuppressWarnings("serial")
 public class SectionTextJPanel extends JPanel {
@@ -38,7 +40,7 @@ public class SectionTextJPanel extends JPanel {
 		titleSection.setHighlighter(null);
 		titleSection.setBorder(null);
 		titleSection.setOpaque(false);
-		titleSection.setForeground(Application.COLOR_BLUE);
+		titleSection.setForeground(Application.getBLUE());
 		titleSection.setFont(new Font("Dialog", Font.PLAIN, 20));
 		titleSection.setBorder(new EmptyBorder(10, 15, 10, 15));
 		this.add(titleSection);
@@ -102,12 +104,12 @@ public class SectionTextJPanel extends JPanel {
 
 	public void setError() {
 		textSection.setFont(new Font("Dialog", Font.ITALIC, 12));
-		textSection.setForeground(Application.COLOR_RED);		
+		textSection.setForeground(Application.getRED());		
 	}
 
 	public void setNoError() {
 		textSection.setFont(new Font("Dialog", Font.PLAIN, 12));
-		textSection.setForeground(Application.COLOR_TEXT_EDIT);			
+		textSection.setForeground(Application.getCOLOR_TEXT_EDIT());			
 	}
 	
 	
