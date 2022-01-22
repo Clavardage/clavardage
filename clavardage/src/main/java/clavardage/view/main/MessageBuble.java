@@ -37,6 +37,7 @@ public class MessageBuble extends JPanel {
 		this.buble = new MyRoundJTextArea(20);
 		buble.setText(this.text);
 		buble.setEditable(false);
+		buble.setSelectedTextColor(Application.getYELLOW());
 		buble.setMargin(new Insets(8, 10, 8, 10));
 		
 		this.sizeBuble = buble.getPreferredSize();

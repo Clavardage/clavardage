@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 
 import clavardage.view.main.Application;
 
@@ -26,7 +27,7 @@ public class MyAlertMessage extends JLabel {
 	}
 	
 	public MyAlertMessage(String text) {
-		this(text, 24);
+		this(text, 26);
 	}
 
 	public Dimension getMaxSize() {

@@ -24,19 +24,22 @@ public class MouseOpenConversation implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		try {		
-			if (dest.getType() == Destinataire.User) {
-				// TODO: display a loading in thread
-				// TODO seulement si pastille pas bleue
-				MainGUI.openConversation(dest.getIdDestinataire()); // open network communication
+		if (!Application.getMessageWindow().isAlertOpen() ) {
+			try {		
+				if (dest.getType() == Destinataire.User) {
+					// TODO: display a loading in thread
+					// TODO seulement si pastille pas bleue
+					MainGUI.openConversation(dest.getIdDestinataire()); // open network communication
+					// TODO: remove loading in thread
+				}
+				openConversation(dest.getNameDestinataire(), dest.getIdDestinataire(), dest.getTypeDestinataire());
+				dest.openConversationInList();
+			} catch (Exception ex) {
+				ex.printStackTrace();
 				// TODO: remove loading in thread
 			}
-			openConversation(dest.getNameDestinataire(), dest.getIdDestinataire(), dest.getTypeDestinataire());
-			dest.openConversationInList();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			// TODO: remove loading in thread
 		}
+		
 	}
 	
 	public static void openConversation(String newDestinataire, UUID id, Destinataire d) throws UserNotConnectedException, Exception {
@@ -97,7 +100,7 @@ public class MouseOpenConversation implements MouseListener {
 			for (DestinataireJPanel user : w.getDiscussionDisplay().getNoMembers()) {
 				JMenuItem item = new JMenuItem(user.getNameDestinataire());
 				w.getAddMemberInGroup().add(item);
-				item.addActionListener(new ActionOpenAlert(user,new ActionAddMember(item)));
+				item.addActionListener(new ActionOpenAlert(user,item));
 			}
 		} else {
 			w.setBackUsers(new JMenuItem("See back"));
@@ -105,7 +108,7 @@ public class MouseOpenConversation implements MouseListener {
 			for (i=0; i<=8 ; i++) {
 				JMenuItem item = new JMenuItem(w.getDiscussionDisplay().getNoMembers().get(i + 8*w.getUsersDisplay()).getNameDestinataire());
 				w.getAddMemberInGroup().add(item);				
-				item.addActionListener(new ActionOpenAlert(w.getDiscussionDisplay().getNoMembers().get(i + 8*w.getUsersDisplay()),new ActionAddMember(item)));
+				item.addActionListener(new ActionOpenAlert(w.getDiscussionDisplay().getNoMembers().get(i + 8*w.getUsersDisplay()),item));
 
 			}
 			w.setNextUsers(new JMenuItem("See next"));

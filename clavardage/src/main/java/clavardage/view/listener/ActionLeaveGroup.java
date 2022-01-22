@@ -43,11 +43,12 @@ public class ActionLeaveGroup implements ActionListener {
 			for (DestinataireJPanel group : Application.getMessageWindow().getAllGroups()) {
 				Application.getMessageWindow().getListGroups().add(group);
 			}
-			
 			MouseCloseConversation.closeAllConversation();
 			Application.getMessageWindow().getListGroups().validate();
 			Application.getMessageWindow().getMessageContainer().validate();
 			((MyJButtonText) e.getSource()).setForeground(Application.getBLUE());
+			Application.getMessageWindow().setAlertOpen(false) ;
+
 
 		} catch (UserNotConnectedException e1) {
 			e1.printStackTrace();

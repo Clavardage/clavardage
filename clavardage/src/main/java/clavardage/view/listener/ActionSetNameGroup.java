@@ -77,6 +77,7 @@ public class ActionSetNameGroup implements ActionListener {
 				w.getNameDestinataire().setHighlighter(new DefaultHighlighter());		
 				w.getNameDestinataire().selectAll();
 				w.getNameDestinataire().setEditable(true);
+				w.getNameDestinataire().setSelectedTextColor(Application.getYELLOW());
 				w.getNameDestinataire().setCaretColor(w.getForeground());
 				
 			}
@@ -92,7 +93,7 @@ public class ActionSetNameGroup implements ActionListener {
 	        }
 	        @Override
 	        public void keyTyped(KeyEvent e) {
-	            if(w.getNameDestinataire().getText().length() > 20){
+	            if(w.getNameDestinataire().getText().length() > 40){
 	        		e.consume();
 	            }
 	        }

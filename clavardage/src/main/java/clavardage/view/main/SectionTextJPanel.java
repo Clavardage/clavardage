@@ -67,7 +67,7 @@ public class SectionTextJPanel extends JPanel {
 		}
 
 		textSection.setText(text);
-		
+		textSection.setSelectedTextColor(Application.getYELLOW());
 		this.add(createMargin(0,20));
 
 		

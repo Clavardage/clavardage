@@ -51,7 +51,7 @@ public class ActionNext implements ActionListener {
 					JMenuItem item = new JMenuItem(list.get(i + 8*display).getNameDestinataire());
 					menu.add(item);
 					if (this.mode == 0) {
-						item.addActionListener(new ActionOpenAlert(list.get(i + 8*display), new ActionAddMember(item)));
+						item.addActionListener(new ActionOpenAlert(list.get(i + 8*display), item));
 					}
 				} else {
 					end = true;

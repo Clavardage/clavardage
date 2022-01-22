@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.view.main.Application;
+import clavardage.view.mystyle.MyJButtonText;
 
 public class ActionDisconnect implements ActionListener{
 
@@ -18,6 +19,13 @@ public class ActionDisconnect implements ActionListener{
 				e1.printStackTrace();
 			}
 			Application.displayContent(Application.getApp(), Application.getLoginWindow());
+			
+			MouseCloseConversation.closeAllConversation();
+			Application.getMessageWindow().getMessageContainer().validate();
+			((MyJButtonText) e.getSource()).setForeground(Application.getBLUE());
+			Application.getMessageWindow().getNorthDiscussion().setVisible(true);
+			Application.getMessageWindow().setAlertOpen(false) ;
+
 		}
 	}
 

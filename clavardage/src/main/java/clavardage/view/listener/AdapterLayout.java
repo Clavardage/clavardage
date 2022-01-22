@@ -34,7 +34,8 @@ public class AdapterLayout implements ComponentListener {
 	public static void redimDiscussion() {
 		if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.mystyle.MyAlertPanel")) {
 			redimAlertPanel();
-		} else {
+		} else if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.mystyle.MyChangeLogPanel")) {
+		} else {	
 			if (Application.getMessageWindow().getDiscussionDisplay().isEmptyDiscussion()) {
 				MyAlertMessage alert = (MyAlertMessage) Application.getMessageWindow().getDiscussionDisplay().getComponent(0);
 				redimAlert(alert);
@@ -44,7 +45,7 @@ public class AdapterLayout implements ComponentListener {
 		}
 	}
 
-	private static void redimAlertPanel() {
+	public static void redimAlertPanel() {
 		MyAlertPanel panel = (MyAlertPanel) Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0);
 
 		MyAlertMessage alert1 = (MyAlertMessage) (MyAlertMessage) panel.getAlert().getComponent(0);
@@ -67,6 +68,7 @@ public class AdapterLayout implements ComponentListener {
 			alert2.setSizeFont(alert2.getSizeFont()-2);
 		}
 		
+		panel.revalidate();
 	}
 
 	public static void redimConv() {

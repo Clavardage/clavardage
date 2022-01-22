@@ -3,7 +3,10 @@ package clavardage.view.mystyle;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -11,15 +14,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import clavardage.view.listener.ActionLeaveGroup;
+import clavardage.controller.Clavardage;
 import clavardage.view.listener.ActionOpenAlert;
 import clavardage.view.listener.ActionSetNameGroup;
+import clavardage.view.mystyle.MyAlertPanel.AlertAction;
 
 @SuppressWarnings("serial")
 public class MyDiscussionPanel extends MyRoundJPanel {
 
-	public MyDiscussionPanel(JMenuBar northDiscussion, MyTitle nameDestinataire, MyJButton editNameGroup, JMenu settingsGroups, ImageIcon settingsGroupsIcon, 
-			JMenu seeMembersGroup, JMenu addMemberInGroup, JMenuItem leaveGroup, MyJScrollPane msgPanel, MyNewMsgPanel newMsg, MyJScrollPane groupsContainer) {
+	public MyDiscussionPanel(JMenuBar northDiscussion, MyTitle nameDestinataire, MyJButton editNameGroup, JMenu settingsGroups, 
+			JMenu seeMembersGroup, JMenu addMemberInGroup,  MyJScrollPane msgPanel, MyNewMsgPanel newMsg, MyJScrollPane groupsContainer) throws IOException {
 		
 		super(30);
 		setBorder(new EmptyBorder(0, 10, 0, 10));
@@ -38,9 +42,12 @@ public class MyDiscussionPanel extends MyRoundJPanel {
 		
 		settingsGroups.add(seeMembersGroup);
 		settingsGroups.add(addMemberInGroup);
+		JMenuItem leaveGroup = new JMenuItem("Leave the group");
+		leaveGroup.addActionListener(new ActionOpenAlert(AlertAction.LEAVEGROUP));
 		settingsGroups.add(leaveGroup);
-		
-		leaveGroup.addActionListener(new ActionOpenAlert(new ActionLeaveGroup()));
+
+		Image settingsGroupsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/settingGroup.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon settingsGroupsIcon = new ImageIcon(settingsGroupsImage, "Add Group Button");
 		
 		settingsGroups.setBorder(null);
 		settingsGroups.setVisible(false);

@@ -39,7 +39,9 @@ public class Application extends JFrame {
 	protected static Color COLOR_BLUE = new Color(72,125,244) ;
 	protected static Color COLOR_RED = new Color(238,34,34) ;
 	protected static Color COLOR_GREEN = new Color(11,177,58) ;
-	
+	protected static Color COLOR_PURPLE = new Color(157,22,180) ;
+	protected static Color COLOR_YELLOW = new Color(247,234,69) ;
+
 	private static ColorThemeApp colorThemeApp ;	
 	
 	public enum LanguageApp {FRENCH, ENGLISH, SPANISH, GERMAN, CHINESE, JAPANESE;}
@@ -183,7 +185,14 @@ public class Application extends JFrame {
 		return COLOR_GREEN;
 	}
 
+	public static Color getPURPLE() {
+		return COLOR_PURPLE;
+	}
 
+	public static Color getYELLOW() {
+		return COLOR_YELLOW;
+	}
+	
 	public static Color getCOLOR_TEXT_EDIT() {
 		return COLOR_TEXT_EDIT;
 	}

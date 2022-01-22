@@ -56,6 +56,8 @@ public class ActionAddMember implements ActionListener {
 		MouseOpenConversation.createAddMemberInGroup();
 		MouseOpenConversation.createSeeMembersGroup();
 		((MyJButtonText) e.getSource()).setForeground(Application.getBLUE());
+		Application.getMessageWindow().setAlertOpen(false) ;
+
 
 
 	}

@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -42,6 +40,7 @@ import clavardage.view.mystyle.MyAlertMessage;
 import clavardage.view.mystyle.MyBodyApp;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyDayInfo;
+import clavardage.view.mystyle.MyDestinataireContainer;
 import clavardage.view.mystyle.MyDestinatairesPanel;
 import clavardage.view.mystyle.MyDiscussionContainer;
 import clavardage.view.mystyle.MyDiscussionPanel;
@@ -59,55 +58,46 @@ import clavardage.view.mystyle.MyUsersPanel;
 public class MessageWindow extends JPanel {
 	
 	/* ** Menu Bar ** */
-	private MyMenuBar menuBar;
-	private JPanel logoPanel;
-	private JLabel logo;
-	private JMenu settings, colorApp, account, languageApp;
-	private ButtonGroup allColors, allLanguages;
-	private JRadioButton colorAppWhite, colorAppBlack, english;
-	private JMenuItem disconnect;
+	private MyMenuBar menuBar; 
+	private JRadioButton english;
 
 	/* ** Body's App ** */
 	private MyBodyApp bodyApp;
-	private MyDestinatairesPanel destinataires;
+	private MyDestinataireContainer destinataireContainer;
 	private MyDiscussionContainer discussionContainer;
 	// -- Destinataires -- //
+	private MyDestinatairesPanel destinataires;
 	private MyJScrollPane usersContainer, groupsContainer;
-	private MyTitle titleUsers, titleGroups;
 	private MyUsersPanel users ;
 	private MyGroupsPanel groups;
-	private JPanel northGroups;
-	private MyJButton addGroup;
 	private MyListDestinataires listUsers, listGroups ;
-	private int nbUsers, nbGroups;
 	private ArrayList<DestinataireJPanel> allUsers, allGroups ;
+	private int nbUsers, nbGroups;
 	public enum Destinataire {User,Group;}
 	// -- Discussion -- //
 	private MyDiscussionPanel discussion;
 	private JMenuBar northDiscussion;
 	private JMenu settingsGroups, seeMembersGroup, addMemberInGroup;
-	private JMenuItem leaveGroup,backUsers, nextUsers, backMembers,nextMembers;
+	private JMenuItem backUsers, nextUsers, backMembers,nextMembers;
 	private MyTitle nameDestinataire;
 	private MyJScrollPane messageContainer;
 	private MessagesPanel discussionDisplay, allDiscussionClose;
+	private ArrayList<MessagesPanel> allMessagesUsers, allMessagesGroups;
 	private MyNewMsgPanel newMsg;
-	private MyJButton editNameGroup, sendFile, sendPicture, sendMsg;
+	private MyJButton editNameGroup;
 	private MyEditMsg editMsg;
 	private int membersDisplay, usersDisplay;
-	private boolean conversationOpen ;
-	private ArrayList<MessagesPanel> allMessagesUsers, allMessagesGroups;
-
-	/* ** Pictures and Icons ** */
-	private Image logoImage, settingsImage, accountImage, addGroupImage, addGroupImageHover, sendFileImage, sendFileImageHover, sendPictureImage, sendPictureImageHover, sendMsgImage, sendMsgImageHover, editNameGroupImage, editNameGroupImageHover, settingsGroupsImage;
-	private ImageIcon logoIcon, settingsIcon, accountIcon, addGroupIcon, addGroupIconHover,sendFileIcon, sendFileIconHover, sendPictureIcon, sendPictureIconHover, sendMsgIcon, sendMsgIconHover,editNameGroupIcon, editNameGroupIconHover, settingsGroupsIcon;
+	
+	private boolean conversationOpen, alertOpen;
 	
 	public MessageWindow() throws Exception {
 		setLayout(new BorderLayout());
 
 		/* Add the menu bar */
-		add(createBodyApp(), BorderLayout.CENTER);
-		/* Add the app's body */
 		add(createMenuBar(), BorderLayout.NORTH);
+		/* Add the app's body */
+		add(createBodyApp(), BorderLayout.CENTER);
+
 	}
 
 
@@ -116,36 +106,9 @@ public class MessageWindow extends JPanel {
 	 * @throws IOException
 	 * */
 	private MyMenuBar createMenuBar() throws IOException {	
-		logoPanel = new JPanel();
-		
-		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Logo_title.png")).getScaledInstance(130, 33, Image.SCALE_SMOOTH);
-		logoIcon = new ImageIcon(logoImage, "logo");
-		logo = new JLabel();
-		
-		settingsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Settings.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-		settingsIcon = new ImageIcon(settingsImage, "Setting menu");
-		settings = new JMenu();
-		
-		colorApp = new JMenu("Change the default color");
-		allColors = new ButtonGroup(); //Only one button pressed at the same time
-		colorAppWhite = new JRadioButton("White");
-		colorAppBlack = new JRadioButton("Black");
-		
-		accountImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/Account.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-		accountIcon = new ImageIcon(accountImage, "Account menu");
-		account = new JMenu();
-		
-		languageApp = new JMenu("Change the default language");
-		allLanguages = new ButtonGroup();
-		english = new JRadioButton("English");
-		
-		disconnect = new JMenuItem("Disconnect");
-		
-		menuBar = new MyMenuBar(logoPanel, logoIcon, logo,
-								settingsIcon, settings,
-								colorApp,allColors,colorAppWhite,colorAppBlack,
-								languageApp, allLanguages, english,
-								accountIcon, account, disconnect);
+
+		english = new JRadioButton("English");			
+		menuBar = new MyMenuBar(english);
 		return menuBar ;
 	}
 
@@ -154,8 +117,7 @@ public class MessageWindow extends JPanel {
 	 * @throws Exception 
 	 * */
 	private MyBodyApp createBodyApp() throws Exception {
-		
-		bodyApp = new MyBodyApp(createDestinatairesPanel(), createDiscussionContainer());
+		bodyApp = new MyBodyApp(createDestinatairesContainer(), createDiscussionContainer());
 		return bodyApp ;
 	}
 
@@ -163,28 +125,12 @@ public class MessageWindow extends JPanel {
 	 * Create the panel of the destinataires.
 	 * @throws Exception 
 	 * */
-	private MyDestinatairesPanel createDestinatairesPanel() throws Exception {
-		
-		titleUsers = new MyTitle("Users");
-		usersContainer = createListUsers();
-		users = new MyUsersPanel(titleUsers,usersContainer);
-		
-		northGroups = new JPanel();
-		titleGroups = new MyTitle("Groups");
-		addGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(13, 13, Image.SCALE_SMOOTH);
-		addGroupIcon = new ImageIcon(addGroupImage, "Add Group Button");
-		addGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/addGroups.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
-		addGroupIconHover = new ImageIcon(addGroupImageHover, "Add Group Button Hover");
-		addGroup = new MyJButton(addGroupIcon,addGroupIconHover);
-		groupsContainer = createListGroups();
-
-		groups = new MyGroupsPanel(this, northGroups, titleGroups, addGroup, groupsContainer);
-
-		destinataires = new MyDestinatairesPanel( users, groups);
-		
-		
-
-		return destinataires ;
+	private MyDestinataireContainer createDestinatairesContainer() throws Exception {
+		users = new MyUsersPanel(createListUsers());
+		groups = new MyGroupsPanel(this,  createListGroups());
+		destinataires = new MyDestinatairesPanel(users, groups);
+		destinataireContainer = new MyDestinataireContainer(destinataires);
+		return destinataireContainer ;
 	}
 
 	/**
@@ -193,26 +139,21 @@ public class MessageWindow extends JPanel {
 	 * @throws UserNotConnectedException 
 	 * */
 	private MyDiscussionContainer createDiscussionContainer() throws IOException, UserNotConnectedException {
-		
-		northDiscussion = new JMenuBar();
-		
+		northDiscussion = new JMenuBar();	
 		nameDestinataire = new MyTitle("");
 		
-		editNameGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-		editNameGroupIcon = new ImageIcon(editNameGroupImage, "Add Group Button");
-		editNameGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
-		editNameGroupIconHover = new ImageIcon(editNameGroupImageHover, "Add Group Button Hover");
+		Image editNameGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon editNameGroupIcon = new ImageIcon(editNameGroupImage, "Add Group Button");
+		Image editNameGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
+		ImageIcon editNameGroupIconHover = new ImageIcon(editNameGroupImageHover, "Add Group Button Hover");
 		editNameGroup = new MyJButton(editNameGroupIcon,editNameGroupIconHover);
 		
-		settingsGroupsImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/settingGroup.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-		settingsGroupsIcon = new ImageIcon(settingsGroupsImage, "Add Group Button");
 		settingsGroups = new JMenu();
 		
 		seeMembersGroup = new JMenu("See the members of the group");
 		addMemberInGroup = new JMenu("Add Someone to the group");
-		leaveGroup = new JMenuItem("Leave the group");
 		
-		discussion = new MyDiscussionPanel(northDiscussion, nameDestinataire, editNameGroup, settingsGroups, settingsGroupsIcon, seeMembersGroup, addMemberInGroup, leaveGroup, createMsgPanel(), createNewMsgPanel(), groupsContainer);
+		discussion = new MyDiscussionPanel(northDiscussion, nameDestinataire, editNameGroup, settingsGroups, seeMembersGroup, addMemberInGroup,  createMsgPanel(), createNewMsgPanel(), groupsContainer);
 						
 		discussionContainer = new MyDiscussionContainer(discussion);
 
@@ -269,30 +210,9 @@ public class MessageWindow extends JPanel {
 	 * Create the panel of new message.
 	 * @throws IOException
 	 * */
-	private MyNewMsgPanel createNewMsgPanel() throws IOException{
-		
-		sendFileImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendFile.png")).getScaledInstance(14, 21, Image.SCALE_SMOOTH);
-		sendFileIcon = new ImageIcon(sendFileImage, "Send File Button");
-		sendFileImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendFile.png")).getScaledInstance(16, 24, Image.SCALE_SMOOTH);
-		sendFileIconHover = new ImageIcon(sendFileImageHover, "Send File Button Hover");
-		sendFile = new MyJButton(sendFileIcon,sendFileIconHover);
-		
-		sendPictureImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendPicture.png")).getScaledInstance(14, 21, Image.SCALE_SMOOTH);
-		sendPictureIcon = new ImageIcon(sendPictureImage, "Send Picture Button");
-		sendPictureImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendPicture.png")).getScaledInstance(16, 24, Image.SCALE_SMOOTH);
-		sendPictureIconHover = new ImageIcon(sendPictureImageHover, "Send Picture Button Hover");
-		sendPicture = new MyJButton(sendPictureIcon,sendPictureIconHover);
-		
+	private MyNewMsgPanel createNewMsgPanel() throws IOException{		
 		editMsg = new MyEditMsg();
-		
-		sendMsgImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendMsg.png")).getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-		sendMsgIcon = new ImageIcon(sendMsgImage, "Send Msg Button");
-		sendMsgImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/sendMsg.png")).getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-		sendMsgIconHover = new ImageIcon(sendMsgImageHover, "Send Msg Button Hover");
-		sendMsg = new MyJButton(sendMsgIcon,sendMsgIconHover);
-				
-		newMsg = new MyNewMsgPanel(sendFile, sendPicture,editMsg, sendMsg);
-				
+		newMsg = new MyNewMsgPanel(editMsg);	
 		return newMsg ;
 	}
 	
@@ -305,6 +225,7 @@ public class MessageWindow extends JPanel {
 	 * */
 	private MyJScrollPane createMsgPanel() throws IOException{
 		conversationOpen = false ;
+		alertOpen = false;
 		
 		allDiscussionClose = new MessagesPanel();
 		
@@ -349,7 +270,7 @@ public class MessageWindow extends JPanel {
 		} catch (Exception ex ){
 			System.out.println("PAS ENCORE DE CONVERSATION EXISTANTE ENTRE " + AuthOperations.getConnectedUser().getLogin() + " ET " + userInDb.getLogin());
 		}
-		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation : send a message ! :)");
+		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation with " + userInDb.getLogin() + " : send a message ! :)");
 		conversation.add(startConversation);
 		if (!(idConvInDb == null)) {
 			ArrayList<MessageBuble> allMessagesConv = MainGUI.getAllMessagesFrom(idConvInDb);
@@ -391,7 +312,7 @@ public class MessageWindow extends JPanel {
 		UUID idGroup = new UUID(nbGroups, nbGroups);
 		DestinataireJPanel group = new DestinataireJPanel(name,idGroup,connect,Destinataire.Group);
 		MessagesPanel noDiscussion = new MessagesPanel(this, group.getIdDestinataire(),Destinataire.Group);
-		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation : send a message ! :)");
+		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation on " + name + " : send a message ! :)");
 		noDiscussion.add(startConversation);
 		
 		/* Saves the users on the conversation */
@@ -472,13 +393,13 @@ public class MessageWindow extends JPanel {
 	
 	/* --------- GETTER AND SETTER ----------- */
 	public boolean isConversationOpen() {return conversationOpen;}
+	public boolean isAlertOpen() {return alertOpen;}
 	public MyMenuBar getMenuBar() {return menuBar;}
 	public JRadioButton getEnglish() {return english;}
 	public MyBodyApp getBodyApp() {return bodyApp;}
 	public MyDestinatairesPanel getDestinataires() {return destinataires;}
 	public MyJScrollPane getUsersContainer() {return usersContainer;}
 	public MyJScrollPane getGroupsContainer() {return groupsContainer;}
-	public MyDiscussionContainer getDiscussionContainer() {return discussionContainer;}
 	public MyDiscussionPanel getDiscussion() {return discussion;}
 	public JMenuBar getNorthDiscussion() {return northDiscussion;}
 	public MyTitle getNameDestinataire() {return nameDestinataire;}
@@ -504,6 +425,7 @@ public class MessageWindow extends JPanel {
 	public JMenu getSeeMembersGroup() {return seeMembersGroup;}
 	public MyJButton getEditNameGroup() {return editNameGroup;}
 	public void setConversationOpen(boolean conversationOpen) {this.conversationOpen = conversationOpen;}
+	public void setAlertOpen(boolean alertOpen) {this.alertOpen = alertOpen;}
 	public void setDiscussionDisplay(MessagesPanel discussionDisplay) {	this.discussionDisplay = discussionDisplay;}
 	public void setUsersDisplay(int usersDisplay) {this.usersDisplay = usersDisplay;}
 	public void setNextUsers(JMenuItem nextUsers) {this.nextUsers = nextUsers;}
