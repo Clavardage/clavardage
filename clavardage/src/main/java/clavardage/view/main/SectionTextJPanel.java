@@ -24,7 +24,7 @@ public class SectionTextJPanel extends JPanel {
 	private SectionText type;
 	private JPanel password;
 	
-	public SectionTextJPanel(String title, String text, SectionText t) {
+	public SectionTextJPanel(String title, SectionText t) {
 		super();
 		this.type = t ;
 		this.setOpaque(false);
@@ -66,7 +66,6 @@ public class SectionTextJPanel extends JPanel {
 			this.add(textSection);
 		}
 
-		textSection.setText(text);
 		textSection.setSelectedTextColor(Application.getYELLOW());
 		this.add(createMargin(0,20));
 

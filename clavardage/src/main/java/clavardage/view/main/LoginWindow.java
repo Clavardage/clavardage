@@ -10,20 +10,26 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -58,15 +64,23 @@ public class LoginWindow extends JPanel implements MouseListener {
 		/* Add the login panel */
 		createLoginPanel();
 		
-//		this.addKeyListener((KeyListener) new KeyAdapter() {
-//	        @Override
-//	        public void keyPressed(KeyEvent e) {
-//	            if(e.getKeyCode() == KeyEvent.VK_ENTER){
-//	            	System.out.println("TEST");
-//	            	connexion();
-//	            }
-//	        }
-//	    });
+
+		Action connexion = new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				connexion();
+			}};
+
+
+			InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+			im.put(KeyStroke.getKeyStroke("ESCAPE"), "annuleAction");
+			im.put(KeyStroke.getKeyStroke("ENTER"), "valideAction");
+
+			ActionMap am = getActionMap();
+			am.put("connexion", connexion);
+
+		
+		
+
 	}
 	
 	/**
@@ -166,10 +180,10 @@ public class LoginWindow extends JPanel implements MouseListener {
 		textError.setForeground(Application.getRED());
 		sections.add(textError);
 		
-		username = new SectionTextJPanel("Mail","celestine@clav.com", SectionText.LOG);
+		username = new SectionTextJPanel("Mail", SectionText.LOG);
 		sections.add(username);
 		
-		password = new SectionTextJPanel("Password","celestine", SectionText.PW);
+		password = new SectionTextJPanel("Password", SectionText.PW);
 		sections.add(password);
 		
 		sections.add(createMargin(0, 20));
@@ -250,9 +264,8 @@ public class LoginWindow extends JPanel implements MouseListener {
 				textError.setText(" ");
 				username.setNoError();
 				password.setNoError();
-				//TODO : d�commenter :
-				//username.setText("");
-				//password.setText("");
+				username.setText("");
+				password.setText("");
 			}
 		} catch (Exception e1) {
 			//if the connection isn't established, inform the customers
@@ -273,9 +286,8 @@ public class LoginWindow extends JPanel implements MouseListener {
 			//open the SignInWindow
 			Application.displayContent(Application.getApp(), Application.getSignInWindow());	
 			textError.setText(" ");
-			//TODO : d�commenter :
-			//username.setText("");
-			//password.setText("");
+			username.setText("");
+			password.setText("");
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}		
