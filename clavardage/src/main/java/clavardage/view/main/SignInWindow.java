@@ -3,18 +3,28 @@ package clavardage.view.main;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+import clavardage.controller.authentification.AuthOperations;
+
 @SuppressWarnings("serial")
 public class SignInWindow extends LoginWindow {
 
-	private SectionTextJPanel confirmPassword;
+	private SectionTextJPanel login, confirmPassword;
 
 	public SignInWindow() throws IOException {
 		super();
+		login = new SectionTextJPanel("Login", SectionText.LOG);
+		getSections().add(login,2);
+
 		confirmPassword = new SectionTextJPanel("Confirm Password", SectionText.PW);
-		super.getSections().add(confirmPassword,3);
+		getSections().add(confirmPassword,4);
 		
-		super.getSignInButton().setText("Login");
+		getSignInButton().setText("Login");
 		getSignInButton().addMouseListener(this);
+		
+		getLogButton().setText("Sign In");
+		
+		getLogButton().addMouseListener(this);
+		getLogButtonPanel().addMouseListener(this);
 	}
 
 	@Override
@@ -27,8 +37,9 @@ public class SignInWindow extends LoginWindow {
 					e1.printStackTrace();
 				}
 			}
-			Application.displayContent(Application.getApp(), Application.getLoginWindow());
-			
+			Application.displayContent(Application.getApp(), Application.getLoginWindow());	
+		} else if (e.getSource()==getLogButton() | e.getSource()==getLogButtonPanel()) {
+			connexion();
 		}
 	}
 	

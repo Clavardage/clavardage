@@ -71,11 +71,11 @@ public class LoginWindow extends JPanel implements MouseListener {
 			}};
 
 
-			InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-			im.put(KeyStroke.getKeyStroke("ENTER"), "connexion");
+		InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		im.put(KeyStroke.getKeyStroke("ENTER"), "connexion");
 
-			ActionMap am = getActionMap();
-			am.put("connexion", connexion);
+		ActionMap am = getActionMap();
+		am.put("connexion", connexion);
 
 		
 		
@@ -221,9 +221,6 @@ public class LoginWindow extends JPanel implements MouseListener {
 
 		logButton.addMouseListener(this);
 		logButtonPanel.addMouseListener(this);
-		
-		
-
 
 		return logButtonSection;
 	}
@@ -239,7 +236,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 		return marge ;
 	}
 	
-	private void connexion() {
+	protected void connexion() {
 		try {
 			//try the connection with username and password
 			AuthOperations.connectUser(username.getText(),password.getText());
@@ -304,20 +301,16 @@ public class LoginWindow extends JPanel implements MouseListener {
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-	}
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
+	public void mouseReleased(MouseEvent e) {}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
+	public void mouseEntered(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-	}
+	public void mouseExited(MouseEvent e) {}
 
 
 	public JPanel getSections() {
@@ -338,6 +331,14 @@ public class LoginWindow extends JPanel implements MouseListener {
 
 	public JLabel getLogButton() {
 		return logButton;
+	}
+
+	public SectionTextJPanel getPassword() {
+		return password;
+	}
+
+	public MyRoundJPanel getLogButtonPanel() {
+		return logButtonPanel;
 	}
 
 }
