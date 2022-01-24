@@ -27,6 +27,7 @@ dependencies {
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
     implementation group: 'net.harawata', name: 'appdirs', version: '1.2.1'
     implementation group: 'at.favre.lib', name: 'bcrypt', version: '0.9.0'
+    implementation group: 'commons-validator', name: 'commons-validator', version: '1.7'
 }
 
 application {

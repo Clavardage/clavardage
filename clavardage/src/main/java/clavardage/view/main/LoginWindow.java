@@ -43,7 +43,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 	private JScrollPane sectionContainer;
 	private JLabel textError, logButton;
 	private Image logoImage;
-	private SectionTextJPanel username, password;
+	protected SectionTextJPanel username, password;
 	public enum SectionText {LOG, PW;}
 	public enum TypeBuble {MINE, THEIR;}
 	
@@ -226,7 +226,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 		return marge ;
 	}
 	
-	private void connexion() {
+	protected void connexion() {
 		try {
 			//try the connection with username and password
 			AuthOperations.connectUser(username.getText(),password.getText());

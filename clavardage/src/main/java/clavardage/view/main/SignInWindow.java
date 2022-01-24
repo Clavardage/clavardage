@@ -1,5 +1,7 @@
 package clavardage.view.main;
 
+import clavardage.controller.gui.MainGUI;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -30,6 +32,9 @@ public class SignInWindow extends LoginWindow {
 			}
 			Application.displayContent(Application.getApp(), Application.getLoginWindow());
 			
+		} else if (e.getSource()==super.getLogButton() | e.getSource()==super.getLogPanel()) {
+			//MainGUI.createNewUser(username.getText(), );
+			connexion();
 		}
 	}
 	
