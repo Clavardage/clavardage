@@ -271,7 +271,7 @@ public class MainGUI {
             msgs.add(new MessageBuble(
                             (m.getUser().getUUID().equals(AuthOperations.getConnectedUser().getUUID()) ? LoginWindow.TypeBuble.MINE : LoginWindow.TypeBuble.THEIR),
                             m.getText(),
-                            new MyDate(m.getDateCreated().atZone(ZoneId.systemDefault()).toEpochSecond())
+                            new MyDate(m.getDateCreated().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
                     )
             );
         }
