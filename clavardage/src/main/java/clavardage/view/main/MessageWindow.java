@@ -180,7 +180,8 @@ public class MessageWindow extends JPanel {
 		}
 		
 		usersContainer = new MyJScrollPane(listUsers);
-
+		usersContainer.getVerticalScrollBar().setValue(0);
+		
 		return usersContainer ;
 	}
 
@@ -205,6 +206,8 @@ public class MessageWindow extends JPanel {
 		addNewGroupToList("Salut c'est nous",false); //for the moment, all groups are new and there is no conversation (except one, see later)
 		
 		groupsContainer = new MyJScrollPane(listGroups);
+		groupsContainer.getVerticalScrollBar().setValue(0);
+
 		return groupsContainer ;
 	}
 
