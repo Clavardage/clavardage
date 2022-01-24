@@ -44,9 +44,9 @@ public class MyAlertMessage extends JLabel {
 	
 	public void setSizeFont(int i) {
 		sizeFont = i;
- 		setFont(new Font("Tahoma", Font.PLAIN, i));
+ 		setFont(new Font("Tahoma", Font.PLAIN, sizeFont));
  		JLabel newInfo = new JLabel(info);
- 		newInfo.setFont(new Font("Tahoma", Font.PLAIN, i));
+ 		newInfo.setFont(new Font("Tahoma", Font.PLAIN, sizeFont));
 		maxSize = newInfo.getPreferredSize();
 	}
 

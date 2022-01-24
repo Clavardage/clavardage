@@ -1,5 +1,6 @@
 package clavardage.view.mystyle;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
@@ -8,9 +9,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
@@ -25,8 +28,11 @@ import clavardage.view.main.Application;
 @SuppressWarnings("serial")
 public class MyChangeLogPanel extends MyAlertPanel {
 	
+	private Dimension maxSize ;
+	private int sizeFontChosen, sizeFont;
 	private JTextArea newLogin;
 	private JPasswordField password ;
+	private JPanel zonePassword;
 	
 	public MyChangeLogPanel() {
 		super();
@@ -48,14 +54,14 @@ public class MyChangeLogPanel extends MyAlertPanel {
 		        }
 		    });
 
+			sizeFontChosen = sizeFont = 16 ;
 			JPanel zoneEdit = new JPanel();
 			zoneEdit.setLayout(new GridBagLayout());
 			zoneEdit.setOpaque(false);
 			zoneEdit.add(newLogin);
 			getAlert().add(zoneEdit);
-			
 			password = new JPasswordField();
-			password.setFont(new Font("Tahoma", Font.BOLD, 16));
+			password.setFont(new Font("Tahoma", Font.BOLD, sizeFontChosen));
 			password.setForeground(Application.getPURPLE());
 			password.setSelectedTextColor(Application.getYELLOW());
 			password.setOpaque(false);
@@ -64,17 +70,21 @@ public class MyChangeLogPanel extends MyAlertPanel {
 			password.addKeyListener((KeyListener) new KeyAdapter() {
 		        @Override
 		        public void keyTyped(KeyEvent e) {
+		            if( ((JTextField) password).getText().length() > 50){
+		        		e.consume();
+		            }
 		        	getContainer().revalidate();
 		        }
 		    });
 			
-			JPanel zoneEdit2 = new JPanel();
-			zoneEdit2.setLayout(new BoxLayout(zoneEdit2, BoxLayout.X_AXIS));
-			zoneEdit2.setOpaque(false);
+			zonePassword = new JPanel();
+			zonePassword.setLayout(new BoxLayout(zonePassword, BoxLayout.X_AXIS));
+			zonePassword.setOpaque(false);
 			MyAlertMessage message = new MyAlertMessage("Enter your password : ", 16);
-			zoneEdit2.add(message);
-			zoneEdit2.add(password);
-			getAlert().add(zoneEdit2);
+			zonePassword.add(message);
+			zonePassword.add(password);
+			getAlert().add(zonePassword);
+			maxSize = zonePassword.getPreferredSize();
 			
 			getConfirm().addActionListener(new ActionChangeLog());
 			
@@ -84,5 +94,4 @@ public class MyChangeLogPanel extends MyAlertPanel {
 	public JTextArea getNewLogin() {
 		return newLogin;
 	}
-
 }
