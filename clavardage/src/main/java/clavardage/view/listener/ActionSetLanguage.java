@@ -30,7 +30,7 @@ public class ActionSetLanguage implements ActionListener {
 		info = new JLabel("Do you really think we've had enough time?", SwingConstants.CENTER);
 		info.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		info.setForeground(Application.getBLUE());
-		Dimension dimPopup = new Dimension(info.getPreferredSize().width+150, 100);
+		Dimension dimPopup = new Dimension(info.getPreferredSize().width+200, 100);
 		
 		popup = new JFrame();
 		popup.setTitle("Are-you kidding ?"); 

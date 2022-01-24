@@ -17,6 +17,8 @@ package clavardage.view.main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -178,7 +180,8 @@ public class MessageWindow extends JPanel {
 		}
 		
 		usersContainer = new MyJScrollPane(listUsers);
-
+		usersContainer.getVerticalScrollBar().setValue(0);
+		
 		return usersContainer ;
 	}
 
@@ -203,6 +206,8 @@ public class MessageWindow extends JPanel {
 		addNewGroupToList("Salut c'est nous",false); //for the moment, all groups are new and there is no conversation (except one, see later)
 		
 		groupsContainer = new MyJScrollPane(listGroups);
+		groupsContainer.getVerticalScrollBar().setValue(0);
+
 		return groupsContainer ;
 	}
 
@@ -248,7 +253,6 @@ public class MessageWindow extends JPanel {
 		
 		messageContainer = new MyJScrollPane(allDiscussionClose);
 		discussionDisplay = allDiscussionClose; //save the displayed discussion
-
 		return messageContainer;
 	}
 	
@@ -276,18 +280,16 @@ public class MessageWindow extends JPanel {
 			ArrayList<MessageBuble> allMessagesConv = MainGUI.getAllMessagesFrom(idConvInDb);
 			if (!allMessagesConv.isEmpty()) {
 				conversation.startConversation();
-				int i = 0;
-				for (MessageBuble msg : allMessagesConv) {
+				for (int i = allMessagesConv.size()-1; i>=0; i--) {
 					/* see if we need a DayPanel */
-					MyDate date = msg.getDate();
+					MyDate date = allMessagesConv.get(i).getDate();
 					boolean newDay = false ;
 					if (i==0) {newDay=true;} else {newDay = ActionSendMessage.needDayPanel(date, conversation);}
-					i++;
 					MyDayInfo day = new MyDayInfo(date);
 					if (newDay) {
 						conversation.add(day);  //we add the DayPanel if we need it
 					}
-					conversation.add(msg);
+					conversation.add(allMessagesConv.get(i));
 				}
 			}
 		}
@@ -427,6 +429,7 @@ public class MessageWindow extends JPanel {
 	public void setConversationOpen(boolean conversationOpen) {this.conversationOpen = conversationOpen;}
 	public void setAlertOpen(boolean alertOpen) {this.alertOpen = alertOpen;}
 	public void setDiscussionDisplay(MessagesPanel discussionDisplay) {	this.discussionDisplay = discussionDisplay;}
+	public void setNameDestinataire(String name) {nameDestinataire.setText(name);}
 	public void setUsersDisplay(int usersDisplay) {this.usersDisplay = usersDisplay;}
 	public void setNextUsers(JMenuItem nextUsers) {this.nextUsers = nextUsers;}
 	public void setBackUsers(JMenuItem backUsers) {this.backUsers = backUsers;}

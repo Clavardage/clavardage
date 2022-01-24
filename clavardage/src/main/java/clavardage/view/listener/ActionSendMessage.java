@@ -75,6 +75,8 @@ public class ActionSendMessage {
 			} else { // if it send with the keyboard 
 				w.getEditMsg().setText("");
 			}
+			
+			w.getMessageContainer().getVerticalScrollBar().setValue(w.getMessageContainer().getVerticalScrollBar().getVisibleAmount());
 		}
 	}
 

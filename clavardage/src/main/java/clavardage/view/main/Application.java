@@ -53,11 +53,11 @@ public class Application extends JFrame {
 		Application.app = this;
 		this.setTitle(title); 
 		this.setIconImage(icon.getImage());
-		this.setSize(600, 400);
-//		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH); //full size
+//		this.setSize(1200,800);
+		this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH); //full size
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null); //center
-		this.setMinimumSize(new Dimension(800,600));
+		this.setMinimumSize(new Dimension(1200,800));
 		colorThemeApp = ColorThemeApp.LIGHT; //default theme
 		setLanguageApp(LanguageApp.ENGLISH); //default language
 		
