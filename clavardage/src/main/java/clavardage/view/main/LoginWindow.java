@@ -72,8 +72,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 
 
 			InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-			im.put(KeyStroke.getKeyStroke("ESCAPE"), "annuleAction");
-			im.put(KeyStroke.getKeyStroke("ENTER"), "valideAction");
+			im.put(KeyStroke.getKeyStroke("ENTER"), "connexion");
 
 			ActionMap am = getActionMap();
 			am.put("connexion", connexion);
