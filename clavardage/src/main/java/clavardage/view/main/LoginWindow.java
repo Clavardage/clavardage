@@ -11,8 +11,6 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -279,6 +277,8 @@ public class LoginWindow extends JPanel implements MouseListener {
 				//create SignInWindow if it doesn't exist
 				Application.createSignInWindow();
 			}
+			Application.getSignInWindow().getSectionContainer().getVerticalScrollBar().setValue(0);
+
 			//open the SignInWindow
 			Application.displayContent(Application.getApp(), Application.getSignInWindow());	
 			textError.setText(" ");
@@ -339,6 +339,14 @@ public class LoginWindow extends JPanel implements MouseListener {
 
 	public MyRoundJPanel getLogButtonPanel() {
 		return logButtonPanel;
+	}
+
+	public SectionTextJPanel getUsername() {
+		return username;
+	}
+
+	public JLabel getTextError() {
+		return textError;
 	}
 
 }

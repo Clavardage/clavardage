@@ -19,6 +19,7 @@ import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.connectivity.ConnectivityDaemon;
 import clavardage.controller.connectivity.ConversationService;
+import clavardage.controller.connectivity.NetworkConnector;
 import clavardage.model.exceptions.ConversationDoesNotExistException;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.managers.ConversationManager;
@@ -98,11 +99,13 @@ public class MainGUI {
     		//handle user state in GUI
     		System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
     		try {
-    			//set icon and connectivity
-    			ActionConnectivity.setConnected(u.getUUID(), connected);
+    			if (AuthOperations.isUserConnected()) {
+    				//set icon and connectivity
+        			ActionConnectivity.setConnected(u.getUUID(), connected);
 
-    			//replace (or add if new) user in the list
-    			ActionConnectivity.reorganiseListByConnectivity(u,connected);
+        			//replace (or add if new) user in the list
+        			ActionConnectivity.reorganiseListByConnectivity(u,connected);
+    			}
     		} catch (Exception e) {
     			e.printStackTrace();
     		}
@@ -197,6 +200,8 @@ public class MainGUI {
 			Application.getMessageWindow().findMyDestinataireJPanel(uuidDestination).closeConversationInList();
 	    	// handle GUI conversation
 			MouseCloseConversation.closeConversation();
+			System.out.println("MainGUI.conversationClosed()");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -282,6 +287,13 @@ public class MainGUI {
 
     public static ArrayList<MessageBuble> getAllMessagesFrom(UUID uuidConversation) throws Exception {
         return getMessagesFrom(uuidConversation, -1);
+    }
+
+    public static void createNewUser(String username, String mail, String pass_one, String pass_two) throws Exception {
+        if(!pass_one.equals(pass_two)) {
+            throw new Exception("Passwords don't match!");
+        }
+        (new UserManager()).createUser(username, pass_one, mail, InetAddress.getByName(NetworkConnector.getLocalAddresses().get(0)));
     }
 
     public static void testConversation2() throws Exception {

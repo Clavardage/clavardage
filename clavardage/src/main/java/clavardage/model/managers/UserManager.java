@@ -5,6 +5,8 @@ import clavardage.model.exceptions.WrongIdentifiantsException;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.User;
 import clavardage.model.objects.UserPrivate;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.validator.routines.RegexValidator;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -107,7 +109,14 @@ public class UserManager extends DatabaseManager {
      * @param mail
      * @return
      */
-    public UserPrivate createUser(String login, String rawPassword, String mail, InetAddress lastIp) throws SQLException {
+    public UserPrivate createUser(String login, String rawPassword, String mail, InetAddress lastIp) throws Exception {
+        if(!isUsernameCorrect(login)) {
+            throw new Exception("Username not valid!");
+        }
+        if(!isEmailCorrect(mail)) {
+            throw new Exception("Email not valid!");
+        }
+
         String req = "INSERT INTO user(uuid, login, password, mail, last_ip) VALUES(?, ?, ?, ?, ?)";
         PreparedStatement pstmt = getConnection().prepareStatement(req);
 
@@ -132,7 +141,13 @@ public class UserManager extends DatabaseManager {
      * @param mail
      * @return
      */
-    public void addExistingUser(UUID uuid, String login, String hashedPassword, String mail, InetAddress lastIp) throws SQLException {
+    public void addExistingUser(UUID uuid, String login, String hashedPassword, String mail, InetAddress lastIp) throws Exception {
+        if(!isUsernameCorrect(login)) {
+            throw new Exception("Username not valid!");
+        }
+        if(!isEmailCorrect(mail)) {
+            throw new Exception("Email not valid!");
+        }
         String req = "INSERT INTO user(uuid, login, password, mail, last_ip) VALUES(?, ?, ?, ?, ?)";
         PreparedStatement pstmt = getConnection().prepareStatement(req);
 
@@ -268,8 +283,10 @@ WHERE user.uuid = uic.uuid_user AND uic.uuid_conversation = ?""");
     }
 
     public static boolean isUsernameCorrect(String username) {
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]{3,30}$");
-        Matcher matcher = pattern.matcher(username);
-        return matcher.find();
+        return (new RegexValidator("^[a-zA-Z0-9_]{3,30}$")).isValid(username);
+    }
+
+    public static boolean isEmailCorrect(String mail) {
+        return EmailValidator.getInstance().isValid(mail);
     }
 }

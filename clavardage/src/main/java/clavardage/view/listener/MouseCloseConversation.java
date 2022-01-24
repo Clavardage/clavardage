@@ -19,7 +19,7 @@ public class MouseCloseConversation implements ActionListener {
 	
 	public static void closeConversation() throws Exception {
 		MessageWindow w = Application.getMessageWindow();
-
+		System.out.println("MouseCloseConversation.closeConversation()");
 		/* hide newMsg and nameDestinataire if it is necessary */
 		if (w.isConversationOpen()) {
 			w.setConversationOpen(false);
@@ -36,6 +36,7 @@ public class MouseCloseConversation implements ActionListener {
 		
 		w.getMessageContainer().setViewportView(w.getAllDiscussionClose());
 		w.setDiscussionDisplay(w.getAllDiscussionClose());
+		w.getMessageContainer().validate();
 	}
 	
 	public static void closeAllConversation() {

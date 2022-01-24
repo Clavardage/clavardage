@@ -292,7 +292,7 @@ public class MessageWindow extends JPanel {
 					conversation.add(msg);
 				}
 			}
-		} else 
+		}
 		
 		/* Saves both and displays the user in the list */
 		allUsers.add(user);

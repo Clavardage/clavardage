@@ -185,6 +185,7 @@ public class DestinataireJPanel extends JPanel {
 		}
 		//set the right icon
 		this.connectLabel.setIcon(myConnectIcon);
+		this.repaint();
 	}
 	
 	

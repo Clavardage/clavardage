@@ -26,32 +26,33 @@ public class ActionConnectivity {
 	
 	public static void reorganiseListByConnectivity(User userUpdated, boolean connect) throws Exception {
 		MessageWindow w = Application.getMessageWindow();
-
-		w.getListUsers().removeAll();
-		boolean isNew = true ;
-		for (DestinataireJPanel user : w.getAllUsers()) {
-			if (user.getIdDestinataire().equals(userUpdated.getUUID())) {
-				isNew = false;
+		if (userUpdated != null) {
+			w.getListUsers().removeAll();
+			boolean isNew = true ;
+			for (DestinataireJPanel user : w.getAllUsers()) {
+				if (user.getIdDestinataire().equals(userUpdated.getUUID())) {
+					isNew = false;
+				}
+			} 
+			if (isNew && !userUpdated.getUUID().equals(AuthOperations.getConnectedUser().getUUID())) {
+				w.addNewUserToList(userUpdated, connect);
 			}
-		} 
-		if (isNew && !userUpdated.getUUID().equals(AuthOperations.getConnectedUser().getUUID())) {
-			w.addNewUserToList(userUpdated, connect);
+			for (DestinataireJPanel user : w.getAllUsers()) {
+				if (user.isOpen()) {
+					w.getListUsers().add(user);
+				}
+			}
+			for (DestinataireJPanel user : w.getAllUsers()) {
+				if (!user.isOpen() && user.isConnected()) {
+					w.getListUsers().add(user);
+				}
+			}
+			for (DestinataireJPanel user : w.getAllUsers()) {
+				if (!user.isOpen() && !user.isConnected()) {
+					w.getListUsers().add(user);
+				}
+			}	
 		}
-		for (DestinataireJPanel user : w.getAllUsers()) {
-			if (user.isOpen()) {
-				w.getListUsers().add(user);
-			}
-		}
-		for (DestinataireJPanel user : w.getAllUsers()) {
-			if (!user.isOpen() && user.isConnected()) {
-				w.getListUsers().add(user);
-			}
-		}
-		for (DestinataireJPanel user : w.getAllUsers()) {
-			if (!user.isOpen() && !user.isConnected()) {
-				w.getListUsers().add(user);
-			}
-		}	
 	}
 
 }
