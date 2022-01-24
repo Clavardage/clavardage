@@ -26,7 +26,7 @@ public class MouseOpenConversation implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 		if (!Application.getMessageWindow().isAlertOpen() ) {
 			try {		
-				if (dest.getType() == Destinataire.User) {
+				if (dest.getType() == Destinataire.User && !dest.isOpen()) {
 					// TODO: display a loading in thread
 					// TODO seulement si pastille pas bleue
 					MainGUI.openConversation(dest.getIdDestinataire()); // open network communication

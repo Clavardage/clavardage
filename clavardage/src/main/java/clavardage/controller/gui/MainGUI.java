@@ -200,8 +200,6 @@ public class MainGUI {
 			Application.getMessageWindow().findMyDestinataireJPanel(uuidDestination).closeConversationInList();
 	    	// handle GUI conversation
 			MouseCloseConversation.closeConversation();
-			System.out.println("MainGUI.conversationClosed()");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -269,9 +269,7 @@ public class MessageWindow extends JPanel {
 		UUID idConvInDb = null;
 		try {
 			idConvInDb = MainGUI.getConversationUUIDByTwoUsersUUID(AuthOperations.getConnectedUser().getUUID(), userInDb.getUUID());
-		} catch (Exception ex ){
-			System.out.println("PAS ENCORE DE CONVERSATION EXISTANTE ENTRE " + AuthOperations.getConnectedUser().getLogin() + " ET " + userInDb.getLogin());
-		}
+		} catch (Exception ex ){}
 		MyAlertMessage startConversation = new MyAlertMessage("Start the conversation with " + userInDb.getLogin() + " : send a message ! :)");
 		conversation.add(startConversation);
 		if (!(idConvInDb == null)) {
