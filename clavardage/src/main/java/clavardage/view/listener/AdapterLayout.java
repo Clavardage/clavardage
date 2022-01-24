@@ -6,12 +6,17 @@ import java.awt.Font;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 import clavardage.view.main.Application;
 import clavardage.view.main.MessageBuble;
 import clavardage.view.mystyle.MyAlertMessage;
 import clavardage.view.mystyle.MyAlertPanel;
+import clavardage.view.mystyle.MyChangeLogPanel;
 import clavardage.view.mystyle.MyRoundJTextArea;
 
 public class AdapterLayout implements ComponentListener {
@@ -35,6 +40,7 @@ public class AdapterLayout implements ComponentListener {
 		if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.mystyle.MyAlertPanel")) {
 			redimAlertPanel();
 		} else if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.mystyle.MyChangeLogPanel")) {
+//TODO			redimChangLog();
 		} else {	
 			if (Application.getMessageWindow().getDiscussionDisplay().isEmptyDiscussion()) {
 				MyAlertMessage alert = (MyAlertMessage) Application.getMessageWindow().getDiscussionDisplay().getComponent(0);
@@ -48,13 +54,13 @@ public class AdapterLayout implements ComponentListener {
 	public static void redimAlertPanel() {
 		MyAlertPanel panel = (MyAlertPanel) Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0);
 
-		MyAlertMessage alert1 = (MyAlertMessage) (MyAlertMessage) panel.getAlert().getComponent(0);
+		MyAlertMessage alert1 = (MyAlertMessage) panel.getAlert().getComponent(0);
 		redimAlert(alert1);
 		
-		MyAlertMessage alert2 = (MyAlertMessage) (MyAlertMessage) panel.getAlert().getComponent(1);
+		MyAlertMessage alert2 = (MyAlertMessage) panel.getAlert().getComponent(1);
 		redimAlert(alert2);
 		
-		MyAlertMessage alert3 = (MyAlertMessage) (MyAlertMessage) panel.getAlert().getComponent(2);
+		MyAlertMessage alert3 = (MyAlertMessage) panel.getAlert().getComponent(2);
 		redimAlert(alert3);
 		
 		if (alert2.getSizeFont() < alert3.getSizeFont()) {

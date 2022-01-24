@@ -14,6 +14,7 @@ import clavardage.view.listener.ActionAddMember;
 import clavardage.view.listener.ActionDisconnect;
 import clavardage.view.listener.ActionLeaveGroup;
 import clavardage.view.listener.ActionSetColorTheme;
+import clavardage.view.listener.AdapterLayout;
 import clavardage.view.listener.MouseFocusColor;
 import clavardage.view.main.Application;
 import clavardage.view.main.DestinataireJPanel;
@@ -112,6 +113,7 @@ public class MyAlertPanel extends JPanel {
 		alert.add(details2);
 
 		confirm.addActionListener(new ActionAddMember(item));
+		AdapterLayout.redimAlertPanel();
 	}
 	
 	/**
