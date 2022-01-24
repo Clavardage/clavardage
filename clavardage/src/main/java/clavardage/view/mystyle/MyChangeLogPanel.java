@@ -1,5 +1,6 @@
 package clavardage.view.mystyle;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -7,6 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -27,21 +30,22 @@ import clavardage.view.main.Application;
 
 @SuppressWarnings("serial")
 public class MyChangeLogPanel extends MyAlertPanel {
-	
-	private Dimension maxSize ;
-	private int sizeFontChosen, sizeFont;
-	private JTextArea newLogin;
-	private JPasswordField password ;
-	private JPanel zonePassword;
+
+	private JTextField newLogin;
 	
 	public MyChangeLogPanel() {
 		super();
-		try {	
-			newLogin = new JTextArea(AuthOperations.getConnectedUser().getLogin());
+		try {
+			
+			MyAlertMessage message = new MyAlertMessage("Change your login :");
+			getAlert().add(message);
+			
+			newLogin = new JTextField(AuthOperations.getConnectedUser().getLogin());
 			newLogin.setFont(new Font("Tahoma", Font.BOLD, 24));
 			newLogin.setForeground(Application.getPURPLE());
 			newLogin.setSelectedTextColor(Application.getYELLOW());
 			newLogin.setOpaque(false);
+			newLogin.setBorder(null);
 
 			newLogin.addKeyListener((KeyListener) new KeyAdapter() {
 		        @Override
@@ -49,49 +53,43 @@ public class MyChangeLogPanel extends MyAlertPanel {
 		            if(newLogin.getText().length() > 20){
 		        		e.consume();
 		            }
-		            newLogin.setText(newLogin.getText().replaceAll("\r", "").replaceAll("\n", "").replace(" ", ""));
-
-		        }
-		    });
-
-			sizeFontChosen = sizeFont = 16 ;
-			JPanel zoneEdit = new JPanel();
-			zoneEdit.setLayout(new GridBagLayout());
-			zoneEdit.setOpaque(false);
-			zoneEdit.add(newLogin);
-			getAlert().add(zoneEdit);
-			password = new JPasswordField();
-			password.setFont(new Font("Tahoma", Font.BOLD, sizeFontChosen));
-			password.setForeground(Application.getPURPLE());
-			password.setSelectedTextColor(Application.getYELLOW());
-			password.setOpaque(false);
-			password.setBorder(null);
-			
-			password.addKeyListener((KeyListener) new KeyAdapter() {
-		        @Override
-		        public void keyTyped(KeyEvent e) {
-		            if( ((JTextField) password).getText().length() > 50){
-		        		e.consume();
-		            }
 		        	getContainer().revalidate();
 		        }
 		    });
+
+			JPanel zoneEdit = new JPanel();
+			getAlert().add(zoneEdit);
+			zoneEdit.setLayout(new GridBagLayout());
+			zoneEdit.setOpaque(false);
+			zoneEdit.add(newLogin);
+			zoneEdit.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 			
-			zonePassword = new JPanel();
-			zonePassword.setLayout(new BoxLayout(zonePassword, BoxLayout.X_AXIS));
-			zonePassword.setOpaque(false);
-			MyAlertMessage message = new MyAlertMessage("Enter your password : ", 16);
-			zonePassword.add(message);
-			zonePassword.add(password);
-			getAlert().add(zonePassword);
-			maxSize = zonePassword.getPreferredSize();
+			zoneEdit.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseReleased(MouseEvent e) {}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {}
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					newLogin.requestFocus();
+				}
+			});
 			
 			getConfirm().addActionListener(new ActionChangeLog());
 			
 		} catch (UserNotConnectedException e) {e.printStackTrace();}
 	}
 
-	public JTextArea getNewLogin() {
+	public JTextField getNewLogin() {
 		return newLogin;
 	}
 }

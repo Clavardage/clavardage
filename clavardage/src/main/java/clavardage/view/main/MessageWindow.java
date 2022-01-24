@@ -241,7 +241,9 @@ public class MessageWindow extends JPanel {
 		allMessagesGroups.get(1).add(new MyDayInfo(new MyDate(1640048519402L)));
 		allMessagesGroups.get(1).add(msg3);
 		
-		allMessagesGroups.get(1).addMemberConversation(allUsers.get(0).getIdDestinataire());
+		if (allUsers.size() > 0) {
+			allMessagesGroups.get(1).addMemberConversation(allUsers.get(0).getIdDestinataire());
+		}
 		/* **** **** */
 		
 		messageContainer = new MyJScrollPane(allDiscussionClose);
