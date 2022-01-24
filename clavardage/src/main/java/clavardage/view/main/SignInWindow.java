@@ -13,7 +13,7 @@ public class SignInWindow extends LoginWindow {
 
 	public SignInWindow() throws IOException {
 		super();
-		confirmPassword = new SectionTextJPanel("Confirm Password","pass_0", SectionText.PW);
+		confirmPassword = new SectionTextJPanel("Confirm Password", SectionText.PW);
 		super.getSections().add(confirmPassword,3);
 		
 		super.getSignInButton().setText("Login");

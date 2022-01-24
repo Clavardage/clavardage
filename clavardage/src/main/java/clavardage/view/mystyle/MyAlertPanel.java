@@ -113,7 +113,6 @@ public class MyAlertPanel extends JPanel {
 		alert.add(details2);
 
 		confirm.addActionListener(new ActionAddMember(item));
-		AdapterLayout.redimAlertPanel();
 	}
 	
 	/**
