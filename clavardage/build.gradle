@@ -46,6 +46,8 @@ jar {
     setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE);
     from {
         configurations.runtimeClasspath.filter{ it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
     }
 }
 
