@@ -20,7 +20,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -36,18 +35,18 @@ import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.view.mystyle.MyJButtonText;
 import clavardage.view.mystyle.MyJScrollBarUI;
+import clavardage.view.mystyle.MyLogButtonJPanel;
 import clavardage.view.mystyle.MyRoundJPanel;
 @SuppressWarnings("serial")
 public class LoginWindow extends JPanel implements MouseListener {
 	
 	private MyRoundJPanel logPanel;
-	private JPanel headPanel, logoPanel, sections, logButtonSection;
-	private MyRoundJPanel logButtonPanel;
+	private JPanel headPanel, logoPanel, sections;
+	private MyLogButtonJPanel logButtonPanel ;
 	private JButton signInButton ;
 	private JScrollPane sectionContainer;
 	private JLabel textError, logButton;
-	private Image logoImage;
-	private SectionTextJPanel username, password;
+	private SectionTextJPanel mail, password;
 	public enum SectionText {LOG, PW;}
 	public enum TypeBuble {MINE, THEIR;}
 	
@@ -61,7 +60,6 @@ public class LoginWindow extends JPanel implements MouseListener {
 		
 		/* Add the login panel */
 		createLoginPanel();
-		
 
 		Action connexion = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
@@ -74,10 +72,6 @@ public class LoginWindow extends JPanel implements MouseListener {
 
 		ActionMap am = getActionMap();
 		am.put("connexion", connexion);
-
-		
-		
-
 	}
 	
 	/**
@@ -141,8 +135,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 		gbc_logoPanel.fill = GridBagConstraints.BOTH;
 		gbc_logoPanel.gridx = 1;
 		gbc_logoPanel.gridy = 1;
-		logoImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/title_below_logo.png"));
-		new ImageIcon(logoImage, "logo");
+		Image logoImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/title_below_logo.png"));
 		logoPanel = new JPanel()  {
 			Image img = logoImage;
 			{setOpaque(false);}
@@ -161,14 +154,16 @@ public class LoginWindow extends JPanel implements MouseListener {
 		gbc_signInButton.gridy = 0;
 		gbc_signInButton.gridwidth = 3 ;
 		signInButton = new MyJButtonText("Sign In");
+		signInButton.setForeground(Application.getPURPLE());
 		signInButton.addMouseListener(this);
 		headPanel.add(signInButton,gbc_signInButton);
 	}
 
 	/**
 	 * Create the sections.
+	 * @throws IOException 
 	 * */
-	private void createSection() {
+	private void createSection() throws IOException {
 		sections.setLayout(new BoxLayout(sections, BoxLayout.Y_AXIS));
 		sections.setBorder(new EmptyBorder(0, 20, 0, 20));
 		
@@ -177,8 +172,8 @@ public class LoginWindow extends JPanel implements MouseListener {
 		textError.setForeground(Application.getRED());
 		sections.add(textError);
 		
-		username = new SectionTextJPanel("Mail", SectionText.LOG);
-		sections.add(username);
+		mail = new SectionTextJPanel("Mail", SectionText.LOG);
+		sections.add(mail);
 		
 		password = new SectionTextJPanel("Password", SectionText.PW);
 		sections.add(password);
@@ -196,22 +191,19 @@ public class LoginWindow extends JPanel implements MouseListener {
 	
 	/**
 	 * Create the Login button.
+	 * @throws IOException 
 	 * */
-	private JPanel createLogButton() { 
+	private JPanel createLogButton() throws IOException { 
 		
 		logButton = new JLabel("Login",SwingConstants.CENTER);
 		logButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		logButton.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		logButton.setForeground(Color.WHITE);
 		
-		logButtonPanel = new MyRoundJPanel(90);
+		logButtonPanel = new MyLogButtonJPanel(ImageIO.read(Clavardage.getResourceStream("/img/assets/bgButtonLogBlue.png")));
 		logButtonPanel.add(logButton);
-		logButtonPanel.setPreferredSize(new Dimension(200, 80));
-		logButtonPanel.setBackground(Application.getBLUE());
-		logButtonPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		logButtonPanel.setLayout(new GridBagLayout());
-
-		logButtonSection = new JPanel();
+		
+		JPanel logButtonSection = new JPanel();
 		logButtonSection.add(logButtonPanel);
 		logButtonSection.setOpaque(false);
 		FlowLayout flowLayout = (FlowLayout) logButtonSection.getLayout();
@@ -236,8 +228,8 @@ public class LoginWindow extends JPanel implements MouseListener {
 	
 	protected void connexion() {
 		try {
-			//try the connection with username and password
-			AuthOperations.connectUser(username.getText(),password.getText());
+			//try the connection with mail and password
+			AuthOperations.connectUser(mail.getText(),password.getText());
 			
 			//if the connection is established
 			if(AuthOperations.isUserConnected()) {
@@ -256,16 +248,16 @@ public class LoginWindow extends JPanel implements MouseListener {
 				
 				//visual details
 				textError.setText(" ");
-				username.setNoError();
+				mail.setNoError();
 				password.setNoError();
-				username.setText("");
+				mail.setText("");
 				password.setText("");
 			}
 		} catch (Exception e1) {
 			//if the connection isn't established, inform the customers
 			textError.setText(e1.getMessage());
 			sectionContainer.getVerticalScrollBar().setValue(0);
-			username.setError();
+			mail.setError();
 			password.setError();
 			e1.printStackTrace();
 		}
@@ -277,12 +269,13 @@ public class LoginWindow extends JPanel implements MouseListener {
 				//create SignInWindow if it doesn't exist
 				Application.createSignInWindow();
 			}
-			Application.getSignInWindow().getSectionContainer().getVerticalScrollBar().setValue(0);
-
+			
 			//open the SignInWindow
-			Application.displayContent(Application.getApp(), Application.getSignInWindow());	
+			Application.displayContent(Application.getApp(), Application.getSignInWindow());
+			sectionContainer.getVerticalScrollBar().setValue(0);
+
 			textError.setText(" ");
-			username.setText("");
+			mail.setText("");
 			password.setText("");
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -337,12 +330,12 @@ public class LoginWindow extends JPanel implements MouseListener {
 		return password;
 	}
 
-	public MyRoundJPanel getLogButtonPanel() {
+	public MyLogButtonJPanel getLogButtonPanel() {
 		return logButtonPanel;
 	}
 
-	public SectionTextJPanel getUsername() {
-		return username;
+	public SectionTextJPanel getMail() {
+		return mail;
 	}
 
 	public JLabel getTextError() {

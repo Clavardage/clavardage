@@ -19,6 +19,7 @@ import clavardage.view.mystyle.MyRoundJTextField;
 
 @SuppressWarnings("serial")
 public class SectionTextJPanel extends JPanel {
+	
 	private JTextField textSection;
 	private JTextArea titleSection;
 	private SectionText type;
@@ -109,6 +110,10 @@ public class SectionTextJPanel extends JPanel {
 	public void setNoError() {
 		textSection.setFont(new Font("Dialog", Font.PLAIN, 12));
 		textSection.setForeground(Application.getCOLOR_TEXT_EDIT());			
+	}
+
+	public JTextArea getTitleSection() {
+		return titleSection;
 	}
 	
 	
