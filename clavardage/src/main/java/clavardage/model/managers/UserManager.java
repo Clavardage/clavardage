@@ -13,6 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserManager extends DatabaseManager {
 
@@ -61,6 +63,10 @@ public class UserManager extends DatabaseManager {
      * @param newLogin
      */
     public void updateLogin(UUID uuid, String newLogin) throws Exception {
+        if(!isUsernameCorrect(newLogin)) {
+            throw new Exception("New username not valid!");
+        }
+
         String req = "UPDATE user SET login = ? WHERE uuid = ?";
         PreparedStatement pstmt = getConnection().prepareStatement(req);
 
@@ -259,5 +265,11 @@ WHERE user.uuid = uic.uuid_user AND uic.uuid_conversation = ?""");
         pstmt.close();
 
         return exists;
+    }
+
+    public static boolean isUsernameCorrect(String username) {
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]{3,30}$");
+        Matcher matcher = pattern.matcher(username);
+        return matcher.find();
     }
 }

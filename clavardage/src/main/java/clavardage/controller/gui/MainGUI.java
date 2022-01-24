@@ -146,6 +146,15 @@ public class MainGUI {
     }
 
     /**
+     * Edit the username
+     * @param newUsername
+     * @throws Exception
+     */
+    public static void editUsername(String newUsername) throws Exception {
+        AuthOperations.editUsername(newUsername);
+    }
+
+    /**
      * Open conversation with the destination UUID of the user
      * @param uuidDestination
      * @throws Exception

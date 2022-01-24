@@ -60,6 +60,17 @@ public class AuthOperations {
     }
 
     /**
+     * Change the current connected user login
+     * @param newUsername
+     * @throws Exception
+     */
+    public static void editUsername(String newUsername) throws Exception {
+        cancelIfNotConnected();
+        userMngr.updateLogin(user.getUUID(), newUsername);
+        user.setLogin(newUsername);
+    }
+
+    /**
      * Disconnect the currently connected user
      */
     public static void disconnectUser() {
