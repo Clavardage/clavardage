@@ -53,13 +53,6 @@ public class SignInWindow extends LoginWindow {
 
 		ActionMap am = getActionMap();
 		am.put("connexion", connexion);
-		
-		getSectionContainer().getVerticalScrollBar().revalidate();
-		getSectionContainer().getVerticalScrollBar().validate();
-		getSectionContainer().getVerticalScrollBar().repaint();
-
-
-
 	}
 	
 	private void connexionSignIn() {

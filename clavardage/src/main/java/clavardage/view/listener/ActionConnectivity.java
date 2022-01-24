@@ -32,6 +32,17 @@ public class ActionConnectivity {
 			for (DestinataireJPanel user : w.getAllUsers()) {
 				if (user.getIdDestinataire().equals(userUpdated.getUUID())) {
 					isNew = false;
+					if (!userUpdated.getLogin().equals(user.getNameDestinataire())) {
+						
+						new ActionLogUpdated(user.getNameDestinataire(), userUpdated.getLogin());
+						user.setNameDestinataire(userUpdated.getLogin());
+						//TODO popup nana s'appelle maintenant nini
+						if (w.getDiscussionDisplay().getIdConversation().equals(user.getIdDestinataire())) {
+							w.setNameDestinataire(userUpdated.getLogin());
+						}
+						System.out.println("");
+
+					}
 				}
 			} 
 			if (isNew && !userUpdated.getUUID().equals(AuthOperations.getConnectedUser().getUUID())) {

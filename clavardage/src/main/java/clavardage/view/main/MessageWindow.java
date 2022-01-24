@@ -17,6 +17,8 @@ package clavardage.view.main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -248,7 +250,6 @@ public class MessageWindow extends JPanel {
 		
 		messageContainer = new MyJScrollPane(allDiscussionClose);
 		discussionDisplay = allDiscussionClose; //save the displayed discussion
-
 		return messageContainer;
 	}
 	
@@ -427,6 +428,7 @@ public class MessageWindow extends JPanel {
 	public void setConversationOpen(boolean conversationOpen) {this.conversationOpen = conversationOpen;}
 	public void setAlertOpen(boolean alertOpen) {this.alertOpen = alertOpen;}
 	public void setDiscussionDisplay(MessagesPanel discussionDisplay) {	this.discussionDisplay = discussionDisplay;}
+	public void setNameDestinataire(String name) {nameDestinataire.setText(name);}
 	public void setUsersDisplay(int usersDisplay) {this.usersDisplay = usersDisplay;}
 	public void setNextUsers(JMenuItem nextUsers) {this.nextUsers = nextUsers;}
 	public void setBackUsers(JMenuItem backUsers) {this.backUsers = backUsers;}
