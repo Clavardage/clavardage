@@ -280,18 +280,16 @@ public class MessageWindow extends JPanel {
 			ArrayList<MessageBuble> allMessagesConv = MainGUI.getAllMessagesFrom(idConvInDb);
 			if (!allMessagesConv.isEmpty()) {
 				conversation.startConversation();
-				int i = 0;
-				for (MessageBuble msg : allMessagesConv) {
+				for (int i = allMessagesConv.size()-1; i>=0; i--) {
 					/* see if we need a DayPanel */
-					MyDate date = msg.getDate();
+					MyDate date = allMessagesConv.get(i).getDate();
 					boolean newDay = false ;
 					if (i==0) {newDay=true;} else {newDay = ActionSendMessage.needDayPanel(date, conversation);}
-					i++;
 					MyDayInfo day = new MyDayInfo(date);
 					if (newDay) {
 						conversation.add(day);  //we add the DayPanel if we need it
 					}
-					conversation.add(msg);
+					conversation.add(allMessagesConv.get(i));
 				}
 			}
 		}
