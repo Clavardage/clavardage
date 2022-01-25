@@ -36,7 +36,8 @@ public class ActionLeaveGroup implements ActionListener {
 					oldGroup = group;
 				}
 			}
-			
+			AdapterLayout.redimConv();
+
 			Application.getMessageWindow().getAllMessagesGroups().remove(Application.getMessageWindow().getDiscussionDisplay()) ;
 			Application.getMessageWindow().getAllGroups().remove(oldGroup);
 			Application.getMessageWindow().getListGroups().removeAll();

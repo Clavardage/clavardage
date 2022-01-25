@@ -3,20 +3,18 @@ package clavardage.view.listener;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 
 import clavardage.view.main.Application;
 import clavardage.view.main.MessageBuble;
 import clavardage.view.mystyle.MyAlertMessage;
 import clavardage.view.mystyle.MyAlertPanel;
-import clavardage.view.mystyle.MyChangeLogPanel;
 import clavardage.view.mystyle.MyRoundJTextArea;
 
 public class AdapterLayout implements ComponentListener {
@@ -126,14 +124,16 @@ public class AdapterLayout implements ComponentListener {
 			} else {
 				int marginsVertical = 16, marginsHorizontal = 20, vgapsPanel = 4;
 				int heightWord = ((MessageBuble) panel).getSizeBuble().height-marginsVertical ;
-				int nbLine = (((MessageBuble) panel).getSizeBuble().width/(maxWidthBuble-marginsHorizontal));
-
+				int nbLine = (((MessageBuble) panel).getSizeBuble().width/(maxWidthBuble-marginsHorizontal))+1;
+				int heightBuble = marginsVertical+(heightWord*nbLine); int heightPanel = heightBuble+vgapsPanel;
+								
 				if (nbLine > 10) {nbLine++;}				
 				buble.setLineWrap(true);
 				buble.setWrapStyleWord(true);
-				buble.setPreferredSize(new Dimension(maxWidthBuble, marginsVertical+(heightWord*nbLine)));
-				((MessageBuble) panel).getGridBagLayout().rowHeights = new int[]{marginsVertical+vgapsPanel+(heightWord*nbLine), 0};
-				panel.setMaximumSize(new Dimension(sizeConv.width, marginsVertical+vgapsPanel+(heightWord*nbLine)));
+				buble.setPreferredSize(new Dimension(maxWidthBuble, heightBuble));
+				
+				((MessageBuble) panel).getGridBagLayout().rowHeights = new int[]{heightPanel, 0};
+				panel.setMaximumSize(new Dimension(sizeConv.width, heightPanel));
 				panel.revalidate();
 			}
 			buble.revalidate();

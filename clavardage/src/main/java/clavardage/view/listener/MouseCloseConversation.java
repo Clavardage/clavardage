@@ -43,6 +43,7 @@ public class MouseCloseConversation implements ActionListener {
 		w.getNameDestinataire().setText("");
 		w.getEditNameGroup().setVisible(false);
 		w.getSettingsGroups().setVisible(false);
+		w.getCloseDiscussion().setVisible(false);
 		w.getNewMsg().setVisible(false);
 		w.getMessageContainer().setViewportView(w.getAllDiscussionClose());
 		w.setDiscussionDisplay(w.getAllDiscussionClose());

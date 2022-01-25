@@ -43,6 +43,7 @@ public class ActionOpenAlert implements ActionListener {
 			//hide useless information
 			Application.getMessageWindow().getEditNameGroup().setVisible(false);
 			Application.getMessageWindow().getSettingsGroups().setVisible(false);
+			Application.getMessageWindow().getCloseDiscussion().setVisible(false);
 			Application.getMessageWindow().getNewMsg().setVisible(false);
 			Application.getMessageWindow().getNorthDiscussion().setVisible(needNameDest);
 			Application.getMessageWindow().getMessageContainer().validate();

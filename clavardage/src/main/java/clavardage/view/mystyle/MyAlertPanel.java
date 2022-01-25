@@ -64,6 +64,7 @@ public class MyAlertPanel extends JPanel {
 						Application.getMessageWindow().getEditNameGroup().setVisible(true);
 						Application.getMessageWindow().getSettingsGroups().setVisible(true);
 					}
+					Application.getMessageWindow().getCloseDiscussion().setVisible(true);
 					Application.getMessageWindow().getNewMsg().setVisible(true);
 				}
 				Application.getMessageWindow().getMessageContainer().validate();
