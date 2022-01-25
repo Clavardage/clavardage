@@ -3,13 +3,14 @@ package clavardage.controller.connectivity;
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.objects.User;
+import clavardage.model.objects.UserPrivate;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class DiscoveryService implements Activity {
 
-    private User newUser;
+    private UserPrivate newUser;
     private final UDPConnector udpListener, udpSender;
 
     public DiscoveryService() throws Exception {
@@ -20,7 +21,7 @@ public class DiscoveryService implements Activity {
 
     public void sendHello() throws Exception {
         // bonjour routine
-        udpSender.sendBroadcastPacket(AuthOperations.getConnectedUser());
+        udpSender.sendBroadcastPacket(AuthOperations.getConnectedUser()); // it's not really safe to send unencrypted hashed passwords in UDP but well it will be okay for this project I guess...
     }
 
     /**
@@ -31,8 +32,8 @@ public class DiscoveryService implements Activity {
 
         try {
             Object obj = udpListener.getPacketData();
-            if(Objects.nonNull(obj) && obj instanceof User) {
-                newUser = (User)obj;
+            if(Objects.nonNull(obj) && obj instanceof UserPrivate) {
+                newUser = (UserPrivate) obj;
                 done(); // notify main daemon
             } else {
                 System.err.println("User discovery data error");
@@ -44,7 +45,7 @@ public class DiscoveryService implements Activity {
         }
     }
 
-    public User getNewUser() {
+    public UserPrivate getNewUser() {
         return newUser;
     }
 

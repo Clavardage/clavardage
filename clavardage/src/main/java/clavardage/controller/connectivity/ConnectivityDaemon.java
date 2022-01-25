@@ -2,11 +2,13 @@ package clavardage.controller.connectivity;
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
+import clavardage.controller.data.DatabaseSynchronizer;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.managers.ConversationManager;
 import clavardage.model.managers.UserManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.User;
+import clavardage.model.objects.UserPrivate;
 
 import java.net.BindException;
 import java.util.ArrayList;
@@ -65,6 +67,7 @@ public class ConnectivityDaemon {
 
         helloDaemon = new Thread(() -> {
             while (keepDaemonAlive()) {
+                DatabaseSynchronizer.synchronize(); // synchronize the database with the fetched queue of data
                 if(AuthOperations.isUserConnected()) {
                     try {
                         finalDisc.sendHello(); // indicate we are alive
@@ -92,14 +95,15 @@ public class ConnectivityDaemon {
                             // FIXME: wait UDP
                             //discoveryDaemon.wait();
                             System.out.println("Log: UDP signal received!");
-                            User u = finalDisc.getNewUser();
+                            UserPrivate u = finalDisc.getNewUser();
                             if (u != null && AuthOperations.isUserConnected()) {
                                 if(!usersConnected.contains(u.getUUID())) {
                                     if (!user_mngr.isUserExist(u.getUUID())) {
-                                        // TODO: send userprivate !!!!!!!!!!!!!!!!!
-                                        user_mngr.addExistingUser(u.getUUID(), u.getLogin(), "", u.getUUID() + "@clav.com", u.getLastIp());
+                                        user_mngr.addExistingUser(u.getUUID(), u.getLogin(), u.getPassword(), u.getMail(), u.getLastIp());
                                     } else {
                                         user_mngr.updateLogin(u.getUUID(), u.getLogin());
+                                        user_mngr.updateHashedPassword(u.getUUID(), u.getPassword());
+                                        user_mngr.updateMail(u.getUUID(), u.getMail());
                                         user_mngr.updateLastIp(u.getUUID(), u.getLastIp());
                                     }
                                     usersConnected.add(u.getUUID());
@@ -187,6 +191,10 @@ public class ConnectivityDaemon {
         return !kill;
     }
 
+    /**
+     * Stop all daemons.
+     * Probably a bad idea to use this though as it permanently interrupts the daemons for this app instance
+     */
     public static void stop() {
         kill = true;
         notifyThread();

@@ -196,4 +196,23 @@ AND uic1.uuid_user = ? AND uic2.uuid_user = ?""");
 
         return exists;
     }
+
+    /**
+     * @param uuid
+     * @param name
+     */
+    public void updateName(UUID uuid, String name) throws Exception {
+        String req = "UPDATE conversation SET name = ? WHERE uuid = ?";
+        PreparedStatement pstmt = getConnection().prepareStatement(req);
+
+        pstmt.setString(1, name);
+        pstmt.setString(2, uuid.toString());
+
+        if(pstmt.executeUpdate() == 0) { // if no user edited
+            pstmt.close();
+            throw new Exception("Conversation not found");
+        }
+
+        pstmt.close();
+    }
 }
