@@ -59,6 +59,7 @@ public class MyDiscussionPanel extends MyRoundJPanel {
 
 		northDiscussion.add(closeDiscussion);
 		closeDiscussion.setVisible(false);
+		closeDiscussion.addActionListener(new ActionOpenAlert(AlertAction.CLOSECONV));
 
 		
 		northDiscussion.add(createMargin(5,0));

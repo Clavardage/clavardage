@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.UUID;
 
 import javax.swing.BoxLayout;
 import javax.swing.JMenuItem;
@@ -23,7 +24,7 @@ public class MyAlertPanel extends JPanel {
 	private MyJButtonText cancel, confirm;
 	private JPanel container, alert, buttons;
 	private AlertAction typeAlert;
-	public enum AlertAction {LEAVEGROUP,  CHANGELOG, DISCONNECT, ADDMEMBER;}
+	public enum AlertAction {LEAVEGROUP, CHANGELOG, DISCONNECT, ADDMEMBER, CLOSECONV;}
 
 	public MyAlertPanel() {
 		super();
@@ -76,7 +77,7 @@ public class MyAlertPanel extends JPanel {
 		cancel.addMouseListener(new MouseFocusColor());
 	}
 	
-	//leave alert & disconnect alert
+	//leave alert & disconnect alert & close conv alert
 	public MyAlertPanel(AlertAction type) {
 		this();
 		typeAlert = type;
@@ -96,12 +97,21 @@ public class MyAlertPanel extends JPanel {
 			MyAlertMessage details2 = new MyAlertMessage("", 0);
 			alert.add(details2);
 			confirm.addActionListener(new ActionDisconnect());
+		} else if (typeAlert == AlertAction.CLOSECONV) {
+			MyAlertMessage message = new MyAlertMessage("You are about to close the conversation");
+			alert.add(message);
+			MyAlertMessage details1 = new MyAlertMessage("", 0);
+			alert.add(details1);
+			MyAlertMessage details2 = new MyAlertMessage("", 0);
+			alert.add(details2);
+			confirm.addActionListener(new ActionCloseConv());
 		}
 	}
 	
 	//add user
 	public MyAlertPanel(DestinataireJPanel user, JMenuItem item) {
 		this();
+		typeAlert = AlertAction.ADDMEMBER;
 
 		MyAlertMessage message = new MyAlertMessage("You are about to add " + user.getNameDestinataire() + " in the group");
 		alert.add(message);
