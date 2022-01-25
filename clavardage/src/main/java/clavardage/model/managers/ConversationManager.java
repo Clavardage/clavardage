@@ -51,6 +51,22 @@ public class ConversationManager extends DatabaseManager {
 
         return conv;
     }
+
+    public ArrayList<Conversation> getAllConversations() throws Exception {
+        ArrayList<Conversation> conv = new ArrayList<Conversation>();
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT * FROM conversation");
+
+        ResultSet res = pstmt.executeQuery();
+        while(res.next()) {
+            conv.add(new Conversation(UUID.fromString(res.getString("uuid")), res.getString("name"), res.getTimestamp("date_created").toLocalDateTime(), (new UserManager()).getUsersByConversationUUID(UUID.fromString(res.getString("uuid")))));
+        }
+
+        res.close();
+        pstmt.close();
+
+        return conv;
+    }
+
     public Conversation getConversationByUserConvUUID(UUID uuid) throws Exception {
         Conversation conv = null;
         PreparedStatement pstmt = getConnection().prepareStatement("SELECT conversation.* FROM conversation, user_in_conversation uic WHERE conversation.uuid = uic.uuid_conversation AND uic.uuid = ?");

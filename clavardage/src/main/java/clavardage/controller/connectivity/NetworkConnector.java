@@ -1,15 +1,13 @@
 package clavardage.controller.connectivity;
 
-import clavardage.model.objects.Conversation;
-import clavardage.model.objects.Message;
-import clavardage.model.objects.User;
-import clavardage.model.objects.UserPrivate;
+import clavardage.model.objects.*;
 
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 abstract public class NetworkConnector {
     protected final ArrayList<String> LOCAL_IP_BROADCAST_LIST = getBroadcastAddresses();
@@ -72,6 +70,8 @@ abstract public class NetworkConnector {
             return (Conversation)obj;
         } else if(Message.class.isAssignableFrom(obj.getClass())) {
             return (Message)obj;
+        } else if(DatabaseMap.class.isAssignableFrom(obj.getClass())) {
+            return (DatabaseMap<Class<?>, ArrayList<?>>)obj;
         }
 
         return null;

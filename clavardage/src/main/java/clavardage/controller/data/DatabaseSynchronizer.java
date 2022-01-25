@@ -3,11 +3,9 @@ package clavardage.controller.data;
 import clavardage.model.managers.ConversationManager;
 import clavardage.model.managers.MessageManager;
 import clavardage.model.managers.UserManager;
-import clavardage.model.objects.Conversation;
-import clavardage.model.objects.Message;
-import clavardage.model.objects.User;
-import clavardage.model.objects.UserPrivate;
+import clavardage.model.objects.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -94,7 +92,13 @@ public class DatabaseSynchronizer {
         }
     }
 
-    public static String serialize() {
-        return "";
+    public static DatabaseMap<Class<?>, ArrayList<?>> getData() throws Exception {
+        DatabaseMap<Class<?>, ArrayList<?>> data = new DatabaseMap<>();
+
+        data.put(UserPrivate.class, (new UserManager()).getAllPrivateUsers());
+        data.put(Conversation.class, (new ConversationManager()).getAllConversations());
+        data.put(Message.class, (new MessageManager()).getAllMessages());
+
+        return data;
     }
 }

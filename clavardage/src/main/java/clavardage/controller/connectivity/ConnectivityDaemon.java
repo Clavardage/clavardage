@@ -6,12 +6,12 @@ import clavardage.controller.data.DatabaseSynchronizer;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.managers.ConversationManager;
 import clavardage.model.managers.UserManager;
-import clavardage.model.objects.Conversation;
-import clavardage.model.objects.User;
-import clavardage.model.objects.UserPrivate;
+import clavardage.model.objects.*;
 
 import java.net.BindException;
+import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -19,15 +19,18 @@ import java.util.UUID;
  */
 public class ConnectivityDaemon {
 
-    private static final Thread daemon, discoveryDaemon, helloDaemon, conversationServerDaemon;
+    private static final Thread daemon, discoveryDaemon, helloDaemon, conversationServerDaemon, synchronizerServerDaemon, synchronizerClientDaemon;
     private static boolean kill;
     private static final ConversationService convService;
     private static final ArrayList<UUID> usersConnected;
-    private static final int USER_CONNECTION_TIMEOUT_MS = 10000;
+    private static final int USER_CONNECTION_TIMEOUT_MS = 10000, SYNCHRONIZER_CONNECTION_TIMEOUT_MS = 60000;
+    private static final boolean ENABLE_SYNCHRONIZER;
 
     static {
         kill = false;
         usersConnected = new ArrayList<UUID>();
+
+        ENABLE_SYNCHRONIZER = true;
 
         /* MAIN DAEMON */
 
@@ -54,6 +57,74 @@ public class ConnectivityDaemon {
             }
         });
 
+        /* SYNCHRONIZER SERVICE */
+
+        SynchronizerService sync = null;
+        try {
+            sync = new SynchronizerService();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        SynchronizerService finalSync = sync;
+
+        synchronizerClientDaemon = new Thread(() -> {
+            while (keepDaemonAlive()) {
+                for(UUID uuid : usersConnected) {
+                    try {
+                        // send database data to all users connected
+                        // also, it's not really safe to send unencrypted hashed passwords in UDP but well it will be okay for this project I guess...
+                        //TODO: HANDLE THE CHANGES BY USING A TIMESTAMP OR SOMETHING LIKE THAT OTHERWISE IT WILL LOOP WITH UNDEFINED BEHAVIOR!!!!
+                        finalSync.sendDataTo(DatabaseSynchronizer.getData(), (new UserManager()).getUserByUUID(uuid).getLastIp());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                try {
+                    Thread.sleep(SYNCHRONIZER_CONNECTION_TIMEOUT_MS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        synchronizerServerDaemon = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (synchronizerServerDaemon) {
+                    while (keepDaemonAlive()) {
+                        try {
+                            finalSync.listen();
+                            System.out.println("Log: Exiting SYNC-UDP listener, waiting for signal...");
+                            // FIXME: wait UDP
+                            //synchronizerServerDaemon.wait();
+                            System.out.println("Log: SYNC-UDP signal received!");
+
+                            DatabaseMap<Class<?>, ArrayList<?>> data = finalSync.getNewData();
+
+                            //TODO: CHECK TIMESTAMP FOR EACH ROW AND ADD ONLY IF MORE RECENT!!!!!!!!!!!!!!!!!!!!!!!!
+                            for(Map.Entry<Class<?>, ArrayList<?>> entry : data.entrySet()) {
+                                if(UserPrivate.class.isAssignableFrom(entry.getKey())) {
+                                    //TODO: IF CONNECTED USER IS IN THE LIST, IGNORE
+                                    DatabaseSynchronizer.feedWithUserPrivate((ArrayList<UserPrivate>)entry.getValue());
+                                } else if(User.class.isAssignableFrom(entry.getKey())) {
+                                    //TODO: IF CONNECTED USER IS IN THE LIST, IGNORE
+                                    DatabaseSynchronizer.feedWithUser((ArrayList<User>)entry.getValue());
+                                } else if(Conversation.class.isAssignableFrom(entry.getKey())) {
+                                    DatabaseSynchronizer.feedWithConversation((ArrayList<Conversation>)entry.getValue());
+                                } else if(Message.class.isAssignableFrom(entry.getKey())) {
+                                    DatabaseSynchronizer.feedWithMessage((ArrayList<Message>)entry.getValue());
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        DatabaseSynchronizer.synchronize(); // synchronize the database with the fetched queue of data
+                    }
+                }
+            }
+        });
+
         /* DISCOVERY SERVICE */
 
         DiscoveryService disc = null;
@@ -67,7 +138,6 @@ public class ConnectivityDaemon {
 
         helloDaemon = new Thread(() -> {
             while (keepDaemonAlive()) {
-                DatabaseSynchronizer.synchronize(); // synchronize the database with the fetched queue of data
                 if(AuthOperations.isUserConnected()) {
                     try {
                         finalDisc.sendHello(); // indicate we are alive
@@ -96,7 +166,7 @@ public class ConnectivityDaemon {
                             //discoveryDaemon.wait();
                             System.out.println("Log: UDP signal received!");
                             UserPrivate u = finalDisc.getNewUser();
-                            if (u != null && AuthOperations.isUserConnected()) {
+                            if (u != null) {
                                 if(!usersConnected.contains(u.getUUID())) {
                                     if (!user_mngr.isUserExist(u.getUUID())) {
                                         user_mngr.addExistingUser(u.getUUID(), u.getLogin(), u.getPassword(), u.getMail(), u.getLastIp());
@@ -207,6 +277,14 @@ public class ConnectivityDaemon {
         synchronized (conversationServerDaemon) {
             conversationServerDaemon.interrupt();
         }
+        if(ENABLE_SYNCHRONIZER) {
+            synchronized (synchronizerServerDaemon) {
+                synchronizerServerDaemon.interrupt();
+            }
+            synchronized (synchronizerClientDaemon) {
+                synchronizerClientDaemon.interrupt();
+            }
+        }
     }
 
     public static void start() {
@@ -214,6 +292,10 @@ public class ConnectivityDaemon {
         helloDaemon.start();
         discoveryDaemon.start();
         conversationServerDaemon.start();
+        if(ENABLE_SYNCHRONIZER) {
+            synchronizerServerDaemon.start();
+            synchronizerClientDaemon.start();
+        }
     }
 
     public static void notifyThread() {
@@ -231,6 +313,21 @@ public class ConnectivityDaemon {
     public static void notifyConversationDaemon() {
         synchronized (conversationServerDaemon) {
             conversationServerDaemon.notify();
+        }
+    }
+    public static void notifySynchronizerClientDaemon() {
+        if(ENABLE_SYNCHRONIZER) {
+            synchronized (synchronizerClientDaemon) {
+                synchronizerClientDaemon.notify();
+            }
+        }
+    }
+
+    public static void notifySynchronizerServerDaemon() {
+        if(ENABLE_SYNCHRONIZER) {
+            synchronized (synchronizerServerDaemon) {
+                synchronizerServerDaemon.notify();
+            }
         }
     }
 

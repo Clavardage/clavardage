@@ -9,7 +9,7 @@ import java.util.Objects;
 public class UDPConnector extends NetworkConnector {
 
     private final int DEFAULT_UDP_PORT = 4242;
-    private final int BUFFER_SIZE = 2048;
+    private final int BUFFER_SIZE = 65535;
 
     private final int FORCED_UDP_PORT;
     byte[] buffer;

@@ -223,6 +223,26 @@ public class UserManager extends DatabaseManager {
         return users;
     }
 
+    /**
+     * @return user list
+     * @throws Exception
+     */
+    public ArrayList<UserPrivate> getAllPrivateUsers() throws Exception {
+        ArrayList<UserPrivate> users = new ArrayList<>();
+
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.* FROM user");
+
+        ResultSet res = pstmt.executeQuery();
+        while(res.next()) {
+            users.add(new UserPrivate(UUID.fromString(res.getString("uuid")), res.getString("login") , res.getString("password") , res.getString("mail"), InetAddress.getByName(res.getString("last_ip"))));
+        }
+
+        res.close();
+        pstmt.close();
+
+        return users;
+    }
+
     public ArrayList<User> getUsersByConversation(Conversation conv) throws SQLException, UnknownHostException {
         ArrayList<User> users = new ArrayList<>();
 
