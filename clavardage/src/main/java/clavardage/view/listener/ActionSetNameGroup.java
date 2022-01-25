@@ -70,6 +70,8 @@ public class ActionSetNameGroup implements ActionListener {
             	w.getNameDestinataire().setEditable(false);
             	w.getNameDestinataire().setHighlighter(null);
             	w.getNameDestinataire().removeFocusListener(this);
+    			AdapterLayout.redimConv();
+
 			}
 			
 			@Override

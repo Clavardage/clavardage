@@ -86,6 +86,8 @@ public class MouseOpenConversation implements MouseListener {
 			w.getEditNameGroup().setVisible(false);
 			w.getSettingsGroups().setVisible(false);
 		}
+		
+		w.getCloseDiscussion().setVisible(true);
 		w.getEditMsg().setEmptyText(true);
 		
 		AdapterLayout.redimDiscussion();

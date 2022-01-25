@@ -86,7 +86,7 @@ public class MessageWindow extends JPanel {
 	private MessagesPanel discussionDisplay, allDiscussionClose;
 	private ArrayList<MessagesPanel> allMessagesUsers, allMessagesGroups;
 	private MyNewMsgPanel newMsg;
-	private MyJButton editNameGroup;
+	private MyJButton editNameGroup, closeDiscussion;
 	private MyEditMsg editMsg;
 	private int membersDisplay, usersDisplay;
 	
@@ -145,17 +145,22 @@ public class MessageWindow extends JPanel {
 		nameDestinataire = new MyTitle("");
 		
 		Image editNameGroupImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-		ImageIcon editNameGroupIcon = new ImageIcon(editNameGroupImage, "Add Group Button");
+		ImageIcon editNameGroupIcon = new ImageIcon(editNameGroupImage, "Edit the name group");
 		Image editNameGroupImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/editNameGroup.png")).getScaledInstance(18, 18, Image.SCALE_SMOOTH);
-		ImageIcon editNameGroupIconHover = new ImageIcon(editNameGroupImageHover, "Add Group Button Hover");
+		ImageIcon editNameGroupIconHover = new ImageIcon(editNameGroupImageHover, "Edit the name group");
 		editNameGroup = new MyJButton(editNameGroupIcon,editNameGroupIconHover);
-		
-		settingsGroups = new JMenu();
 		
 		seeMembersGroup = new JMenu("See the members of the group");
 		addMemberInGroup = new JMenu("Add Someone to the group");
+		settingsGroups = new JMenu();
 		
-		discussion = new MyDiscussionPanel(northDiscussion, nameDestinataire, editNameGroup, settingsGroups, seeMembersGroup, addMemberInGroup,  createMsgPanel(), createNewMsgPanel(), groupsContainer);
+		Image closeDiscussionImage =ImageIO.read(Clavardage.getResourceStream("/img/assets/closeDiscussion.png")).getScaledInstance(14, 14, Image.SCALE_SMOOTH);
+		ImageIcon closeDiscussionIcon = new ImageIcon(closeDiscussionImage, "Close the current discussion");
+		Image closeDiscussionImageHover =ImageIO.read(Clavardage.getResourceStream("/img/assets/closeDiscussion.png")).getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+		ImageIcon closeDiscussionIconHover = new ImageIcon(closeDiscussionImageHover, "Close the current discussion");
+		closeDiscussion = new MyJButton(closeDiscussionIcon,closeDiscussionIconHover);
+		
+		discussion = new MyDiscussionPanel(northDiscussion, nameDestinataire, editNameGroup, settingsGroups, closeDiscussion, seeMembersGroup, addMemberInGroup,  createMsgPanel(), createNewMsgPanel(), groupsContainer);
 						
 		discussionContainer = new MyDiscussionContainer(discussion);
 
@@ -437,4 +442,9 @@ public class MessageWindow extends JPanel {
 	public void setBackMembers(JMenuItem backMembers) {this.backMembers = backMembers;}
 	public void setNextMembers(JMenuItem nextMembers) {this.nextMembers = nextMembers;}
 	public void setDisplay(int mode, int i) {if (mode == 0) {usersDisplay=i;} else if (mode == 1) {membersDisplay=i;}}
+
+
+	public MyJButton getCloseDiscussion() {
+		return closeDiscussion;
+	}
 }

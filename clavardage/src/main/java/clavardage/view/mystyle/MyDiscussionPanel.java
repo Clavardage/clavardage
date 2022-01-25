@@ -22,7 +22,7 @@ import clavardage.view.mystyle.MyAlertPanel.AlertAction;
 @SuppressWarnings("serial")
 public class MyDiscussionPanel extends MyRoundJPanel {
 
-	public MyDiscussionPanel(JMenuBar northDiscussion, MyTitle nameDestinataire, MyJButton editNameGroup, JMenu settingsGroups, 
+	public MyDiscussionPanel(JMenuBar northDiscussion, MyTitle nameDestinataire, MyJButton editNameGroup, JMenu settingsGroups, MyJButton closeDiscussion,
 			JMenu seeMembersGroup, JMenu addMemberInGroup,  MyJScrollPane msgPanel, MyNewMsgPanel newMsg, MyJScrollPane groupsContainer) throws IOException {
 		
 		super(30);
@@ -54,7 +54,15 @@ public class MyDiscussionPanel extends MyRoundJPanel {
 		settingsGroups.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		settingsGroups.setIcon(settingsGroupsIcon);
 		northDiscussion.add(settingsGroups);
-				
+		
+		northDiscussion.add(createMargin(5,0));
+
+		northDiscussion.add(closeDiscussion);
+		closeDiscussion.setVisible(false);
+
+		
+		northDiscussion.add(createMargin(5,0));
+
 		add(northDiscussion, BorderLayout.NORTH);
 		
 		add(msgPanel, BorderLayout.CENTER);

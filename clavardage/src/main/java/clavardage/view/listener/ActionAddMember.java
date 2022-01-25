@@ -46,10 +46,13 @@ public class ActionAddMember implements ActionListener {
 			e1.printStackTrace();
 		}
 		
+		AdapterLayout.redimConv();
+		
 		Application.getMessageWindow().getMessageContainer().setViewportView(Application.getMessageWindow().getDiscussionDisplay());
 		ActionSetColorTheme.customDiscussionDisplay(Application.getColorThemeApp());
 		Application.getMessageWindow().getEditNameGroup().setVisible(true);
 		Application.getMessageWindow().getSettingsGroups().setVisible(true);
+		Application.getMessageWindow().getCloseDiscussion().setVisible(true);
 		Application.getMessageWindow().getNewMsg().setVisible(true);
 		
 		Application.getMessageWindow().getMessageContainer().validate();
