@@ -24,7 +24,7 @@ public class MouseCloseConversation implements ActionListener {
 		w.getNorthDiscussion().setVisible(false);
 
 		for (Component panel : w.getListUsers().getComponents()) {
-			if (idConv.equals(null) || ((DestinataireJPanel) panel).getIdDestinataire().equals(idConv)) {
+			if (idConv == null || ((DestinataireJPanel) panel).getIdDestinataire().equals(idConv)) {
 				((DestinataireJPanel) panel).closeConversationInList();
 			}
 		}

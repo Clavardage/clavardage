@@ -15,11 +15,6 @@ public class ActionDisconnect implements ActionListener{
 		AuthOperations.disconnectUser();
 		if(!AuthOperations.isUserConnected()) {
 			Application.displayContent(Application.getApp(), Application.getLoginWindow());
-			try {
-				MouseCloseConversation.closeAllConversation();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
 		}
 	}
 
