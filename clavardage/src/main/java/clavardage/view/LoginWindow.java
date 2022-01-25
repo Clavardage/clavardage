@@ -235,7 +235,6 @@ public class LoginWindow extends JPanel implements MouseListener {
 			//if the connection is established
 			if(AuthOperations.isUserConnected()) {
 				Application.createMessageWindow();
-
 				
 				//open the MessageWindow
 				Application.displayContent(Application.getApp(), Application.getMessageWindow());
