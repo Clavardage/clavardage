@@ -147,4 +147,22 @@ ORDER BY message.date_created DESC
             throw new Exception("Conversation for the message does not exist");
         }
     }
+
+    public boolean isMessageExist(UUID uuid) throws SQLException {
+        boolean exists = false;
+
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT * FROM message WHERE message.uuid = ?");
+
+        pstmt.setString(1, uuid.toString());
+        ResultSet res = pstmt.executeQuery();
+
+        if(res.next()) {
+            exists = true;
+        }
+
+        res.close();
+        pstmt.close();
+
+        return exists;
+    }
 }

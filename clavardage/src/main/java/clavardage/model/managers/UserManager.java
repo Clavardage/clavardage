@@ -103,6 +103,48 @@ public class UserManager extends DatabaseManager {
     }
 
     /**
+     * @param uuid
+     * @param hashedPassword
+     */
+    public void updateHashedPassword(UUID uuid, String hashedPassword) throws Exception {
+        String req = "UPDATE user SET password = ? WHERE uuid = ?";
+        PreparedStatement pstmt = getConnection().prepareStatement(req);
+
+        pstmt.setString(1, hashedPassword);
+        pstmt.setString(2, uuid.toString());
+
+        if(pstmt.executeUpdate() == 0) { // if no user edited
+            pstmt.close();
+            throw new Exception("User not found");
+        }
+
+        pstmt.close();
+    }
+
+    /**
+     * @param uuid
+     * @param newMail
+     */
+    public void updateMail(UUID uuid, String newMail) throws Exception {
+        if(!isEmailCorrect(newMail)) {
+            throw new Exception("Email not valid!");
+        }
+
+        String req = "UPDATE user SET mail = ? WHERE uuid = ?";
+        PreparedStatement pstmt = getConnection().prepareStatement(req);
+
+        pstmt.setString(1, newMail);
+        pstmt.setString(2, uuid.toString());
+
+        if(pstmt.executeUpdate() == 0) { // if no user edited
+            pstmt.close();
+            throw new Exception("User not found");
+        }
+
+        pstmt.close();
+    }
+
+    /**
      * Create a new user by choosing a unique UUID and adding it to the database
      * @param login
      * @param rawPassword

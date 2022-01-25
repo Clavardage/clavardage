@@ -1,5 +1,6 @@
 package clavardage.controller.authentification;
 
+import clavardage.controller.connectivity.ConnectivityDaemon;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.exceptions.WrongIdentifiantsException;
 import clavardage.model.managers.UserManager;
@@ -74,6 +75,7 @@ public class AuthOperations {
      * Disconnect the currently connected user
      */
     public static void disconnectUser() {
+        ConnectivityDaemon.getConversationService().closeAllConversations();
         userMngr.disconnect(user);
     }
 }

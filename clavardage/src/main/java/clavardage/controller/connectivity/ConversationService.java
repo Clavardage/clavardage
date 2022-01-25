@@ -4,6 +4,7 @@ import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.model.managers.ConversationManager;
 import clavardage.model.managers.MessageManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
@@ -11,6 +12,7 @@ import clavardage.model.objects.User;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -172,6 +174,17 @@ public class ConversationService implements Activity {
 	            }
 	            MainGUI.conversationClosed(uDest.getUUID());
 	        }
+        }
+    }
+
+    /**
+     * Close all opened conversations
+     */
+    public void closeAllConversations() {
+        for(Map.Entry<UUID, RunnableTCPThread> c : convList.entrySet()) {
+            try {
+                close((new ConversationManager()).getConversationByUUID(c.getKey()));
+            } catch (Exception ignore) { }
         }
     }
 
