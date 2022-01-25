@@ -50,7 +50,8 @@ public class MouseOpenConversation implements MouseListener {
 		
 		/* display newMsg if it is necessary */
 		if (!w.isConversationOpen()) {
-			w.setConversationOpen(true);	
+			w.setConversationOpen(true);
+			w.getNorthDiscussion().setVisible(true);
 			w.getNewMsg().setVisible(true);
 		}
 		

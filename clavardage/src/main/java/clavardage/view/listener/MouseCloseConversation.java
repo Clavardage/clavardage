@@ -9,14 +9,7 @@ import clavardage.view.Application;
 import clavardage.view.MessageWindow;
 import clavardage.view.main.DestinataireJPanel;
 
-public class MouseCloseConversation implements ActionListener {
-
-	public MouseCloseConversation() {
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {	
-	}
+public class MouseCloseConversation {
 	
 	public static void closeConversation(UUID idConv) throws Exception {
 		MessageWindow w = Application.getMessageWindow();

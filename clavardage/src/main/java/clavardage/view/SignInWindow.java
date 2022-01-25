@@ -40,7 +40,7 @@ public class SignInWindow extends LoginWindow {
 		getSignInButton().addMouseListener(this);
 
 		getLogButtonPanel().setImg(ImageIO.read(Clavardage.getResourceStream("/img/assets/bgButtonLogPurple.png")));	
-		getLogButton().setText("Sign In");
+		getLogButton().setText("Sign Up");
 		
 		getLogButton().addMouseListener(this);
 		getLogButtonPanel().addMouseListener(this);

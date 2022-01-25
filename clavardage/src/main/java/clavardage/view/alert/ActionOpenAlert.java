@@ -2,6 +2,7 @@ package clavardage.view.alert;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.UUID;
 
 import javax.swing.JMenuItem;
 
@@ -34,7 +35,7 @@ public class ActionOpenAlert implements ActionListener {
 		typeAction = AlertAction.ADDMEMBER;
 		alert = new MyAlertPanel(user, item);
 	}
-
+	
 	public void actionPerformed(ActionEvent e) {
 			//display alert
 			Application.getMessageWindow().getMessageContainer().setViewportView(alert);

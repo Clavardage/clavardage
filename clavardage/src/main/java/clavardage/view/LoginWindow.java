@@ -154,7 +154,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 		gbc_signInButton.gridx = 0;
 		gbc_signInButton.gridy = 0;
 		gbc_signInButton.gridwidth = 3 ;
-		signInButton = new MyJButtonText("Sign In");
+		signInButton = new MyJButtonText("Sign Up");
 		signInButton.setForeground(Application.getPURPLE());
 		signInButton.addMouseListener(this);
 		headPanel.add(signInButton,gbc_signInButton);
