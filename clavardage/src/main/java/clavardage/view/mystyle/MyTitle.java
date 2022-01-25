@@ -5,7 +5,7 @@ import java.awt.Font;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 
 @SuppressWarnings("serial")
 public class MyTitle extends JTextArea {

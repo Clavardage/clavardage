@@ -28,14 +28,14 @@ import clavardage.model.managers.UserManager;
 import clavardage.model.objects.Conversation;
 import clavardage.model.objects.Message;
 import clavardage.model.objects.User;
+import clavardage.view.Application;
+import clavardage.view.Application.Destinataire;
+import clavardage.view.Application.TypeBuble;
 import clavardage.view.listener.ActionConnectivity;
 import clavardage.view.listener.ActionSendMessage;
 import clavardage.view.listener.MouseCloseConversation;
 import clavardage.view.listener.MouseOpenConversation;
-import clavardage.view.main.Application;
-import clavardage.view.main.LoginWindow;
 import clavardage.view.main.MessageBuble;
-import clavardage.view.main.MessageWindow;
 import clavardage.view.mystyle.MyDate;
 
 /**
@@ -80,7 +80,7 @@ public class MainGUI {
 
         if(choice == JOptionPane.YES_OPTION) {
             // handle GUI conversation
-            MouseOpenConversation.openConversation(uDest.getLogin(), uDest.getUUID(), MessageWindow.Destinataire.User);
+            MouseOpenConversation.openConversation(uDest.getLogin(), uDest.getUUID(), Destinataire.User);
             // call pastille bleu func
             Application.getMessageWindow().findMyDestinataireJPanel(uDest.getUUID()).openConversationInList();
             //ConnectivityDaemon.getConversationService().sendMessageToConversation(c, new Message(UUID.randomUUID(), "Bien recu bro", new User(UUID.randomUUID(), "test2", InetAddress.getByName("127.0.0.2")), c));
@@ -196,10 +196,10 @@ public class MainGUI {
     
     public static void conversationClosed(UUID uuidDestination) {
     	try {
-        	//enlever pastille bleue
-			Application.getMessageWindow().findMyDestinataireJPanel(uuidDestination).closeConversationInList();
+//        	//enlever pastille bleue
+//			Application.getMessageWindow().findMyDestinataireJPanel(uuidDestination).closeConversationInList();
 	    	// handle GUI conversation
-			MouseCloseConversation.closeConversation();
+			MouseCloseConversation.closeConversation(uuidDestination);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -269,7 +269,7 @@ public class MainGUI {
 
         for (Message m : allMsgs) {
             msgs.add(new MessageBuble(
-                            (m.getUser().getUUID().equals(AuthOperations.getConnectedUser().getUUID()) ? LoginWindow.TypeBuble.MINE : LoginWindow.TypeBuble.THEIR),
+                            (m.getUser().getUUID().equals(AuthOperations.getConnectedUser().getUUID()) ? TypeBuble.MINE : TypeBuble.THEIR),
                             m.getText(),
                             new MyDate(m.getDateCreated().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
                     )

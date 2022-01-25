@@ -1,4 +1,4 @@
-package clavardage.view.main;
+package clavardage.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -14,6 +14,8 @@ import javax.swing.KeyStroke;
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.gui.MainGUI;
+import clavardage.view.Application.SectionText;
+import clavardage.view.main.SectionTextJPanel;
 
 @SuppressWarnings("serial")
 public class SignInWindow extends LoginWindow {

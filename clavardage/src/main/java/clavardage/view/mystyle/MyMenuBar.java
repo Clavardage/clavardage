@@ -18,13 +18,12 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
-import clavardage.view.listener.ActionDisconnect;
-import clavardage.view.listener.ActionOpenAlert;
+import clavardage.view.Application.ColorThemeApp;
+import clavardage.view.Application.LanguageApp;
+import clavardage.view.alert.ActionOpenAlert;
+import clavardage.view.alert.MyAlertPanel.AlertAction;
+import clavardage.view.alert.popup.ActionSetLanguage;
 import clavardage.view.listener.ActionSetColorTheme;
-import clavardage.view.listener.ActionSetLanguage;
-import clavardage.view.main.Application.ColorThemeApp;
-import clavardage.view.main.Application.LanguageApp;
-import clavardage.view.mystyle.MyAlertPanel.AlertAction;
 
 @SuppressWarnings("serial")
 public class MyMenuBar extends JMenuBar {

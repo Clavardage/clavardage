@@ -13,7 +13,7 @@ import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 
 @SuppressWarnings("serial")
 public class MyJScrollBarUI extends BasicScrollBarUI {

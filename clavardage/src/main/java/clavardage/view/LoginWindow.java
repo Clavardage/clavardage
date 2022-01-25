@@ -1,4 +1,4 @@
-package clavardage.view.main;
+package clavardage.view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -33,6 +33,8 @@ import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
+import clavardage.view.Application.SectionText;
+import clavardage.view.main.SectionTextJPanel;
 import clavardage.view.mystyle.MyJButtonText;
 import clavardage.view.mystyle.MyJScrollBarUI;
 import clavardage.view.mystyle.MyLogButtonJPanel;
@@ -47,8 +49,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 	private JScrollPane sectionContainer;
 	private JLabel textError, logButton;
 	private SectionTextJPanel mail, password;
-	public enum SectionText {LOG, PW;}
-	public enum TypeBuble {MINE, THEIR;}
+
 	
 	public LoginWindow() throws IOException {		
 		GridBagLayout gridBagLayout = new GridBagLayout();

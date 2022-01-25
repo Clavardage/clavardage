@@ -18,8 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
+import clavardage.view.Application;
 import clavardage.view.listener.ActionSendMessage;
-import clavardage.view.main.Application;
 
 @SuppressWarnings("serial")
 public class MyNewMsgPanel extends JPanel {

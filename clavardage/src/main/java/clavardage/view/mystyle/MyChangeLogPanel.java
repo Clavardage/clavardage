@@ -25,8 +25,10 @@ import javax.swing.text.Highlighter.HighlightPainter;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.view.listener.ActionChangeLog;
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.alert.ActionChangeLog;
+import clavardage.view.alert.MyAlertMessage;
+import clavardage.view.alert.MyAlertPanel;
 
 @SuppressWarnings("serial")
 public class MyChangeLogPanel extends MyAlertPanel {

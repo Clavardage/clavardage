@@ -1,4 +1,4 @@
-package clavardage.view.mystyle;
+package clavardage.view.alert;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -6,7 +6,7 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 
 @SuppressWarnings("serial")
 public class MyAlertMessage extends JLabel {

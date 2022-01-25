@@ -6,7 +6,7 @@ import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JTextField;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 
 public class MyRoundJTextField extends JTextField {
 

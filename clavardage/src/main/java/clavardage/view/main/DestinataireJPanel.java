@@ -18,9 +18,10 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import clavardage.controller.Clavardage;
+import clavardage.view.Application;
+import clavardage.view.Application.Destinataire;
 import clavardage.view.listener.ActionConnectivity;
 import clavardage.view.listener.MouseOpenConversation;
-import clavardage.view.main.MessageWindow.Destinataire;
 
 @SuppressWarnings("serial")
 public class DestinataireJPanel extends JPanel {
@@ -159,7 +160,9 @@ public class DestinataireJPanel extends JPanel {
 	 * */
 	public void closeConversationInList() throws Exception {
 		this.conversationOpen = false ;
-		this.setConnected(false);
+		if (this.type == Destinataire.User) {
+			this.setConnected(false);
+		}
 		ActionConnectivity.reorganiseListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
 	}
 

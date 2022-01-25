@@ -5,7 +5,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 
 @SuppressWarnings("serial")
 public class MyBodyApp extends JPanel {

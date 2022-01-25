@@ -1,4 +1,4 @@
-package clavardage.view.listener;
+package clavardage.view.alert;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,9 +11,11 @@ import java.awt.event.KeyListener;
 import javax.swing.text.DefaultHighlighter;
 
 import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.MessageWindow;
+import clavardage.view.listener.ActionSendMessage;
+import clavardage.view.listener.AdapterLayout;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.main.MessageWindow;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyDayInfo;
 import clavardage.view.mystyle.MyInfoPanel;

@@ -6,7 +6,7 @@ import java.awt.Insets;
 
 import javax.swing.JButton;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 
 @SuppressWarnings("serial")
 public class MyJButtonText extends JButton {
