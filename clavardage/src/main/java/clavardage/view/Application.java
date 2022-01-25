@@ -1,4 +1,4 @@
-package clavardage.view.main;
+package clavardage.view;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -42,10 +42,16 @@ public class Application extends JFrame {
 	protected static Color COLOR_PURPLE = new Color(157,22,180) ;
 	protected static Color COLOR_YELLOW = new Color(247,234,69) ;
 
-	private static ColorThemeApp colorThemeApp ;	
 	
 	public enum LanguageApp {FRENCH, ENGLISH, SPANISH, GERMAN, CHINESE, JAPANESE;}
-	private static LanguageApp languageApp ;	
+	public enum SectionText {LOG, PW;}
+	public enum TypeBuble {MINE, THEIR;}
+	public enum Destinataire {User,Group;}
+
+	
+	private static LanguageApp languageApp ;
+	private static ColorThemeApp colorThemeApp ;	
+
 
 
 	public Application(String title, ImageIcon icon) {
@@ -111,11 +117,11 @@ public class Application extends JFrame {
 		app.setContentPane(content);
 		
 		/* Apply the chosen theme */
-		if(content.getClass().getName().equals("clavardage.view.main.LoginWindow")) {
+		if(content.getClass().getName().equals("clavardage.view.LoginWindow")) {
 			ActionSetColorTheme.customThemeLogin(Application.getColorThemeApp());
-		} else if (content.getClass().getName().equals("clavardage.view.main.MessageWindow")) {
+		} else if (content.getClass().getName().equals("clavardage.view.MessageWindow")) {
 			ActionSetColorTheme.customThemeMessage(Application.getColorThemeApp());
-		} else if (content.getClass().getName().equals("clavardage.view.main.SignInWindow")) {
+		} else if (content.getClass().getName().equals("clavardage.view.SignInWindow")) {
 			ActionSetColorTheme.customThemeSignIn(Application.getColorThemeApp());
 		}
 		
@@ -240,5 +246,20 @@ public class Application extends JFrame {
 
 	public static void setLanguageApp(LanguageApp languageApp) {
 		Application.languageApp = languageApp;
+	}
+
+
+	public static Color getCOLOR_TEXT_THEIR_MESSAGE() {
+		return COLOR_TEXT_THEIR_MESSAGE;
+	}
+
+
+	public static Color getCOLOR_MINE_MESSAGE() {
+		return COLOR_MINE_MESSAGE;
+	}
+
+
+	public static Color getCOLOR_TEXT_MINE_MESSAGE() {
+		return COLOR_TEXT_MINE_MESSAGE;
 	}
 }

@@ -1,4 +1,4 @@
-package clavardage.view.listener;
+package clavardage.view.alert.popup;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,8 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import clavardage.controller.Clavardage;
-import clavardage.view.main.Application;
-import clavardage.view.main.Application.LanguageApp;
+import clavardage.view.Application;
+import clavardage.view.Application.LanguageApp;
 
 public class ActionSetLanguage implements ActionListener {
 	

@@ -15,12 +15,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import clavardage.controller.Clavardage;
-import clavardage.view.listener.ActionSetNameGroup;
+import clavardage.view.Application;
+import clavardage.view.Application.Destinataire;
+import clavardage.view.MessageWindow;
+import clavardage.view.alert.ActionSetNameGroup;
 import clavardage.view.listener.MouseOpenConversation;
-import clavardage.view.main.Application;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.main.MessageWindow;
-import clavardage.view.main.MessageWindow.Destinataire;
 
 @SuppressWarnings("serial")
 public class MyGroupsPanel extends JPanel {

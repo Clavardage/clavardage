@@ -1,4 +1,4 @@
-package clavardage.view.main;
+package clavardage.view;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -33,6 +33,8 @@ import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
+import clavardage.view.Application.SectionText;
+import clavardage.view.main.SectionTextJPanel;
 import clavardage.view.mystyle.MyJButtonText;
 import clavardage.view.mystyle.MyJScrollBarUI;
 import clavardage.view.mystyle.MyLogButtonJPanel;
@@ -47,8 +49,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 	private JScrollPane sectionContainer;
 	private JLabel textError, logButton;
 	private SectionTextJPanel mail, password;
-	public enum SectionText {LOG, PW;}
-	public enum TypeBuble {MINE, THEIR;}
+
 	
 	public LoginWindow() throws IOException {		
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -233,15 +234,7 @@ public class LoginWindow extends JPanel implements MouseListener {
 			
 			//if the connection is established
 			if(AuthOperations.isUserConnected()) {
-				if (Application.getMessageWindow() == null) {
-					//create MessageWindow if it doesn't exist
-					Application.createMessageWindow();
-				} else {
-					//update the conversations for the current user if MessageWindow already exist
-					Application.getMessageWindow().resetAllMessages();
-					Application.getMessageWindow().setUsersContainer();
-					Application.getMessageWindow().setGroupsContainer();
-				}
+				Application.createMessageWindow();
 				
 				//open the MessageWindow
 				Application.displayContent(Application.getApp(), Application.getMessageWindow());

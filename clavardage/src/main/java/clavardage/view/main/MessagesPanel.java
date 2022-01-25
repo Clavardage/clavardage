@@ -8,8 +8,9 @@ import java.util.UUID;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-import clavardage.view.main.MessageWindow.Destinataire;
-import clavardage.view.mystyle.MyAlertMessage;
+import clavardage.view.Application.Destinataire;
+import clavardage.view.MessageWindow;
+import clavardage.view.alert.MyAlertMessage;
 
 @SuppressWarnings("serial")
 public class MessagesPanel extends JPanel {

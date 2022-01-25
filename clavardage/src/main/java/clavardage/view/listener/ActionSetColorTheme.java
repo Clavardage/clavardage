@@ -4,14 +4,14 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import clavardage.view.main.Application;
-import clavardage.view.main.Application.ColorThemeApp;
+import clavardage.view.Application;
+import clavardage.view.LoginWindow;
+import clavardage.view.MessageWindow;
+import clavardage.view.SignInWindow;
+import clavardage.view.Application.ColorThemeApp;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.main.LoginWindow;
 import clavardage.view.main.MessageBuble;
-import clavardage.view.main.MessageWindow;
 import clavardage.view.main.SectionTextJPanel;
-import clavardage.view.main.SignInWindow;
 import clavardage.view.mystyle.MyRoundJTextField;
 
 public class ActionSetColorTheme implements ActionListener {

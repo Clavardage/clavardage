@@ -1,14 +1,14 @@
-package clavardage.view.listener;
+package clavardage.view.alert;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.alert.MyAlertPanel.AlertAction;
+import clavardage.view.listener.ActionSetColorTheme;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.mystyle.MyAlertPanel;
-import clavardage.view.mystyle.MyAlertPanel.AlertAction;
 import clavardage.view.mystyle.MyChangeLogPanel;
 
 public class ActionOpenAlert implements ActionListener {

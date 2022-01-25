@@ -13,7 +13,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import clavardage.view.main.LoginWindow.SectionText;
+import clavardage.view.Application;
+import clavardage.view.Application.SectionText;
 import clavardage.view.mystyle.MyRoundJPanel;
 import clavardage.view.mystyle.MyRoundJTextField;
 

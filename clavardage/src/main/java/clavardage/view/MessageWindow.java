@@ -1,4 +1,4 @@
-package clavardage.view.main;
+package clavardage.view;
 
 /* TODO
  * -button hover à centrer
@@ -17,8 +17,6 @@ package clavardage.view.main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -36,9 +34,13 @@ import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.objects.User;
+import clavardage.view.Application.Destinataire;
+import clavardage.view.Application.TypeBuble;
+import clavardage.view.alert.MyAlertMessage;
 import clavardage.view.listener.ActionSendMessage;
-import clavardage.view.main.LoginWindow.TypeBuble;
-import clavardage.view.mystyle.MyAlertMessage;
+import clavardage.view.main.DestinataireJPanel;
+import clavardage.view.main.MessageBuble;
+import clavardage.view.main.MessagesPanel;
 import clavardage.view.mystyle.MyBodyApp;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyDayInfo;
@@ -75,7 +77,6 @@ public class MessageWindow extends JPanel {
 	private MyListDestinataires listUsers, listGroups ;
 	private ArrayList<DestinataireJPanel> allUsers, allGroups ;
 	private int nbUsers, nbGroups;
-	public enum Destinataire {User,Group;}
 	// -- Discussion -- //
 	private MyDiscussionPanel discussion;
 	private JMenuBar northDiscussion;

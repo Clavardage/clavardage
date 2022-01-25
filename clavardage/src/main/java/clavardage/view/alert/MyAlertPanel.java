@@ -1,4 +1,4 @@
-package clavardage.view.mystyle;
+package clavardage.view.alert;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -10,15 +10,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import clavardage.view.listener.ActionAddMember;
-import clavardage.view.listener.ActionDisconnect;
-import clavardage.view.listener.ActionLeaveGroup;
+import clavardage.view.Application;
+import clavardage.view.Application.Destinataire;
 import clavardage.view.listener.ActionSetColorTheme;
-import clavardage.view.listener.AdapterLayout;
 import clavardage.view.listener.MouseFocusColor;
-import clavardage.view.main.Application;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.main.MessageWindow.Destinataire;
+import clavardage.view.mystyle.MyJButtonText;
 
 @SuppressWarnings("serial")
 public class MyAlertPanel extends JPanel {

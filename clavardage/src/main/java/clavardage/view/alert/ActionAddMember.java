@@ -1,4 +1,4 @@
-package clavardage.view.listener;
+package clavardage.view.alert;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,12 +6,12 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 
 import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.listener.ActionSendMessage;
 import clavardage.view.main.DestinataireJPanel;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyDayInfo;
 import clavardage.view.mystyle.MyInfoPanel;
-import clavardage.view.mystyle.MyJButtonText;
 
 public class ActionAddMember implements ActionListener {
 	
@@ -46,23 +46,7 @@ public class ActionAddMember implements ActionListener {
 			e1.printStackTrace();
 		}
 		
-		AdapterLayout.redimConv();
-		
-		Application.getMessageWindow().getMessageContainer().setViewportView(Application.getMessageWindow().getDiscussionDisplay());
-		ActionSetColorTheme.customDiscussionDisplay(Application.getColorThemeApp());
-		Application.getMessageWindow().getEditNameGroup().setVisible(true);
-		Application.getMessageWindow().getSettingsGroups().setVisible(true);
-		Application.getMessageWindow().getCloseDiscussion().setVisible(true);
-		Application.getMessageWindow().getNewMsg().setVisible(true);
-		
-		Application.getMessageWindow().getMessageContainer().validate();
-		MouseOpenConversation.createAddMemberInGroup();
-		MouseOpenConversation.createSeeMembersGroup();
-		((MyJButtonText) e.getSource()).setForeground(Application.getBLUE());
-		Application.getMessageWindow().setAlertOpen(false) ;
-
-
-
+		ActionCloseAlert.closeAlert(e);
 	}
 
 }

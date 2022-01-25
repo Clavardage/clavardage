@@ -8,11 +8,12 @@ import javax.swing.JMenuItem;
 
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.Application.Destinataire;
+import clavardage.view.MessageWindow;
+import clavardage.view.alert.ActionOpenAlert;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.main.MessageWindow;
 import clavardage.view.main.MessagesPanel;
-import clavardage.view.main.MessageWindow.Destinataire;
 
 public class MouseOpenConversation implements MouseListener {
 	

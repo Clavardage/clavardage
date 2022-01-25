@@ -4,9 +4,10 @@ import java.util.UUID;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.objects.User;
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.MessageWindow;
+import clavardage.view.alert.popup.ActionLogUpdated;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.main.MessageWindow;
 
 public class ActionConnectivity {
 	

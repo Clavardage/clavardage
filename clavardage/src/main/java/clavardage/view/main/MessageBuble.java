@@ -11,8 +11,9 @@ import java.awt.Toolkit;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import clavardage.view.Application;
+import clavardage.view.Application.TypeBuble;
 import clavardage.view.listener.AdapterLayout;
-import clavardage.view.main.LoginWindow.TypeBuble;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyRoundJTextArea;
 
@@ -82,7 +83,7 @@ public class MessageBuble extends JPanel {
 			gridBagLayout.columnWeights = new double[]{0.0, b, a, Double.MIN_VALUE};
 			gbc_zoneBuble.gridx = 1;
 			buble.setBackground(Application.getBLUE());
-			buble.setForeground(Application.COLOR_TEXT_THEIR_MESSAGE);
+			buble.setForeground(Application.getCOLOR_TEXT_THEIR_MESSAGE());
 		}
 		
 		this.setLayout(gridBagLayout);
@@ -101,8 +102,8 @@ public class MessageBuble extends JPanel {
 	
 	public void setColorPanel() {
 		if (this.type == TypeBuble.MINE) {
-			buble.setBackground(Application.COLOR_MINE_MESSAGE);
-			buble.setForeground(Application.COLOR_TEXT_MINE_MESSAGE);
+			buble.setBackground(Application.getCOLOR_MINE_MESSAGE());
+			buble.setForeground(Application.getCOLOR_TEXT_MINE_MESSAGE());
 		}
 	}
 	

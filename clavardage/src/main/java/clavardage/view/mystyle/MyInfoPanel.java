@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 import clavardage.view.main.DestinataireJPanel;
 
 @SuppressWarnings("serial")

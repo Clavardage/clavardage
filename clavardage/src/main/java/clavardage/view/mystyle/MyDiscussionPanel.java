@@ -15,9 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
-import clavardage.view.listener.ActionOpenAlert;
-import clavardage.view.listener.ActionSetNameGroup;
-import clavardage.view.mystyle.MyAlertPanel.AlertAction;
+import clavardage.view.alert.ActionOpenAlert;
+import clavardage.view.alert.ActionSetNameGroup;
+import clavardage.view.alert.MyAlertPanel.AlertAction;
 
 @SuppressWarnings("serial")
 public class MyDiscussionPanel extends MyRoundJPanel {

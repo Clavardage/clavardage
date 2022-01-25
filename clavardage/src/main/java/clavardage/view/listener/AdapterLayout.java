@@ -11,10 +11,10 @@ import java.awt.event.ComponentListener;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.alert.MyAlertMessage;
+import clavardage.view.alert.MyAlertPanel;
 import clavardage.view.main.MessageBuble;
-import clavardage.view.mystyle.MyAlertMessage;
-import clavardage.view.mystyle.MyAlertPanel;
 import clavardage.view.mystyle.MyRoundJTextArea;
 
 public class AdapterLayout implements ComponentListener {
@@ -28,16 +28,16 @@ public class AdapterLayout implements ComponentListener {
 	}
 	
 	public static void redimWindow() {
-		if(Application.getContentDisplay().getClass().getName().equals("clavardage.view.main.MessageWindow")) {
+		if(Application.getContentDisplay().getClass().getName().equals("clavardage.view.MessageWindow")) {
 			redimBody();	
 			redimDiscussion();
 		}
 	}
 	
 	public static void redimDiscussion() {
-		if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.mystyle.MyAlertPanel")) {
+		if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.alert.MyAlertPanel")) {
 			redimAlertPanel();
-		} else if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.mystyle.MyChangeLogPanel")) {
+		} else if (Application.getMessageWindow().getMessageContainer().getViewport().getComponent(0).getClass().getName().equals("clavardage.view.alert.MyChangeLogPanel")) {
 //TODO			redimChangLog();
 		} else {	
 			if (Application.getMessageWindow().getDiscussionDisplay().isEmptyDiscussion()) {

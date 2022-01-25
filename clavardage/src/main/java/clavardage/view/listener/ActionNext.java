@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
+import clavardage.view.alert.ActionOpenAlert;
 import clavardage.view.main.DestinataireJPanel;
 
 public class ActionNext implements ActionListener {

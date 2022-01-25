@@ -3,7 +3,7 @@ package clavardage.view.listener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import clavardage.view.main.Application;
+import clavardage.view.Application;
 import clavardage.view.mystyle.MyJButtonText;
 
 public class MouseFocusColor implements MouseListener {
