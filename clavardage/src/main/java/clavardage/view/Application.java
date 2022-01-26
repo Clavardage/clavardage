@@ -76,6 +76,7 @@ public class Application extends JFrame {
 	 * Can be <code>LOG</code> (login) if we can see the typed text or <code>PW</code> (password) if he typed text is hided
 	 * @see LoginWindow
 	 * @see LoginWindow#createSection
+	 * TODO
 	 */
 	public enum SectionText {LOG, PW;}
 	
@@ -128,7 +129,7 @@ public class Application extends JFrame {
 	
 	/**
 	 * Create the Sign In Window.
-	 * @throws Exception 
+	 * @throws IOException 
 	 * */
 	public static void createSignInWindow() throws IOException {
 		signIn = new SignInWindow();		
