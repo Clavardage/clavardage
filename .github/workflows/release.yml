@@ -26,13 +26,29 @@ jobs:
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
       run: chmod +x gradlew
       
+    - name: build JavaDoc with Gradle (on Linux generation platform)
+      if: matrix.os == 'ubuntu-latest'
+      run: ./gradlew javadoc
+
+    - name: Zip JavaDoc (on Linux generation platform)
+      if: matrix.os == 'ubuntu-latest'
+      run: cd clavardage/build/docs && zip -r javadoc.zip javadoc
+
+    - name: Upload JavaDoc (from Linux generation platform)
+      if: matrix.os == 'ubuntu-latest'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: clavardage/build/docs/javadoc.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: jpackage with Gradle
       run: ./gradlew jpackage
-      
+
     - name: Upload JAR archive (from Windows generation platform)
       if: matrix.os == 'windows-latest'
       uses: softprops/action-gh-release@v1
-      with: 
+      with:
         files: clavardage/build/libs/*.jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

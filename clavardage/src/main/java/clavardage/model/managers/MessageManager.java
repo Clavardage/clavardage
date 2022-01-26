@@ -35,6 +35,22 @@ public class MessageManager extends DatabaseManager {
         return msg;
     }
 
+    public ArrayList<Message> getAllMessages() throws Exception {
+
+        ArrayList<Message> msg = new ArrayList<Message>();
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT * FROM message");
+
+        ResultSet res = pstmt.executeQuery();
+        while(res.next()) {
+            msg.add(new Message(UUID.fromString(res.getString("uuid")), res.getString("text"), (new UserManager()).getUserByUserConvUUID(UUID.fromString(res.getString("user_conv"))), (new ConversationManager()).getConversationByUserConvUUID(UUID.fromString(res.getString("user_conv"))), res.getTimestamp("date_created").toLocalDateTime()));
+        }
+
+        res.close();
+        pstmt.close();
+
+        return msg;
+    }
+
     public ArrayList<Message> getLastMessagesFromConversation(Conversation c, int numberOfMessages, int page) throws Exception {
         ArrayList<Message> msg = new ArrayList<Message>();
 

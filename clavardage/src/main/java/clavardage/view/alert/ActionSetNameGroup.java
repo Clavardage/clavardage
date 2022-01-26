@@ -25,7 +25,6 @@ public class ActionSetNameGroup implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		setNameGroup();
-		System.out.println("test");
 		Application.getMessageWindow().getGroupsContainer().validate();		
 	}
 	

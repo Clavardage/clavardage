@@ -8,6 +8,10 @@ import clavardage.model.objects.UserPrivate;
 
 import java.sql.SQLException;
 
+/**
+ * Authentification Operations
+ * @author Romain MONIER
+ */
 public class AuthOperations {
 
     private static UserPrivate user;
@@ -20,6 +24,7 @@ public class AuthOperations {
 
     /**
      * Check if there is a currently connected user
+     * @author Romain MONIER
      * @return
      */
     public static boolean isUserConnected() {
@@ -28,6 +33,7 @@ public class AuthOperations {
 
     /**
      * Throw an exception if the user is not authenticated
+     * @author Romain MONIER
      * @throws UserNotConnectedException
      */
     public static void cancelIfNotConnected() throws UserNotConnectedException {
@@ -36,6 +42,7 @@ public class AuthOperations {
 
     /**
      * Retrieve the currently connected user
+     * @author Romain MONIER
      * @return
      * @throws UserNotConnectedException
      */
@@ -48,10 +55,10 @@ public class AuthOperations {
 
     /**
      * Connect the current user
+     * @author Romain MONIER
      * @param mail
      * @param password
-     * @throws SQLException
-     * @throws WrongIdentifiantsException
+     * @throws Exception
      */
     public static void connectUser(String mail, String password) throws Exception {
         if(isUserConnected()) {
@@ -62,6 +69,7 @@ public class AuthOperations {
 
     /**
      * Change the current connected user login
+     * @author Romain MONIER
      * @param newUsername
      * @throws Exception
      */
@@ -73,6 +81,7 @@ public class AuthOperations {
 
     /**
      * Disconnect the currently connected user
+     * @author Romain MONIER
      */
     public static void disconnectUser() {
         ConnectivityDaemon.getConversationService().closeAllConversations();

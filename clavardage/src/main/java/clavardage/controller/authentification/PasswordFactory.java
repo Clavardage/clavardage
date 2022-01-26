@@ -4,10 +4,13 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 
 /**
  * We use a Bcrypt algorithm as it is safer than the built-in PBKDF2 algorithm
+ * @author Romain MONIER
  */
 public class PasswordFactory {
 
     /**
+     * Generate hash
+     * @author Romain MONIER
      * @param rawPassword
      * @return hash
      */
@@ -16,6 +19,8 @@ public class PasswordFactory {
     }
 
     /**
+     * Verify if the passwords match
+     * @author Romain MONIER
      * @param rawPassword
      * @param hashedPassword
      * @return true if matches

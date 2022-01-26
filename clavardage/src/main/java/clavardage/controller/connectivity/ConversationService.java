@@ -1,6 +1,5 @@
 package clavardage.controller.connectivity;
 
-import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
@@ -16,12 +15,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Conversation Service: uses TCP Connectors to handle conversations and processes database actions linked to it
+ * @author Romain MONIER
+ */
 public class ConversationService implements Activity {
 
     private final TCPConnector tcpServer, tcpClient;
     private final HashMap<UUID, RunnableTCPThread> convList;
     private Conversation newConversation;
 
+    /**
+     * Constructor overriding conversation handlers in TCP Connectors (client and server) on default port
+     * @author Romain MONIER
+     * @throws Exception
+     */
     public ConversationService() throws Exception {
         super();
         convList = new HashMap<UUID, RunnableTCPThread>();
@@ -62,6 +70,8 @@ public class ConversationService implements Activity {
 
     /**
      * Wait for TCP connections and handle clients
+     * @author Romain MONIER
+     * @throws IOException
      */
     public void listen() throws IOException {
         tcpServer.waitForClient().start();
@@ -69,8 +79,10 @@ public class ConversationService implements Activity {
 
     /**
      * Try to open a TCP connection with server
+     * @author Romain MONIER
      * @param conv
      * @throws IOException
+     * @throws UserNotConnectedException
      */
     public void openConversation(Conversation conv) throws IOException, UserNotConnectedException {
         User uDest = null;
@@ -88,7 +100,10 @@ public class ConversationService implements Activity {
 
     /**
      * Conversation thread handled there, main loop
+     * @author Romain MONIER
      * @param r
+     * @param currentConv
+     * @throws IOException
      */
     public void handleConversation(RunnableTCPThread r, Conversation currentConv) throws IOException {
         try {
@@ -98,7 +113,7 @@ public class ConversationService implements Activity {
                 Message msg = waitForConversationEvent(r);
 
                 /* HANDLE MESSAGE */
-                // System.out.println("Test: from: " + msg.getUser().getLogin() + " msg = " + msg.getText()); // test display
+                
                 // save in DB
                 (new MessageManager()).saveExistingMessage(msg.getUUID(), msg.getText(), msg.getUser(), msg.getConversation(), msg.getDateCreated());
                 // send it to GUI
@@ -119,6 +134,7 @@ public class ConversationService implements Activity {
 
     /**
      * Wait for Conversation event : reception of message (getPacketData) OR OTHER DATA (TODO)
+     * @author Romain MONIER
      * @param r
      * @return New Message
      * @throws Exception
@@ -154,6 +170,7 @@ public class ConversationService implements Activity {
 
     /**
      * Close conversation (unlock the handleConversation instance by closing the socket)
+     * @author Romain MONIER
      * @param c
      * @throws UserNotConnectedException 
      */
@@ -179,6 +196,7 @@ public class ConversationService implements Activity {
 
     /**
      * Close all opened conversations
+     * @author Romain MONIER
      */
     public void closeAllConversations() {
         for(Map.Entry<UUID, RunnableTCPThread> c : convList.entrySet()) {
@@ -189,9 +207,11 @@ public class ConversationService implements Activity {
     }
 
     /**
-     *
+     * Send Message
+     * @author Romain MONIER
      * @param c
      * @param m
+     * @throws Exception
      */
     public void sendMessageToConversation(Conversation c, Message m) throws Exception {
         try {
@@ -201,10 +221,19 @@ public class ConversationService implements Activity {
         }
     }
 
+    /**
+     * Conversation data retrieved getter
+     * @author Romain MONIER
+     * @return
+     */
     public Conversation getNewConversation() {
         return newConversation;
     }
 
+    /**
+     * Notify the conversation daemon when actions finished
+     * @author Romain MONIER
+     */
     @Override
     public void done() {
         ConnectivityDaemon.notifyConversationDaemon();

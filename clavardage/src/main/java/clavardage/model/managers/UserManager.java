@@ -181,7 +181,6 @@ public class UserManager extends DatabaseManager {
      * @param login
      * @param hashedPassword has to be a Bcrypt hash
      * @param mail
-     * @return
      */
     public void addExistingUser(UUID uuid, String login, String hashedPassword, String mail, InetAddress lastIp) throws Exception {
         if(!isUsernameCorrect(login)) {
@@ -215,6 +214,26 @@ public class UserManager extends DatabaseManager {
         ResultSet res = pstmt.executeQuery();
         while(res.next()) {
             users.add(new User(UUID.fromString(res.getString("uuid")), res.getString("login"), InetAddress.getByName(res.getString("last_ip"))));
+        }
+
+        res.close();
+        pstmt.close();
+
+        return users;
+    }
+
+    /**
+     * @return user list
+     * @throws Exception
+     */
+    public ArrayList<UserPrivate> getAllPrivateUsers() throws Exception {
+        ArrayList<UserPrivate> users = new ArrayList<>();
+
+        PreparedStatement pstmt = getConnection().prepareStatement("SELECT user.* FROM user");
+
+        ResultSet res = pstmt.executeQuery();
+        while(res.next()) {
+            users.add(new UserPrivate(UUID.fromString(res.getString("uuid")), res.getString("login") , res.getString("password") , res.getString("mail"), InetAddress.getByName(res.getString("last_ip"))));
         }
 
         res.close();
