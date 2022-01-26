@@ -205,6 +205,10 @@ public class MainGUI {
 		}
     }
 
+    public static void closeConversation(UUID uuidDestination) throws Exception {
+        ConnectivityDaemon.getConversationService().close((new ConversationManager()).getConversationByUUID(getConversationUUIDByTwoUsersUUID(AuthOperations.getConnectedUser().getUUID(), uuidDestination)));
+    }
+
     public static UUID getConversationUUIDByTwoUsersUUID(UUID u1, UUID u2) throws Exception {
         ConversationManager cm = new ConversationManager();
         UserManager um = new UserManager();
