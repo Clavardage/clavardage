@@ -32,7 +32,7 @@ jobs:
 
     - name: Zip JavaDoc (on Linux generation platform)
       if: matrix.os == 'ubuntu-latest'
-      run: zip clavardage/build/docs/javadoc.zip clavardage/build/docs/javadoc
+      run: zip -r clavardage/build/docs/javadoc.zip clavardage/build/docs/javadoc
 
     - name: Upload JavaDoc (from Linux generation platform)
       if: matrix.os == 'ubuntu-latest'
