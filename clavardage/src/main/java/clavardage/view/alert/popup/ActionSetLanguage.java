@@ -33,7 +33,7 @@ public class ActionSetLanguage implements ActionListener {
 		Dimension dimPopup = new Dimension(info.getPreferredSize().width+200, 100);
 		
 		popup = new JFrame();
-		popup.setTitle("Are-you kidding ?"); 
+		popup.setTitle("Are you kidding ?"); 
 		try {popup.setIconImage(ImageIO.read(Clavardage.getResourceStream("/img/icons/icon.png")));} 
 		catch (IOException e1) {e1.printStackTrace();}
 		popup.setSize(dimPopup);
