@@ -5,12 +5,12 @@ import clavardage.model.managers.MessageManager;
 import clavardage.model.managers.UserManager;
 import clavardage.model.objects.*;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Please feed the synchronizer with coherence! For instance, don't feed a conversation with a user which
  * has not been added before, otherwise the adding will fail when the synchronize method is called.
+ * @author Romain MONIER
  */
 public class DatabaseSynchronizer {
 
@@ -26,22 +26,46 @@ public class DatabaseSynchronizer {
         msgList = new ArrayList<Message>();
     }
 
+    /**
+     * Feed with conversations
+     * @author Romain MONIER
+     * @param list
+     */
     public static void feedWithConversation(ArrayList<Conversation> list) {
         convList.addAll(list);
     }
 
+    /**
+     * Feed with users (private)
+     * @author Romain MONIER
+     * @param list
+     */
     public static void feedWithUserPrivate(ArrayList<UserPrivate> list) {
         userPrivateList.addAll(list);
     }
 
+    /**
+     * Feed with users (public)
+     * @author Romain MONIER
+     * @param list
+     */
     public static void feedWithUser(ArrayList<User> list) {
         userList.addAll(list);
     }
 
+    /**
+     * Feed with messsages
+     * @author Romain MONIER
+     * @param list
+     */
     public static void feedWithMessage(ArrayList<Message> list) {
         msgList.addAll(list);
     }
 
+    /**
+     * Synchronize the databases with the current data queue
+     * @author Romain MONIER
+     */
     public static void synchronize() {
         for(User u : (ArrayList<User>)userList.clone()) {
             try {
@@ -92,6 +116,12 @@ public class DatabaseSynchronizer {
         }
     }
 
+    /**
+     * Retrieve this current database data in the DatabaseMap format
+     * @author Romain MONIER
+     * @return
+     * @throws Exception
+     */
     public static DatabaseMap<Class<?>, ArrayList<?>> getData() throws Exception {
         DatabaseMap<Class<?>, ArrayList<?>> data = new DatabaseMap<>();
 

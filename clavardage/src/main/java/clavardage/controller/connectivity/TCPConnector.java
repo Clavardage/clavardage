@@ -6,6 +6,10 @@ import java.io.*;
 import java.net.*;
 import java.util.Objects;
 
+/**
+ * TCP Connector
+ * @author Romain MONIER
+ */
 public class TCPConnector extends NetworkConnector implements ConversationActivity {
     private final int DEFAULT_TCP_PORT = 4342;
     protected final int MAX_SERVER_REQUESTS = 10;
@@ -13,16 +17,35 @@ public class TCPConnector extends NetworkConnector implements ConversationActivi
     private final int FORCED_TCP_PORT;
     ServerSocket servSocket;
 
+    /**
+     * Use the default 4342 port
+     * @author Romain MONIER
+     * @throws Exception
+     */
     public TCPConnector() throws Exception {
         super();
         FORCED_TCP_PORT = DEFAULT_TCP_PORT;
     }
 
+    /**
+     * Use the custom port
+     * @author Romain MONIER
+     * @param port
+     * @throws Exception
+     */
     public TCPConnector(int port) throws Exception {
         super();
         FORCED_TCP_PORT = port;
     }
 
+    /**
+     * Ask the server to establish a connection in a new thread
+     * @author Romain MONIER
+     * @param c
+     * @param ip
+     * @return
+     * @throws IOException
+     */
     public Thread askServer(Conversation c, String ip) throws IOException {
         System.out.println("Log: TCP TRYING: " + ip + ":" + FORCED_TCP_PORT);
         Socket link = new Socket(InetAddress.getByName(ip), FORCED_TCP_PORT);
@@ -56,6 +79,12 @@ public class TCPConnector extends NetworkConnector implements ConversationActivi
         });
     }
 
+    /**
+     * Accept a TCP connection in a new thread
+     * @author Romain MONIER
+     * @return
+     * @throws IOException
+     */
     private Thread getClient() throws IOException {
         if(Objects.isNull(servSocket) || servSocket.isClosed()) {
             servSocket = new ServerSocket(FORCED_TCP_PORT, MAX_SERVER_REQUESTS);
@@ -94,6 +123,12 @@ public class TCPConnector extends NetworkConnector implements ConversationActivi
         });
     }
 
+    /**
+     * TCP Accept wrapper
+     * @author Romain MONIER
+     * @return
+     * @throws IOException
+     */
     public Thread waitForClient() throws IOException {
         return getClient();
     }

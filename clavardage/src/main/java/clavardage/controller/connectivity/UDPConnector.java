@@ -6,6 +6,10 @@ import java.io.*;
 import java.net.*;
 import java.util.Objects;
 
+/**
+ * UDP Connector
+ * @author Romain MONIER
+ */
 public class UDPConnector extends NetworkConnector {
 
     private final int DEFAULT_UDP_PORT = 4242;
@@ -16,16 +20,35 @@ public class UDPConnector extends NetworkConnector {
     DatagramSocket dgramSocketIn, dgramSocketOut;
     DatagramPacket inPacket, outPacket;
 
+    /**
+     * Use the default 4242 port
+     * @author Romain MONIER
+     * @throws Exception
+     */
     public UDPConnector() throws Exception {
         super();
         FORCED_UDP_PORT = DEFAULT_UDP_PORT;
     }
 
+    /**
+     * Use the custom port
+     * @author Romain MONIER
+     * @param port
+     * @throws Exception
+     */
     public UDPConnector(int port) throws Exception {
         super();
         FORCED_UDP_PORT = port;
     }
 
+    /**
+     * Send the packet data
+     * @author Romain MONIER
+     * @param obj
+     * @param ip
+     * @param port
+     * @throws IOException
+     */
     public void sendPacket(Serializable obj, String ip, int port) throws IOException {
         if(Objects.nonNull(dgramSocketOut))
             dgramSocketOut.close();
@@ -40,12 +63,23 @@ public class UDPConnector extends NetworkConnector {
         dgramSocketOut.close();
     }
 
+    /**
+     * Send a broadcast packet
+     * @author Romain MONIER
+     * @param obj
+     * @throws IOException
+     */
     public void sendBroadcastPacket(Serializable obj) throws IOException {
         for(String ip_broadcast : LOCAL_IP_BROADCAST_LIST) {
             sendPacket(obj, ip_broadcast, FORCED_UDP_PORT);
         }
     }
 
+    /**
+     * Get a packet data
+     * @author Romain MONIER
+     * @throws IOException
+     */
     private void getPacket() throws IOException {
         if(Objects.nonNull(dgramSocketIn))
             dgramSocketIn.close();
@@ -57,12 +91,24 @@ public class UDPConnector extends NetworkConnector {
         dgramSocketIn.close();
     }
 
+    /**
+     * UDP getter wrapper
+     * @author Romain MONIER
+     * @throws IOException
+     */
     public void waitPacket() throws IOException {
         //do {
             getPacket();
         //} while(LOCAL_IP_ADDRESS_LIST.contains(inPacket.getAddress().getHostAddress()));
     }
 
+    /**
+     * Get the packet data and update the user IP in a hacky way
+     * @author Romain MONIER
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public Object getPacketData() throws IOException, ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(inPacket.getData()));
         Object obj = objectInputStream.readObject();

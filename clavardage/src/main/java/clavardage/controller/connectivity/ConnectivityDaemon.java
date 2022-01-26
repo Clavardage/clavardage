@@ -1,6 +1,5 @@
 package clavardage.controller.connectivity;
 
-import clavardage.controller.Clavardage;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.data.DatabaseSynchronizer;
 import clavardage.controller.gui.MainGUI;
@@ -9,13 +8,14 @@ import clavardage.model.managers.UserManager;
 import clavardage.model.objects.*;
 
 import java.net.BindException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
 /**
  * Handle the network connectivity activities and use infos to update database and program state
+ * Static constructor set up the daemons threads and make them ready to run
+ * @author Romain MONIER
  */
 public class ConnectivityDaemon {
 
@@ -253,10 +253,20 @@ public class ConnectivityDaemon {
         convService = finalConv;
     }
 
+    /**
+     * ConversationService instance getter
+     * @author Romain MONIER
+     * @return
+     */
     public static ConversationService getConversationService() {
         return convService;
     }
 
+    /**
+     * Boolean getter to check if we need to continue to run the daemons
+     * @author Romain MONIER
+     * @return
+     */
     private static boolean keepDaemonAlive() {
         return !kill;
     }
@@ -264,6 +274,7 @@ public class ConnectivityDaemon {
     /**
      * Stop all daemons.
      * Probably a bad idea to use this though as it permanently interrupts the daemons for this app instance
+     * @author Romain MONIER
      */
     public static void stop() {
         kill = true;
@@ -287,6 +298,10 @@ public class ConnectivityDaemon {
         }
     }
 
+    /**
+     * Start all daemons
+     * @author Romain MONIER
+     */
     public static void start() {
         daemon.start();
         helloDaemon.start();
@@ -298,23 +313,40 @@ public class ConnectivityDaemon {
         }
     }
 
+    /**
+     * Notify the main daemon to unlock the wait
+     * @author Romain MONIER
+     */
     public static void notifyThread() {
         synchronized (daemon) {
             daemon.notify();
         }
     }
 
+    /**
+     * Notify the discovery daemon to unlock the wait
+     * @author Romain MONIER
+     */
     public static void notifyDiscoveryDaemon() {
         synchronized (discoveryDaemon) {
             discoveryDaemon.notify();
         }
     }
 
+    /**
+     * Notify the conversation daemon to unlock the wait
+     * @author Romain MONIER
+     */
     public static void notifyConversationDaemon() {
         synchronized (conversationServerDaemon) {
             conversationServerDaemon.notify();
         }
     }
+
+    /**
+     * Notify the synchronizer client daemon to unlock the wait
+     * @author Romain MONIER
+     */
     public static void notifySynchronizerClientDaemon() {
         if(ENABLE_SYNCHRONIZER) {
             synchronized (synchronizerClientDaemon) {
@@ -323,6 +355,10 @@ public class ConnectivityDaemon {
         }
     }
 
+    /**
+     * Notify the synchronizer server daemon to unlock the wait
+     * @author Romain MONIER
+     */
     public static void notifySynchronizerServerDaemon() {
         if(ENABLE_SYNCHRONIZER) {
             synchronized (synchronizerServerDaemon) {
@@ -331,6 +367,10 @@ public class ConnectivityDaemon {
         }
     }
 
+    /**
+     * Wait 5 seconds and display the remaining time (useful for connection retries)
+     * @author Romain MONIER
+     */
     private static void waitForRetryConnection() {
         try {
             System.err.print("Error, unable to connect, retrying in 5");

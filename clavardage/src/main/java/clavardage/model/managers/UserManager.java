@@ -181,7 +181,6 @@ public class UserManager extends DatabaseManager {
      * @param login
      * @param hashedPassword has to be a Bcrypt hash
      * @param mail
-     * @return
      */
     public void addExistingUser(UUID uuid, String login, String hashedPassword, String mail, InetAddress lastIp) throws Exception {
         if(!isUsernameCorrect(login)) {

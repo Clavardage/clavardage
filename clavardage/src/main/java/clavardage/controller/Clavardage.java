@@ -2,33 +2,34 @@ package clavardage.controller;
 
 import clavardage.controller.connectivity.ConnectivityDaemon;
 import clavardage.controller.gui.MainGUI;
-import clavardage.model.managers.UserManager;
 
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.util.Objects;
 
-/** Main Class
+/**
+ * Main Class
  * @author Romain MONIER
  */
 public class Clavardage
 {
+    /**
+     * Retrieve an InputStream corresponding to the resource file.
+     * This is mandatory for the JAR build to work
+     * @author Romain MONIER
+     * @param path
+     * @return
+     */
     public static InputStream getResourceStream(String path) {
         return Objects.requireNonNull(Clavardage.class.getResourceAsStream(path));
     }
 
-    public static boolean machine1; // FOR TESTS, will be deleted
-
-    /** Starting point
+    /**
+     * Starting point
      * @author Romain MONIER
      * @param args
      */
     public static void main(String[] args)
     {
-        machine1 = args.length > 0 && args[0].equals("m1"); // FOR TESTS, will be deleted
-
-        //createTestUsers(); // uncomment to create 50 more users at the next run (test, will be deleted)
-
         /* MAIN WINDOW */
 
         try {
@@ -46,23 +47,6 @@ public class Clavardage
             System.err.println("Error during the creation of ConnectivityDaemon Thread. [" + e + "]");
             e.printStackTrace();
         }
-    }
-
-    /**
-     * will be deleted, call it to create 50 users
-     */
-    private static void createTestUsers() {
-        UserManager um = new UserManager();
-        System.out.print("/!\\ TEST /!\\ : Processing the creation of 50 users.");
-        for(int i = 0 ; i < 50 ; i++) {
-            try {
-                um.createUser("user_" + i, "pass_" + i, "mail_" + i + "@clav.com", InetAddress.getByName("127.0.0." + (i+1)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.print(".");
-        }
-        System.out.println();
     }
 }
 
