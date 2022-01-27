@@ -31,8 +31,7 @@ public class DestinataireJPanel extends JPanel {
 	private JLabel connectLabel;
 	private UUID id;
 	private boolean conversationOpen, connected ;
-	private Image openImage, connectUserImage, disconnectUserImage, connectGroupImage, disconnectGroupImage;
-	private ImageIcon openIcon, myConnectIcon, connectUserIcon, disconnectUserIcon, connectGroupIcon, disconnectGroupIcon;
+	private ImageIcon userOpen, groupOpen, myConnectIcon, connectUserIcon, disconnectUserIcon, connectGroupIcon, disconnectGroupIcon;
 	private Destinataire type;
 	private MouseOpenConversation myListener;
 	
@@ -48,17 +47,19 @@ public class DestinataireJPanel extends JPanel {
 		this.myListener = new MouseOpenConversation(this);
 		
 		//pastille bleue
-		this.openImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userOpen.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
-		this.openIcon = new ImageIcon(openImage, "The conversation is open");
+		Image openImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userOpen.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+		this.userOpen = new ImageIcon(openImage, "The conversation is open");
+		Image opengImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/groupOpen.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+		this.groupOpen = new ImageIcon(opengImage, "The conversation is open");
 		
 		//save images and icons
-		connectUserImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+		Image connectUserImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userConnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
 		connectUserIcon = new ImageIcon(connectUserImage, "User is connected");	
-		disconnectUserImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
+		Image disconnectUserImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/userDisconnect.png")).getScaledInstance(11, 11, Image.SCALE_SMOOTH);
 		disconnectUserIcon = new ImageIcon(disconnectUserImage, "User is disconnected");
-		connectGroupImage =  ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+		Image connectGroupImage =  ImageIO.read(Clavardage.getResourceStream("/img/assets/groupConnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 		connectGroupIcon =  new ImageIcon(connectGroupImage, "At least one user is connected");
-		disconnectGroupImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+		Image disconnectGroupImage = ImageIO.read(Clavardage.getResourceStream("/img/assets/groupDisconnect.png")).getScaledInstance(15, 15, Image.SCALE_SMOOTH);
 		disconnectGroupIcon = new ImageIcon(disconnectGroupImage, "All users are disconnected");
 		
 		//choose the right icon
@@ -149,7 +150,11 @@ public class DestinataireJPanel extends JPanel {
 	public void openConversationInList() {
 		this.conversationOpen = true ;
 		setConnected(true);
-		connectLabel.setIcon(openIcon);
+		if (this.type == Destinataire.User) {
+			connectLabel.setIcon(userOpen);
+		} else {
+			connectLabel.setIcon(groupOpen);
+		}
 		MouseOpenConversation.moveInTopOfList(this.type, this.id);
 	}
 	
@@ -161,10 +166,11 @@ public class DestinataireJPanel extends JPanel {
 		this.conversationOpen = false ;
 		if (this.type == Destinataire.User) {
 			this.setConnected(false);
-			ActionConnectivity.reorganizeListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
+			ActionConnectivity.updateListUser(Application.getMessageWindow().findMyUser(this.id), this.connected);
 		} else {
 			this.myConnectIcon = connectGroupIcon;
 			this.connectLabel.setIcon(myConnectIcon);
+			ActionConnectivity.reorganizeListByConnectivity(this.type);
 			this.repaint();
 			this.validate();
 		}
