@@ -52,20 +52,22 @@ public class ActionSetColorTheme implements ActionListener {
 	
 	public static void customThemeSignIn(ColorThemeApp c) {
 		changeColorThemeApp(c);
-		SignInWindow w = Application.getSignInWindow();
-		w.setBackground(Application.getCOLOR_BACKGROUND());
-		w.getLogPanel().setBackground(Application.getCOLOR_BACKGROUND2());	
+		try {
+			SignInWindow w = Application.getSignInWindow();
+			w.setBackground(Application.getCOLOR_BACKGROUND());
+			w.getLogPanel().setBackground(Application.getCOLOR_BACKGROUND2());
 
-		/* ** Sections ** */
-		w.getSections().setBackground(Application.getCOLOR_BACKGROUND2());
-		for (Component panel : w.getSections().getComponents()) {
-			if ( panel.getClass().getName().equals("clavardage.view.main.SectionTextJPanel")  ) {
-				((SectionTextJPanel) panel).setColorTextSession(Application.getCOLOR_EDIT_MESSAGE(), Application.getCOLOR_TEXT_EDIT());
+			/* ** Sections ** */
+			w.getSections().setBackground(Application.getCOLOR_BACKGROUND2());
+			for (Component panel : w.getSections().getComponents()) {
+				if (panel.getClass().getName().equals("clavardage.view.main.SectionTextJPanel")) {
+					((SectionTextJPanel) panel).setColorTextSession(Application.getCOLOR_EDIT_MESSAGE(), Application.getCOLOR_TEXT_EDIT());
+				}
 			}
-		}
-		w.getSectionContainer().getVerticalScrollBar().setBackground(Application.getCOLOR_BACKGROUND2());
-		
-		w.getLogButton().setForeground(Application.getCOLOR_BACKGROUND2());
+			w.getSectionContainer().getVerticalScrollBar().setBackground(Application.getCOLOR_BACKGROUND2());
+
+			w.getLogButton().setForeground(Application.getCOLOR_BACKGROUND2());
+		} catch (Exception ignore) { }
 	}
 	
 	public static void customThemeMessage(ColorThemeApp c) {
