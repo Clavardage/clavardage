@@ -6,11 +6,12 @@ import java.util.UUID;
 
 import javax.swing.JMenuItem;
 
+import clavardage.controller.authentification.AuthOperations;
+import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.Application;
 import clavardage.view.alert.MyAlertPanel.AlertAction;
 import clavardage.view.listener.ActionSetColorTheme;
 import clavardage.view.main.DestinataireJPanel;
-import clavardage.view.mystyle.MyChangeLogPanel;
 
 public class ActionOpenAlert implements ActionListener {
 
@@ -53,7 +54,17 @@ public class ActionOpenAlert implements ActionListener {
 			Application.getMessageWindow().setAlertOpen(true) ;
 			
 			//for Change log
-			if (typeAction == AlertAction.CHANGELOG) {((MyChangeLogPanel) alert).getNewLogin().requestFocus(); ((MyChangeLogPanel) alert).getNewLogin().selectAll();}
+			if (typeAction == AlertAction.CHANGELOG) {
+				((MyChangeLogPanel) alert).getError().setVisible(false);
+				try {
+					((MyChangeLogPanel) alert).getNewLogin().setText(AuthOperations.getConnectedUser().getLogin());
+				} catch (UserNotConnectedException e1) {
+					e1.printStackTrace();
+				}
+				((MyChangeLogPanel) alert).getNewLogin().requestFocus();
+				((MyChangeLogPanel) alert).getNewLogin().selectAll();
+
+			}
 	}
 
 }

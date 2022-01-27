@@ -14,11 +14,20 @@ import javax.swing.SwingConstants;
 import clavardage.controller.Clavardage;
 import clavardage.view.Application;
 
+/**
+ * 
+ * @author Célestine Paillé
+ */
 public class ActionLogUpdated {
 		
 		private JFrame popup;
 		private JLabel info;
 		
+		/**
+		 * 
+		 * @param oldName
+		 * @param newName
+		 */
 		public ActionLogUpdated(String oldName, String newName) {
 
 			info = new JLabel(oldName + " is now called " + newName, SwingConstants.CENTER);

@@ -344,7 +344,7 @@ WHERE user.uuid = uic.uuid_user AND uic.uuid_conversation = ?""");
     }
 
     public static boolean isUsernameCorrect(String username) {
-        return (new RegexValidator("^[a-zA-Z0-9_]{3,30}$")).isValid(username);
+        return (new RegexValidator("^[a-zA-Z0-9_]{3,20}$")).isValid(username);
     }
 
     public static boolean isEmailCorrect(String mail) {

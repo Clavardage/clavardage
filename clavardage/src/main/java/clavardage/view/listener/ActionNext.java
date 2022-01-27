@@ -11,6 +11,11 @@ import clavardage.view.Application;
 import clavardage.view.alert.ActionOpenAlert;
 import clavardage.view.main.DestinataireJPanel;
 
+/**
+ * Allows you to go next in the display of users in the groups parameters.
+ * 
+ * @author Célestine Paillé
+ */
 public class ActionNext implements ActionListener {
 	
 	private int display, mode;
@@ -18,6 +23,11 @@ public class ActionNext implements ActionListener {
 	private JMenu menu;
 	private ArrayList<DestinataireJPanel> list;
 	
+	/**
+	 * Create the button next when you check the users on the groups parameters. <br>
+	 * Create seeMembersGroup or addMemberInGroup based on the <code>mode</code>
+	 * @param mode 0 for addMemberInGroup or 1 to seeMembersGroup
+	 */
 	public ActionNext(int mode) {
 		this.mode = mode;
 		this.display = 0;

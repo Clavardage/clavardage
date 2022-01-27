@@ -108,7 +108,7 @@ public class MainGUI {
         			ActionConnectivity.setConnected(u.getUUID(), connected);
 
         			//replace (or add if new) user in the list
-        			ActionConnectivity.reorganiseListByConnectivity(u,connected);
+        			ActionConnectivity.reorganizeListByConnectivity(u,connected);
     			}
     		} catch (Exception e) {
     			e.printStackTrace();

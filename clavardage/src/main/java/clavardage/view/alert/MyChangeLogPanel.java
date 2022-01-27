@@ -1,4 +1,4 @@
-package clavardage.view.mystyle;
+package clavardage.view.alert;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -26,18 +26,23 @@ import javax.swing.text.Highlighter.HighlightPainter;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.Application;
-import clavardage.view.alert.ActionChangeLog;
-import clavardage.view.alert.MyAlertMessage;
-import clavardage.view.alert.MyAlertPanel;
 
 @SuppressWarnings("serial")
 public class MyChangeLogPanel extends MyAlertPanel {
 
 	private JTextField newLogin;
+	private JLabel error;
 	
 	public MyChangeLogPanel() {
 		super();
 		try {
+			
+			error = new JLabel();
+			error.setAlignmentX(CENTER_ALIGNMENT);
+			error.setFont(new Font("Dialog", Font.ITALIC, 14));
+			error.setForeground(Application.getRED());
+			getAlert().add(error);
+			error.setVisible(false);
 			
 			MyAlertMessage message = new MyAlertMessage("Change your login :");
 			getAlert().add(message);
@@ -46,6 +51,7 @@ public class MyChangeLogPanel extends MyAlertPanel {
 			newLogin.setFont(new Font("Tahoma", Font.BOLD, 24));
 			newLogin.setForeground(Application.getPURPLE());
 			newLogin.setSelectedTextColor(Application.getYELLOW());
+			newLogin.setCaretColor(Application.getBLUE());
 			newLogin.setOpaque(false);
 			newLogin.setBorder(null);
 
@@ -67,19 +73,14 @@ public class MyChangeLogPanel extends MyAlertPanel {
 			zoneEdit.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 			
 			zoneEdit.addMouseListener(new MouseListener() {
-				
 				@Override
-				public void mouseReleased(MouseEvent e) {}
-				
+				public void mouseReleased(MouseEvent e) {}	
 				@Override
-				public void mousePressed(MouseEvent e) {}
-				
+				public void mousePressed(MouseEvent e) {}		
 				@Override
-				public void mouseExited(MouseEvent e) {}
-				
+				public void mouseExited(MouseEvent e) {}			
 				@Override
 				public void mouseEntered(MouseEvent e) {}
-				
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					newLogin.requestFocus();
@@ -93,5 +94,9 @@ public class MyChangeLogPanel extends MyAlertPanel {
 
 	public JTextField getNewLogin() {
 		return newLogin;
+	}
+
+	public JLabel getError() {
+		return error;
 	}
 }

@@ -30,7 +30,7 @@ public class ActionSetNameGroup implements ActionListener {
 	
 	public static void setNameGroup() {
 		MessageWindow w = Application.getMessageWindow();
-
+		int maxLength = 40;
 		String currentName = w.getNameDestinataire().getText();
 		
 		w.getNameDestinataire().addFocusListener(new FocusListener() {
@@ -40,7 +40,7 @@ public class ActionSetNameGroup implements ActionListener {
 				w.getNameDestinataire().setText(w.getNameDestinataire().getText().replaceAll("\r", "").replaceAll("\n", ""));
             	
             	/* change the name only if the new name respect constraints */
-            	if (w.getNameDestinataire().getText().isBlank() | w.getNameDestinataire().getText().isEmpty() | (w.getNameDestinataire().getText().length() > 20) ) {
+            	if (w.getNameDestinataire().getText().isBlank() | w.getNameDestinataire().getText().isEmpty() | (w.getNameDestinataire().getText().length() > maxLength) ) {
             		w.getNameDestinataire().setText(currentName);
             	}
             	
@@ -70,6 +70,7 @@ public class ActionSetNameGroup implements ActionListener {
             	}
             	w.getNameDestinataire().setEditable(false);
             	w.getNameDestinataire().setHighlighter(null);
+				w.getNameDestinataire().setForeground(Application.getBLUE());
             	w.getNameDestinataire().removeFocusListener(this);
     			AdapterLayout.redimConv();
 
@@ -77,12 +78,13 @@ public class ActionSetNameGroup implements ActionListener {
 			
 			@Override
 			public void focusGained(FocusEvent e) {
-				w.getNameDestinataire().setHighlighter(new DefaultHighlighter());		
+				w.getNameDestinataire().setHighlighter(new DefaultHighlighter());	
+				w.getNameDestinataire().setForeground(Application.getPURPLE());
 				w.getNameDestinataire().selectAll();
 				w.getNameDestinataire().setEditable(true);
 				w.getNameDestinataire().setSelectedTextColor(Application.getYELLOW());
-				w.getNameDestinataire().setCaretColor(w.getForeground());
-				
+				w.getNameDestinataire().getCaret().setVisible(true);
+				w.getNameDestinataire().setCaretColor(Application.getBLUE());
 			}
 		});
 		
@@ -96,7 +98,7 @@ public class ActionSetNameGroup implements ActionListener {
 	        }
 	        @Override
 	        public void keyTyped(KeyEvent e) {
-	            if(w.getNameDestinataire().getText().length() > 40){
+	            if(w.getNameDestinataire().getText().length() > maxLength){
 	        		e.consume();
 	            }
 	        }

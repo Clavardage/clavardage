@@ -5,6 +5,7 @@ import java.util.UUID;
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
 import clavardage.model.exceptions.UserNotConnectedException;
+import clavardage.model.objects.User;
 import clavardage.view.Application;
 import clavardage.view.Application.Destinataire;
 import clavardage.view.Application.TypeBuble;
@@ -13,12 +14,26 @@ import clavardage.view.main.MessageBuble;
 import clavardage.view.main.MessagesPanel;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyDayInfo;
-
+/**
+ * Gathers the methods useful to display a new message.
+ * 
+ * @see #sendMessage(int)
+ * @see #needDayPanel(MyDate, MessagesPanel)
+ * @see #receiveMessage(String, UUID)
+ * 
+ * @author Célestine Paillé
+ */
 public class ActionSendMessage {
 	
 	/**
-	 * Display the new message on the discussion panel and reset JTextField.
-	 * */
+	 * Displays the new message on the discussion panel and reset JTextField. <br>
+	 * Displays a day panel if we need it. <br>
+	 * Keep the focus on the JTextField based on <code>mode</code>.
+	 *
+	 * @param mode 0 when JTextField loose the focus (when send with the button) or 1 when JTextField keep the focus (when send with keyboard ENTER)
+	 *
+	 * @see #needDayPanel(MyDate, MessagesPanel)
+	 */
 	public static void sendMessage(int mode) {
 		MessageWindow w = Application.getMessageWindow();
 
@@ -79,25 +94,17 @@ public class ActionSendMessage {
 			w.getMessageContainer().getVerticalScrollBar().setValue(w.getMessageContainer().getVerticalScrollBar().getVisibleAmount());
 		}
 	}
-
-	public static boolean needDayPanel(MyDate date, MessagesPanel conv) {
-		boolean newDay = false;
-		if (!conv.isEmptyDiscussion() && (conv.getComponentCount() != 0)) {
-			int i = conv.getComponentCount()-1 ;
-			while (!(conv.getComponent(i).getClass().getName().equals("clavardage.view.mystyle.MyDayInfo"))) {i--;}
-			MyDayInfo lastDateDisplay = (MyDayInfo) conv.getComponent(i);
-			if (!(lastDateDisplay.getDate().getTheDay().equals(date.getTheDay()))) {
-				newDay = true ; //we need it if the date msg is not on the same day of the last one
-			} else {
-				newDay = false ;
-			}
-		} else {
-			newDay = true ; //we need it if the date msg is the first msg of the discussion
-		}
-		return newDay;
-	}
 	
-	public static void receiveMessage(String text, UUID idContact) throws UserNotConnectedException {
+	/**
+	 * Displays the new message on the conversation associated with the user who send it.
+	 * Displays a day panel if we need it.
+	 * 
+	 * @param text the text of the new message receive.
+	 * @param idContact the UUID of the user who send this message
+	 * 
+	 * @see #needDayPanel(MyDate, MessagesPanel)
+	 */
+	public static void receiveMessage(String text, UUID idContact) {
 		MessageWindow w = Application.getMessageWindow();
 
 	    /* create the new message */
@@ -125,6 +132,32 @@ public class ActionSendMessage {
 	    contactConversation.add(msg); //we add the new msg
 
 	    w.getMessageContainer().validate();
+	}
+	
+	/**
+	 * Compares the date of the message <code>date</code> to the last date displayed on <code>conv</code>.
+	 * If <code>conv</code> doesn't have messages yet, we need a day panel. 
+	 * 
+	 * @param date of the message we want to display
+	 * @param conv the conversation we want to display the message
+	 * 
+	 * @return true if we need a day panel or false if not
+	 */
+	public static boolean needDayPanel(MyDate date, MessagesPanel conv) {
+		boolean newDay = false;
+		if (!conv.isEmptyDiscussion() && (conv.getComponentCount() != 0)) {
+			int i = conv.getComponentCount()-1 ;
+			while (!(conv.getComponent(i).getClass().getName().equals("clavardage.view.mystyle.MyDayInfo"))) {i--;}
+			MyDayInfo lastDateDisplay = (MyDayInfo) conv.getComponent(i);
+			if (!(lastDateDisplay.getDate().getTheDay().equals(date.getTheDay()))) {
+				newDay = true ; //we need it if the date msg is not on the same day of the last one
+			} else {
+				newDay = false ;
+			}
+		} else {
+			newDay = true ; //we need it if the date msg is the first msg of the discussion
+		}
+		return newDay;
 	}
 
 }

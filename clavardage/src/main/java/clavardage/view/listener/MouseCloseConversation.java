@@ -21,6 +21,12 @@ public class MouseCloseConversation {
 				((DestinataireJPanel) panel).closeConversationInList();
 			}
 		}
+		
+		for (Component panel : w.getListGroups().getComponents()) {
+			if (idConv == null || ((DestinataireJPanel) panel).getIdDestinataire().equals(idConv)) {
+				((DestinataireJPanel) panel).closeConversationInList();
+			}
+		}
 
 		w.getMessageContainer().setViewportView(w.getAllDiscussionClose());
 		w.setDiscussionDisplay(w.getAllDiscussionClose());

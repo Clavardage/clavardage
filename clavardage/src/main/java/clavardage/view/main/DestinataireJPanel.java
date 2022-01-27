@@ -148,9 +148,8 @@ public class DestinataireJPanel extends JPanel {
 	 * */
 	public void openConversationInList() {
 		this.conversationOpen = true ;
-		if (this.type == Destinataire.User) {
-			connectLabel.setIcon(openIcon);
-		}
+		setConnected(true);
+		connectLabel.setIcon(openIcon);
 		MouseOpenConversation.moveInTopOfList(this.type, this.id);
 	}
 	
@@ -162,8 +161,13 @@ public class DestinataireJPanel extends JPanel {
 		this.conversationOpen = false ;
 		if (this.type == Destinataire.User) {
 			this.setConnected(false);
+			ActionConnectivity.reorganizeListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
+		} else {
+			this.myConnectIcon = connectGroupIcon;
+			this.connectLabel.setIcon(myConnectIcon);
+			this.repaint();
+			this.validate();
 		}
-		ActionConnectivity.reorganiseListByConnectivity(Application.getMessageWindow().findMyUser(this.id), this.connected);;
 	}
 
 
@@ -189,6 +193,7 @@ public class DestinataireJPanel extends JPanel {
 		//set the right icon
 		this.connectLabel.setIcon(myConnectIcon);
 		this.repaint();
+		this.validate();
 	}
 	
 	

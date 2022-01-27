@@ -15,6 +15,10 @@ import clavardage.view.main.MessageBuble;
 import clavardage.view.main.SectionTextJPanel;
 import clavardage.view.mystyle.MyRoundJTextField;
 
+/**
+ * Gathers the methods modifying the color of the window based on the theme of the app.
+ * @author Célestine Paillé
+ */
 public class ActionSetColorTheme implements ActionListener {
 	
 	private ColorThemeApp color;
