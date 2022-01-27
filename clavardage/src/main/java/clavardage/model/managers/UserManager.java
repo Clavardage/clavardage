@@ -343,6 +343,24 @@ WHERE user.uuid = uic.uuid_user AND uic.uuid_conversation = ?""");
         return exists;
     }
 
+    /**
+     * Delete an user from database
+     * @param uuid
+     */
+    public void deleteUser(UUID uuid) throws Exception {
+        String req = "DELETE FROM user WHERE uuid = ?";
+        PreparedStatement pstmt = getConnection().prepareStatement(req);
+
+        pstmt.setString(1, uuid.toString());
+
+        if(pstmt.executeUpdate() == 0) { // if no user deleted
+            pstmt.close();
+            throw new Exception("User not found");
+        }
+
+        pstmt.close();
+    }
+
     public static boolean isUsernameCorrect(String username) {
         return (new RegexValidator("^[a-zA-Z0-9_]{3,20}$")).isValid(username);
     }

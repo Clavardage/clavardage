@@ -1,6 +1,7 @@
 package clavardage.controller.authentification;
 
 import clavardage.controller.connectivity.ConnectivityDaemon;
+import clavardage.model.exceptions.UserAlreadyConnectedException;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.model.exceptions.WrongIdentifiantsException;
 import clavardage.model.managers.UserManager;
@@ -62,7 +63,7 @@ public class AuthOperations {
      */
     public static void connectUser(String mail, String password) throws Exception {
         if(isUserConnected()) {
-            throw new Exception("User already connected. Please use disconnect method first");
+            throw new UserAlreadyConnectedException("User already connected. Please use disconnect method first");
         }
         user = userMngr.connect(mail, password);
     }
@@ -84,7 +85,9 @@ public class AuthOperations {
      * @author Romain MONIER
      */
     public static void disconnectUser() {
-        ConnectivityDaemon.getConversationService().closeAllConversations();
+        try {
+            ConnectivityDaemon.getConversationService().closeAllConversations();
+        } catch(Exception ignore) { }
         userMngr.disconnect(user);
     }
 }
