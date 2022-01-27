@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS user (
             pstmt = getConnection().prepareStatement("""
 CREATE TABLE IF NOT EXISTS conversation (
     uuid CHAR(36) PRIMARY KEY NOT NULL,
-    name VARCHER(255),
+    name VARCHAR(255),
     date_created DATETIME NOT NULL
 )
 """);
