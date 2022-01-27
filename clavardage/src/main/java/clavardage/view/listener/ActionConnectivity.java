@@ -1,13 +1,16 @@
 package clavardage.view.listener;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.objects.User;
 import clavardage.view.Application;
+import clavardage.view.Application.Destinataire;
 import clavardage.view.MessageWindow;
 import clavardage.view.alert.popup.ActionLogUpdated;
 import clavardage.view.main.DestinataireJPanel;
+import clavardage.view.mystyle.MyListDestinataires;
 
 /**
  * Gathers the methods modifying the connectivity of the users.
@@ -45,7 +48,7 @@ public class ActionConnectivity {
 	}
 	
 	/**
-	 * Reorganize the users list by connectivity.<p>
+	 * Updates and reorganize the users list by connectivity.<p>
 	 * 
 	 * First of all, check if <code>userUpdated</code> is known.<br>
 	 * If <code>userUpdated</code> is new and he is not the current user, add him to the list.<br>
@@ -60,8 +63,9 @@ public class ActionConnectivity {
 	 * 
 	 * @see ActionLogUpdated
 	 * @see MessageWindow#addNewUserToList(User, Boolean)
+	 * @see #reorganizeListByConnectivity(Destinataire)
 	 */
-	public static void reorganizeListByConnectivity(User userUpdated, boolean connect) throws Exception {
+	public static void updateListUser(User userUpdated, boolean connect) throws Exception {
 		MessageWindow w = Application.getMessageWindow();
 		if (userUpdated != null) {
 			
@@ -86,24 +90,44 @@ public class ActionConnectivity {
 			}
 			
 			//display the reorganize list
-			w.getListUsers().removeAll();
-
-			for (DestinataireJPanel user : w.getAllUsers()) {
-				if (user.isOpen()) {
-					w.getListUsers().add(user);
-				}
-			}
-			for (DestinataireJPanel user : w.getAllUsers()) {
-				if (!user.isOpen() && user.isConnected()) {
-					w.getListUsers().add(user);
-				}
-			}
-			for (DestinataireJPanel user : w.getAllUsers()) {
-				if (!user.isOpen() && !user.isConnected()) {
-					w.getListUsers().add(user);
-				}
-			}	
+			reorganizeListByConnectivity(Destinataire.User);
 		}
+	}
+	
+	/**
+	 * Reorganize the list based on <code>type</code>.
+	 * Conversation open first, then connected conversation and then disconnected conversation.
+	 * @param type User or Group, the list we have to reorganize
+	 */
+	public static void reorganizeListByConnectivity(Destinataire type) {
+		MessageWindow w = Application.getMessageWindow();
+		ArrayList<DestinataireJPanel> allDest = null;
+		MyListDestinataires listDest = null;
+		if (type == Destinataire.User) {
+			allDest = w.getAllUsers();
+			listDest = w.getListUsers() ;
+		} else {
+			allDest = w.getAllGroups();
+			listDest = w.getListGroups() ;
+		}
+		
+		listDest.removeAll();
+
+		for (DestinataireJPanel user : allDest) {
+			if (user.isOpen()) {
+				listDest.add(user);
+			}
+		}
+		for (DestinataireJPanel user : allDest) {
+			if (!user.isOpen() && user.isConnected()) {
+				listDest.add(user);
+			}
+		}
+		for (DestinataireJPanel user : allDest) {
+			if (!user.isOpen() && !user.isConnected()) {
+				listDest.add(user);
+			}
+		}	
 	}
 
 }

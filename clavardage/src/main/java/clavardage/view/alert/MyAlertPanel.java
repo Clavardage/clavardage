@@ -84,7 +84,7 @@ public class MyAlertPanel extends JPanel {
 		if (typeAlert == AlertAction.LEAVEGROUP) {
 			MyAlertMessage message = new MyAlertMessage("You are about to leave the group");
 			alert.add(message);
-			MyAlertMessage details1 = new MyAlertMessage("You will no longer be able to send and recieve messages from this group", 18);
+			MyAlertMessage details1 = new MyAlertMessage("You will no longer be able to send and receive messages from this group", 18);
 			alert.add(details1);
 			MyAlertMessage details2 = new MyAlertMessage("You will lose acces to the messages of the conversation", 18);
 			alert.add(details2);

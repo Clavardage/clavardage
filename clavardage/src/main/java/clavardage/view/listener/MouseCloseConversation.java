@@ -1,8 +1,6 @@
 package clavardage.view.listener;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.UUID;
 
 import clavardage.view.Application;
