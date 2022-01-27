@@ -16,7 +16,7 @@ import clavardage.view.mystyle.MyListDestinataires;
  * Gathers the methods modifying the connectivity of the users.
  * 
  * @see #setConnected(UUID, Boolean)
- * @see #reorganizeListByConnectivity(User, boolean)
+ * @see #updateListUser(User, boolean)
  * 
  * @author Célestine Paillé
  */
