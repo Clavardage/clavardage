@@ -43,6 +43,7 @@
       <a href="#usage">Usage</a>
       <ul>
         <li><a href="#execution">Execution</a></li>
+        <li><a href="#tests">Tests</a></li>
         <li><a href="#generation">Generation</a></li>
         <ul>
            <li><a href="#documentation">Documentation</a></li>
@@ -94,6 +95,13 @@
 Use the following script in the project root to launch Clavardage :
   ```sh
   gradlew run
+  ```
+
+### Tests
+
+You can run the unit tests powered by JUnit 5 with the following command:
+  ```sh
+  gradlew test
   ```
 
 ### Generation
