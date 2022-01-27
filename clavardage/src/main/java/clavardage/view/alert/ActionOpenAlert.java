@@ -27,7 +27,7 @@ public class ActionOpenAlert implements ActionListener {
 			needNameDest = false;
 		} else {
 			alert = new MyAlertPanel(typeAction);
-			if (typeAction == AlertAction.DISCONNECT) {needNameDest = false;}
+			if (typeAction == AlertAction.DISCONNECT || typeAction == AlertAction.CLOSECONV) {needNameDest = false;}
 		}
 	}
 	
