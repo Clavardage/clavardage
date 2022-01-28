@@ -17,7 +17,7 @@
     <br />
     <a href="https://github.com/Clavardage/REPORT/raw/main/Rapport_Projet_Java.pdf">Read the PDF Report (French)</a>
     ·
-    <a href="https://github.com/Clavardage/uml#readme">See UML</a>
+    <a href="https://github.com/Clavardage/clavardage/actions/workflows/test.yml">See Test Results</a>
     ·
     <a href="https://insa-clavardage.atlassian.net/jira/software/projects/CLAV/boards/1">Show JIRA Project</a>
   </p>
