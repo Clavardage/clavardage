@@ -15,9 +15,9 @@
     <a href="https://github.com/Clavardage/clavardage/releases"><strong>See Releases »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Clavardage/clavardage/wiki">Read the wiki</a>
+    <a href="https://github.com/Clavardage/REPORT">Read the PDF Report (French)</a>
     ·
-    <a href="https://github.com/Clavardage/clavardage/issues">Issues</a>
+    <a href="https://github.com/Clavardage/uml#readme">See UML</a>
     ·
     <a href="https://insa-clavardage.atlassian.net/jira/software/projects/CLAV/boards/1">Show JIRA Project</a>
   </p>
@@ -73,7 +73,7 @@
 
 ### Prerequisites
 
-* Install a Java OpenJDK version 17.
+* Install a Java OpenJDK version 17. For example you can use one of the Temurin build available here: https://adoptium.net/releases.html?variant=openjdk17
 
 > :warning: **In order to create an local executable (optional)** : Other programs will have to be manually installed depending on the target OS (see <a href="#executable-optional">Executable (optional)</a>).
 
