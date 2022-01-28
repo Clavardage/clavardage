@@ -239,7 +239,6 @@ public class ConnectivityDaemon {
                                 System.err.println("Server error: Conversation is null!");
                             }
                         } catch (BindException e) {
-                            e.printStackTrace();
                             waitForRetryConnection();
                         } catch (Exception e) {
                             System.err.println("Server error: " + e);

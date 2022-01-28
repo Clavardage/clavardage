@@ -128,7 +128,7 @@ The script can be run separately from the build:
   ```
 This archive is independent and can be distributed on any system running a Java OpenJDK 17 using the following command:
   ```sh
-  java -jar clavardage-0.3.0.jar
+  java -jar clavardage-1.0.0.jar
   ```
 
 #### Executable (optional)

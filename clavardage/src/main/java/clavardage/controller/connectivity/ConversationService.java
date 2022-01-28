@@ -50,9 +50,7 @@ public class ConversationService implements Activity {
                         throw new Exception("Conversation data error");
                     }
                     handleConversation(r, currentConv);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception ignore) { }
             }
         };
         tcpClient = new TCPConnector() {
@@ -61,9 +59,7 @@ public class ConversationService implements Activity {
                 try {
                     r.sendPacket(currentConv);
                     handleConversation(r, currentConv);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (Exception ignore) { }
             }
         };
     }
@@ -108,7 +104,7 @@ public class ConversationService implements Activity {
     public void handleConversation(RunnableTCPThread r, Conversation currentConv) throws IOException {
         try {
             convList.put(currentConv.getUUID(), r);
-            System.out.println("Waiting for events for Conversation `" + currentConv.getName() + "`");
+            System.out.println("Log: Waiting for events for Conversation `" + currentConv.getName() + "`");
             while(true) {
                 Message msg = waitForConversationEvent(r);
 
@@ -125,7 +121,6 @@ public class ConversationService implements Activity {
             try {
                 r.close();
                 close(currentConv);
-                //System.out.println("Log: Conversation `" + currentConv.getName() + "` closed!");
             } catch(Exception e) {
                 System.err.println("Unable to close conversation, maybe already closed?");
             }
@@ -149,7 +144,6 @@ public class ConversationService implements Activity {
         try {
             obj = r.getPacketData();
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
             try {
                 r.close(); // if error, close the socket
             } catch (IOException ex) {

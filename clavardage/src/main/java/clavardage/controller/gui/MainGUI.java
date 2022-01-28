@@ -85,7 +85,6 @@ public class MainGUI {
         if(choice == JOptionPane.YES_OPTION) {
             // handle GUI conversation
             MouseOpenConversation.openConversation(uDest.getLogin(), uDest.getUUID(), Destinataire.User);
-            // call pastille bleu func
             Application.getMessageWindow().findMyDestinataireJPanel(uDest.getUUID()).openConversationInList();
         } else { // close conversation
             ConnectivityDaemon.getConversationService().close(c);
@@ -100,14 +99,14 @@ public class MainGUI {
      */
     public static void setUserState(User u, boolean connected) {
     	if (!(Application.getMessageWindow() == null)) {	
-    		//handle user state in GUI
+    		// handle user state in GUI
     		System.out.println("Log: " + u.getLogin() + " [" + u.getLastIp() + "] " + (connected ? "connected!" : "disconnected!"));
     		try {
     			if (AuthOperations.isUserConnected()) {
     				//set icon and connectivity
         			ActionConnectivity.setConnected(u.getUUID(), connected);
 
-        			//replace (or add if new) user in the list
+        			// replace (or add if new) user in the list
         			ActionConnectivity.updateListUser(u,connected);
     			}
     		} catch (Exception e) {
@@ -196,8 +195,9 @@ public class MainGUI {
 
         ConversationService conv_serv = ConnectivityDaemon.getConversationService();
         conv_serv.openConversation(conv);
-        
-        //call pastille bleu func
+
+        /* GUI */
+
         Application.getMessageWindow().findMyDestinataireJPanel(u2.getUUID()).openConversationInList();
 
     }
@@ -209,8 +209,6 @@ public class MainGUI {
      */
     public static void conversationClosed(UUID uuidDestination) {
     	try {
-//        	//enlever pastille bleue
-//			Application.getMessageWindow().findMyDestinataireJPanel(uuidDestination).closeConversationInList();
 	    	// handle GUI conversation
 			MouseCloseConversation.closeConversation(uuidDestination);
 		} catch (Exception e) {

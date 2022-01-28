@@ -54,9 +54,7 @@ public class DiscoveryService implements Activity {
                 done(); // notify main daemon
                 throw new Exception("User discovery data error");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignore) { }
     }
 
     /**

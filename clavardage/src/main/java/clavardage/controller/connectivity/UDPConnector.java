@@ -67,11 +67,12 @@ public class UDPConnector extends NetworkConnector {
      * Send a broadcast packet
      * @author Romain MONIER
      * @param obj
-     * @throws IOException
      */
     public void sendBroadcastPacket(Serializable obj) throws IOException {
         for(String ip_broadcast : LOCAL_IP_BROADCAST_LIST) {
-            sendPacket(obj, ip_broadcast, FORCED_UDP_PORT);
+            //try {
+                sendPacket(obj, ip_broadcast, FORCED_UDP_PORT);
+            //} catch (Exception ignore) { }
         }
     }
 
