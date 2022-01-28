@@ -15,7 +15,6 @@ import clavardage.controller.Clavardage;
 import clavardage.view.Application;
 
 /**
- * 
  * @author Célestine Paillé
  */
 public class ActionLogUpdated {

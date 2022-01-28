@@ -6,7 +6,9 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.view.Application;
-
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyTitle extends JTextArea {
 	

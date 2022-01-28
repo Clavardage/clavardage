@@ -5,7 +5,9 @@ import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JPanel;
-
+/**
+ * @author Célestine Paillé
+ */
 public class MyRoundJPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;

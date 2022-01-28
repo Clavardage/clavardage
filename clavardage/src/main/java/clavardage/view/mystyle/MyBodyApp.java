@@ -7,6 +7,9 @@ import javax.swing.JPanel;
 
 import clavardage.view.Application;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyBodyApp extends JPanel {
 	

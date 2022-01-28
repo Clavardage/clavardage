@@ -22,6 +22,9 @@ import clavardage.view.alert.ActionSetNameGroup;
 import clavardage.view.listener.MouseOpenConversation;
 import clavardage.view.main.DestinataireJPanel;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyGroupsPanel extends JPanel {
 	

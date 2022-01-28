@@ -20,7 +20,9 @@ import javax.swing.border.EmptyBorder;
 import clavardage.controller.Clavardage;
 import clavardage.view.Application;
 import clavardage.view.listener.ActionSendMessage;
-
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyNewMsgPanel extends JPanel {
 	

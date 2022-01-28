@@ -2,7 +2,6 @@ package clavardage.view.alert;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.UUID;
 
 import javax.swing.JMenuItem;
 
@@ -12,7 +11,9 @@ import clavardage.view.Application;
 import clavardage.view.alert.MyAlertPanel.AlertAction;
 import clavardage.view.listener.ActionSetColorTheme;
 import clavardage.view.main.DestinataireJPanel;
-
+/**
+ * @author Célestine Paillé
+ */
 public class ActionOpenAlert implements ActionListener {
 
 	private boolean needNameDest;

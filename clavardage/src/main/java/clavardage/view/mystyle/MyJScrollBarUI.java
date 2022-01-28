@@ -15,6 +15,9 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import clavardage.view.Application;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyJScrollBarUI extends BasicScrollBarUI {
 

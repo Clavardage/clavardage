@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import clavardage.controller.gui.MainGUI;
 import clavardage.view.Application;
-
+/**
+ * @author Célestine Paillé
+ */
 public class ActionChangeLog implements ActionListener {
 
 	@Override

@@ -1,5 +1,8 @@
 package clavardage.view.mystyle;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyDayInfo extends MyInfoPanel {
 	private MyDate date ;

@@ -3,13 +3,10 @@ package clavardage.view.listener;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 
 import clavardage.view.Application;
 import clavardage.view.alert.MyAlertMessage;
@@ -17,6 +14,9 @@ import clavardage.view.alert.MyAlertPanel;
 import clavardage.view.main.MessageBuble;
 import clavardage.view.mystyle.MyRoundJTextArea;
 
+/**
+ * @author Célestine Paillé
+ */
 public class AdapterLayout implements ComponentListener {
 		
 	public AdapterLayout() {

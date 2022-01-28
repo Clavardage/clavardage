@@ -23,6 +23,9 @@ import clavardage.view.Application.Destinataire;
 import clavardage.view.listener.ActionConnectivity;
 import clavardage.view.listener.MouseOpenConversation;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class DestinataireJPanel extends JPanel {
 	

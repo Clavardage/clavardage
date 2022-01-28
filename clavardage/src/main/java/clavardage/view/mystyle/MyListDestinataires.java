@@ -4,6 +4,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyListDestinataires extends JPanel {
 	

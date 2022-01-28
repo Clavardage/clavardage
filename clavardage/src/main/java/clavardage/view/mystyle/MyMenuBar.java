@@ -18,16 +18,26 @@ import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import clavardage.controller.Clavardage;
+import clavardage.view.MessageWindow;
 import clavardage.view.Application.ColorThemeApp;
 import clavardage.view.Application.LanguageApp;
 import clavardage.view.alert.ActionOpenAlert;
 import clavardage.view.alert.MyAlertPanel.AlertAction;
 import clavardage.view.alert.popup.ActionSetLanguage;
 import clavardage.view.listener.ActionSetColorTheme;
-
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyMenuBar extends JMenuBar {
 	
+	/**
+	 * Create the MenuBar of the MessageWindow
+	 * @param english the JRadioButton we want to keep check
+	 * @throws IOException if we can't read the images
+	 * @see ImageIO#read(java.io.InputStream)
+	 * @see MessageWindow
+	 */
 	public MyMenuBar(JRadioButton english) throws IOException {
 		
 		super();

@@ -5,7 +5,9 @@ import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JTextArea;
-
+/**
+ * @author Célestine Paillé
+ */
 public class MyRoundJTextArea extends JTextArea {
 
 	private static final long serialVersionUID = 1L;

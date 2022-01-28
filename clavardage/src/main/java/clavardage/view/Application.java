@@ -9,9 +9,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import clavardage.view.listener.ActionSendMessage;
 import clavardage.view.listener.ActionSetColorTheme;
 import clavardage.view.listener.AdapterLayout;
+import clavardage.view.main.MessageBuble;
+import clavardage.view.main.SectionTextJPanel;
 
+/**
+ * Main view
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class Application extends JFrame {
 
@@ -19,30 +26,35 @@ public class Application extends JFrame {
 	private static LoginWindow login;
 	private static SignInWindow signIn;
 	
+	/**The current JFrame of the application.*/
 	private static JFrame app;
 	
 	/**
 	 * The current panel display in the App's JFrame.
 	 * <p>
-	 * Necessary for <code>AdapterLayout </code>
+	 * Necessary for <code>AdapterLayout</code>.
 	 */
 	private static JPanel displayContent = new JPanel();
 	
 	/**
 	 * The current language of the application. <br>
-	 * For the moment, <code>languageApp</code> is always equals to <code>EGLISH</code>
+	 * For the moment, <code>languageApp</code> is always equals to <code>EGLISH</code>.
+	 * @see LanguageApp
 	 */
 	private static LanguageApp languageApp ;
 	
 	/**
 	 * The current theme of the application
-	 */
+	 * @see ColorThemeApp
+	 * */
 	private static ColorThemeApp colorThemeApp ;
 	
 	/* ** Colors ** */
 	private static Color COLOR_BACKGROUND ;
 	private static Color COLOR_BACKGROUND2 ;
+	/** Color of the background of JTextField*/
 	private static Color COLOR_EDIT_MESSAGE ;
+	/**	Color of the bubble of mine message*/
 	private static Color COLOR_MINE_MESSAGE ;
 	private static Color COLOR_TEXT_MINE_MESSAGE ;
 	private static Color COLOR_SCROLL_BAR ;
@@ -59,7 +71,7 @@ public class Application extends JFrame {
 
 	/**
 	 * To define the theme of the App <br>
-	 * Can be <code>LIGHT</code> or <code>DARK</code>
+	 * Can be <code>LIGHT</code> or <code>DARK</code>.
 	 */
 	public enum ColorThemeApp {LIGHT, DARK;}
 	
@@ -67,21 +79,35 @@ public class Application extends JFrame {
 	 * To define the language of the App <br>
 	 * Can be <code>FRENCH</code>, <code>ENGLISH</code>, <code>SPANISH</code>, 
 	 * <code>GERMAN</code>, <code>CHINESE</code> or <code>JAPANESE</code><br>
-	 * For the moment, we really use only the language <code>EGLISH</code>
+	 * For the moment, we really use only the language <code>EGLISH</code>.
 	 */
 	public enum LanguageApp {FRENCH, ENGLISH, SPANISH, GERMAN, CHINESE, JAPANESE;}
 	
 	/**
 	 * To define the type of the Sections text in Login and Sign In window. <br>
-	 * Can be <code>LOG</code> (login) if we can see the typed text or <code>PW</code> (password) if he typed text is hided
+	 * Can be <code>LOG</code> (login) if we can see the typed text or <code>PW</code> (password) if he typed text is hided.
 	 * @see LoginWindow
 	 * @see LoginWindow#createSection
-	 * TODO
+	 * @see SectionTextJPanel
 	 */
 	public enum SectionText {LOG, PW;}
 	
-	
+	/**
+	 * To define the type of the message MessageWindow. <br>
+	 * Can be <code>MINE</code> if we send it or <code>THEIR</code> if we receive it.
+	 * @see MessageWindow
+	 * @see MessageBuble
+	 * @see ActionSendMessage
+	 */
 	public enum TypeBuble {MINE, THEIR;}
+	
+	/**
+	 * To define the type of the conversation or the destinataire. <br>
+	 * Can be <code>User</code> or <code>Group</code>.
+	 * @see MessageWindow
+	 * @see MessageBuble
+	 * @see ActionSendMessage
+	 */
 	public enum Destinataire {User,Group;}
 
 
@@ -114,6 +140,7 @@ public class Application extends JFrame {
 	/**
 	 * Create the login Window.
 	 * @throws IOException
+	 * @see LoginWindow
 	 * */
 	public static void createLoginWindow() throws IOException {
 		login = new LoginWindow();
@@ -121,7 +148,8 @@ public class Application extends JFrame {
 	
 	/**
 	 * Create the message Window.
-	 * @throws Exception 
+	 * @throws Exception
+	 * @see MessageWindow
 	 * */
 	public static void createMessageWindow() throws Exception {
 		message = new MessageWindow();
@@ -130,6 +158,7 @@ public class Application extends JFrame {
 	/**
 	 * Create the Sign In Window.
 	 * @throws IOException 
+	 * @see SignInWindow
 	 * */
 	public static void createSignInWindow() throws IOException {
 		signIn = new SignInWindow();		
@@ -158,13 +187,28 @@ public class Application extends JFrame {
 		app.revalidate();
 		app.repaint();
 	}
-
+	
 	/**
 	 * Return the size of the window open in the user's computer
 	 * @return the size of the App's JFrame
 	 */
 	public static Dimension getGlobalSize() {return app.getSize();}	
 	
+	/**
+	 * Create a translucent margin based on <code>x</code> and <code>y</code>.
+	 * @param x the horizontal size
+	 * @param y the vertical size
+	 * @return a JPanel translucent with (x,y) for size
+	 */
+	public static JPanel createMargin(int x, int y) {
+		JPanel marge = new JPanel();
+		marge.setPreferredSize(new Dimension(x,y));
+		marge.setMaximumSize(marge.getPreferredSize());
+		marge.setOpaque(false);
+		return marge ;
+	}
+	
+	/* ** GETTER AND SETTER ** */	
 	public static MessageWindow getMessageWindow() {return message;}
 	public static LoginWindow getLoginWindow() {return login;}
 	public static SignInWindow getSignInWindow() {return signIn;}

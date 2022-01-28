@@ -19,6 +19,9 @@ import clavardage.view.alert.ActionOpenAlert;
 import clavardage.view.alert.ActionSetNameGroup;
 import clavardage.view.alert.MyAlertPanel.AlertAction;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyDiscussionPanel extends MyRoundJPanel {
 

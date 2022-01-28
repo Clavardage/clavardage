@@ -17,7 +17,9 @@ import javax.swing.SwingConstants;
 import clavardage.controller.Clavardage;
 import clavardage.view.Application;
 import clavardage.view.Application.LanguageApp;
-
+/**
+ * @author Célestine Paillé
+ */
 public class ActionSetLanguage implements ActionListener {
 	
 	private LanguageApp language;

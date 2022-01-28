@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.controller.gui.MainGUI;
-import clavardage.model.exceptions.UserNotConnectedException;
-import clavardage.model.objects.User;
 import clavardage.view.Application;
 import clavardage.view.Application.Destinataire;
 import clavardage.view.Application.TypeBuble;

@@ -8,6 +8,9 @@ import java.awt.Image;
 
 import javax.swing.JPanel;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyLogButtonJPanel extends JPanel {
 	private Image img;

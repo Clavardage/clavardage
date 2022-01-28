@@ -15,6 +15,9 @@ import clavardage.view.alert.ActionOpenAlert;
 import clavardage.view.main.DestinataireJPanel;
 import clavardage.view.main.MessagesPanel;
 
+/**
+ * @author Célestine Paillé
+ */
 public class MouseOpenConversation implements MouseListener {
 	
 	private DestinataireJPanel dest;
@@ -35,7 +38,6 @@ public class MouseOpenConversation implements MouseListener {
 				}
 				openConversation(dest.getNameDestinataire(), dest.getIdDestinataire(), dest.getTypeDestinataire());
 				dest.openConversationInList();
-				Application.getMessageWindow().getMessageContainer().getVerticalScrollBar().setValue(Application.getMessageWindow().getMessageContainer().getVerticalScrollBar().getMaximum());
 
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -93,6 +95,7 @@ public class MouseOpenConversation implements MouseListener {
 		w.getEditMsg().setEmptyText(true);
 		
 		AdapterLayout.redimDiscussion();
+		Application.getMessageWindow().getMessageContainer().getVerticalScrollBar().setValue(Application.getMessageWindow().getMessageContainer().getVerticalScrollBar().getMaximum());
 	}
 	
 	

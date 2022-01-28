@@ -5,6 +5,9 @@ import java.awt.Component;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyJScrollPane extends JScrollPane {
 	

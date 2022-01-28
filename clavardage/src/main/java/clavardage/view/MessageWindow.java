@@ -1,19 +1,5 @@
 package clavardage.view;
 
-/* TODO
- * -button hover à centrer
- * -rajouter noms des expediters dans les conversataions de groupes
- * -nom utilisateur fixé à gauche quand réduction (pour le moment, c'est réduit au milieu)
- * -les noms de destinataires de plus de 16 caractères font bouger la mise en page à l'ouverture de leur conversation
- * -modifier MyAlertMessage pour retour à la ligne (transformer en JtextArea ?)
- * 
- * -truc pour chenger mon login
- * -message alert pour confirmer la déconnexion
- * LOGINWINDOW :
- * -entrer pour se connecter
- * -update the conversations for the current user
- */
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -58,6 +44,9 @@ import clavardage.view.mystyle.MyNewMsgPanel;
 import clavardage.view.mystyle.MyTitle;
 import clavardage.view.mystyle.MyUsersPanel;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MessageWindow extends JPanel {
 	
@@ -100,16 +89,16 @@ public class MessageWindow extends JPanel {
 		add(createMenuBar(), BorderLayout.NORTH);
 		/* Add the app's body */
 		add(createBodyApp(), BorderLayout.CENTER);
-
 	}
 
 
 	/**
-	 * Create the menu bar.
-	 * @throws IOException
-	 * */
-	private MyMenuBar createMenuBar() throws IOException {	
-
+	 * Create the menu bar of the MessageWindow.
+	 * @return the MenuBar
+	 * @throws IOException if <code>MyMenuBar()</code> has failed
+	 * @see MyMenuBar
+	 */
+	private MyMenuBar createMenuBar() throws IOException  {	
 		english = new JRadioButton("English");			
 		menuBar = new MyMenuBar(english);
 		return menuBar ;
@@ -117,9 +106,12 @@ public class MessageWindow extends JPanel {
 
 	/**
 	 * Create the app's body.
-	 * @throws Exception 
+	 * @return the body app.
+	 * @throws UserNotConnectedException
+	 * @throws IOException
+	 * @throws Exception
 	 * */
-	private MyBodyApp createBodyApp() throws Exception {
+	private MyBodyApp createBodyApp() throws IOException, UserNotConnectedException, Exception  {
 		bodyApp = new MyBodyApp(createDestinatairesContainer(), createDiscussionContainer());
 		return bodyApp ;
 	}
@@ -128,7 +120,7 @@ public class MessageWindow extends JPanel {
 	 * Create the panel of the destinataires.
 	 * @throws Exception 
 	 * */
-	private MyDestinataireContainer createDestinatairesContainer() throws Exception {
+	private MyDestinataireContainer createDestinatairesContainer() throws Exception  {
 		users = new MyUsersPanel(createListUsers());
 		groups = new MyGroupsPanel(this,  createListGroups());
 		destinataires = new MyDestinatairesPanel(users, groups);
@@ -170,7 +162,10 @@ public class MessageWindow extends JPanel {
 
 	/**
 	 * Create the list of Users.
-	 * @throws Exception 
+	 * @return JScrollPane usersContainer with the user list for viewport
+	 * @throws Exception if UserNotConnectedException or if <code>addNewUserToList()</code> has failed
+	 * @see UserNotConnectedException
+	 * @see #addNewUserToList(User, Boolean)
 	 * */
 	private MyJScrollPane createListUsers() throws Exception {
 		nbUsers = 0;
@@ -186,17 +181,18 @@ public class MessageWindow extends JPanel {
 		}
 		
 		usersContainer = new MyJScrollPane(listUsers);
-		usersContainer.getVerticalScrollBar().setValue(0);
-		
 		return usersContainer ;
 	}
 
 	/**
 	 * Create the list of Groups.
-	 * @throws IOException
-	 * @throws UserNotConnectedException 
+	 * @return JScrollPane groupsContainer with the group list for viewport
+	 * @throws UserNotConnectedException if <code>addNewUserToList()</code> has failed
+	 * @throws IOException if <code>addNewUserToList()</code> has failed
+	 * @see UserNotConnectedException
+	 * @see #addNewUserToList(User, Boolean)
 	 * */
-	private MyJScrollPane createListGroups() throws IOException, UserNotConnectedException {
+	private MyJScrollPane createListGroups() throws IOException, UserNotConnectedException  {
 		nbGroups = 0;
 
 		listGroups = new MyListDestinataires();
@@ -218,8 +214,10 @@ public class MessageWindow extends JPanel {
 	}
 
 	/**
-	 * Create the panel of new message.
-	 * @throws IOException
+	 * Create the panel of new message of the MessageWindow.
+	 * @return the MyNewMsgPanel
+	 * @throws IOException if <code>MyNewMsgPanel()</code> has failed
+	 * @see MyNewMsgPanel
 	 * */
 	private MyNewMsgPanel createNewMsgPanel() throws IOException{		
 		editMsg = new MyEditMsg();
@@ -231,10 +229,9 @@ public class MessageWindow extends JPanel {
 
 	/**
 	 * Create the panel of messages.
-	 * @throws IOException
-	 * @throws UserNotConnectedException 
+	 * @return JScrollPane messageContainer with allDiscussionClose for viewport
 	 * */
-	private MyJScrollPane createMsgPanel() throws IOException{
+	private MyJScrollPane createMsgPanel(){
 		conversationOpen = false ;
 		alertOpen = false;
 		
@@ -263,7 +260,7 @@ public class MessageWindow extends JPanel {
 	}
 	
 	/**
-	 * Add a new user to the list of users.
+	 * Add a new user to the list of users, display it and create his MessagePanel.
 	 * @throws Exception 
 	 * */
 	public void addNewUserToList(User userInDb, Boolean connect) throws Exception {
@@ -337,48 +334,12 @@ public class MessageWindow extends JPanel {
 		group.setForegroundNamePanel(); //necessary because it can be added while using the app
 	}
 	
-	
-	public void setUsersContainer() throws Exception {
-		nbUsers = 0;
-
-		listUsers.removeAll();
-		
-		/* Records all users (except myself) and their associated discussion */
-		allUsers.clear();
-		allMessagesUsers.clear();
-		for (User user : MainGUI.getAllUsersInDatabase()) {
-			if (!(user.getUUID().equals(AuthOperations.getConnectedUser().getUUID()))) {
-				addNewUserToList(user, false); //all users are new and no connected, for the moment there is no conversation
-			}
-		}
-		
-		usersContainer.setViewportView(listUsers);
-	}
-
-	public void setGroupsContainer() throws IOException, UserNotConnectedException {
-		nbGroups = 0;
-
-		listGroups.removeAll();
-		
-		/* Records all groups and their associated discussion */
-		allGroups.clear();
-		allMessagesGroups.clear();
-		addNewGroupToList("Clovordoge",true);
-		addNewGroupToList("Les potos",true);
-		addNewGroupToList("Salut c'est nous",false);
-		addNewGroupToList("4IR A2 > 4IR A1",false);
-		addNewGroupToList("Je suis un groupe",true);
-		addNewGroupToList("Espionnage Industriel",false); //for the moment, all groups are new and there is no conversation (except one, see later)
-		
-		groupsContainer.setViewportView(listGroups);
-
-	}
-
-	public void resetAllMessages() {
-		this.allMessagesUsers.clear();
-		this.allMessagesGroups.clear();
-	}
-	
+	/**
+	 * Find a DestinataireJPanel based on the UUID of an user
+	 * @param id UUID of the user
+	 * @return the DestinataireJPanel of the user
+	 * @see DestinataireJPanel
+	 */
 	public DestinataireJPanel findMyDestinataireJPanel(UUID id) {
 		DestinataireJPanel myDestinataireJPanel = null ;
 		for (DestinataireJPanel user : allUsers) {
@@ -389,6 +350,12 @@ public class MessageWindow extends JPanel {
 		return myDestinataireJPanel;
 	}
 	
+	/**
+	 * Find a User based on the UUID of an user
+	 * @param id UUID of the user
+	 * @return the User of the user
+	 * @see User
+	 */
 	public User findMyUser(UUID id) throws UserNotConnectedException {
 		User myUser = null ;
 		for (User user : MainGUI.getAllUsersInDatabase()) {
@@ -411,6 +378,7 @@ public class MessageWindow extends JPanel {
 	public MyDiscussionPanel getDiscussion() {return discussion;}
 	public JMenuBar getNorthDiscussion() {return northDiscussion;}
 	public MyTitle getNameDestinataire() {return nameDestinataire;}
+	public MyJButton getCloseDiscussion() {return closeDiscussion;}
 	public MyNewMsgPanel getNewMsg() {return newMsg;}
 	public MyEditMsg getEditMsg() {return editMsg;}
 	public MessagesPanel getAllDiscussionClose() {return allDiscussionClose;}
@@ -443,9 +411,4 @@ public class MessageWindow extends JPanel {
 	public void setBackMembers(JMenuItem backMembers) {this.backMembers = backMembers;}
 	public void setNextMembers(JMenuItem nextMembers) {this.nextMembers = nextMembers;}
 	public void setDisplay(int mode, int i) {if (mode == 0) {usersDisplay=i;} else if (mode == 1) {membersDisplay=i;}}
-
-
-	public MyJButton getCloseDiscussion() {
-		return closeDiscussion;
-	}
 }

@@ -5,9 +5,9 @@ import java.awt.event.ActionListener;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.view.Application;
-import clavardage.view.listener.MouseCloseConversation;
-import clavardage.view.mystyle.MyJButtonText;
-
+/**
+ * @author Célestine Paillé
+ */
 public class ActionDisconnect implements ActionListener{
 
 	@Override

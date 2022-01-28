@@ -4,10 +4,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 
 import clavardage.view.Application;
-
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyAlertMessage extends JLabel {
 	

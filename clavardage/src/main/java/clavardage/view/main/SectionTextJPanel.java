@@ -18,6 +18,9 @@ import clavardage.view.Application.SectionText;
 import clavardage.view.mystyle.MyRoundJPanel;
 import clavardage.view.mystyle.MyRoundJTextField;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class SectionTextJPanel extends JPanel {
 	

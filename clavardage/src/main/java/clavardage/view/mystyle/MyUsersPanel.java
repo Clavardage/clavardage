@@ -5,7 +5,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
-
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyUsersPanel extends JPanel {
 

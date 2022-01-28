@@ -8,6 +8,9 @@ import javax.swing.JButton;
 
 import clavardage.view.Application;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyJButtonText extends JButton {
 	

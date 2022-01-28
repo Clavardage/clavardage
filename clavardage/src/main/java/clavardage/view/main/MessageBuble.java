@@ -17,6 +17,9 @@ import clavardage.view.listener.AdapterLayout;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyRoundJTextArea;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MessageBuble extends JPanel {
 	

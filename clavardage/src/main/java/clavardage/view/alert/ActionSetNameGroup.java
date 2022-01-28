@@ -19,7 +19,9 @@ import clavardage.view.main.DestinataireJPanel;
 import clavardage.view.mystyle.MyDate;
 import clavardage.view.mystyle.MyDayInfo;
 import clavardage.view.mystyle.MyInfoPanel;
-
+/**
+ * @author Célestine Paillé
+ */
 public class ActionSetNameGroup implements ActionListener {
 
 	@Override

@@ -7,6 +7,9 @@ import clavardage.view.Application;
 import clavardage.view.MessageWindow;
 import clavardage.view.main.DestinataireJPanel;
 
+/**
+ * @author Célestine Paillé
+ */
 public class MouseCloseConversation {
 	
 	public static void closeConversation(UUID idConv) throws Exception {

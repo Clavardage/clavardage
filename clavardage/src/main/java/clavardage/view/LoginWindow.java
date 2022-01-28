@@ -39,6 +39,11 @@ import clavardage.view.mystyle.MyJButtonText;
 import clavardage.view.mystyle.MyJScrollBarUI;
 import clavardage.view.mystyle.MyLogButtonJPanel;
 import clavardage.view.mystyle.MyRoundJPanel;
+
+/**
+ * Login Window, first window open
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class LoginWindow extends JPanel implements MouseListener {
 	
@@ -62,22 +67,22 @@ public class LoginWindow extends JPanel implements MouseListener {
 		/* Add the login panel */
 		createLoginPanel();
 
+		/* Press ENTER to connect*/
 		Action connexion = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				connexion();
 			}};
-
-
 		InputMap im = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 		im.put(KeyStroke.getKeyStroke("ENTER"), "connexion");
-
 		ActionMap am = getActionMap();
 		am.put("connexion", connexion);
 	}
 	
 	/**
 	 * Create the login panel.
-	 * @throws IOException
+	 * @throws IOException if <code>createHeadPanel()</code> or <code>createSection()</code> hase failed
+	 * @see #createHeadPanel()
+	 * @see #createSection()
 	 * */
 	private void createLoginPanel() throws IOException {
 		logPanel = new MyRoundJPanel(30);
@@ -119,9 +124,10 @@ public class LoginWindow extends JPanel implements MouseListener {
 	
 	/**
 	 * Create the head panel.
-	 * @throws IOException 
+	 * @throws IOException if we can't read the logoImage
+	 * @see ImageIO#read(java.io.InputStream)
 	 * */
-	private void createHeadPanel() throws IOException {
+	private void createHeadPanel() throws IOException  {
 		GridBagLayout gbl_headPanel = new GridBagLayout();
 		gbl_headPanel.columnWidths = new int[]{0, 300, 0, 0};
 		gbl_headPanel.rowHeights = new int[]{10, 150, 10, 0};
@@ -162,7 +168,8 @@ public class LoginWindow extends JPanel implements MouseListener {
 
 	/**
 	 * Create the sections.
-	 * @throws IOException 
+	 * @throws IOException if <code>createLogButton()</code> has failed
+	 * @see #createLogButton()
 	 * */
 	private void createSection() throws IOException {
 		sections.setLayout(new BoxLayout(sections, BoxLayout.Y_AXIS));
@@ -179,11 +186,11 @@ public class LoginWindow extends JPanel implements MouseListener {
 		password = new SectionTextJPanel("Password", SectionText.PW);
 		sections.add(password);
 		
-		sections.add(createMargin(0, 20));
+		sections.add(Application.createMargin(0, 20));
 		
 		sections.add(createLogButton());
 
-		sections.add(createMargin(0, 40));
+		sections.add(Application.createMargin(0, 40));
 
 		sectionContainer.getVerticalScrollBar().setUI(new MyJScrollBarUI());
 		sectionContainer.setBorder(null);
@@ -192,8 +199,9 @@ public class LoginWindow extends JPanel implements MouseListener {
 	
 	/**
 	 * Create the Login button.
-	 * @throws IOException 
-	 * */
+	 * @throws IOException if we can't read the logButtonImage
+	 * @see ImageIO#read(java.io.InputStream)
+	 */
 	private JPanel createLogButton() throws IOException { 
 		
 		logButton = new JLabel("Login",SwingConstants.CENTER);
@@ -217,16 +225,10 @@ public class LoginWindow extends JPanel implements MouseListener {
 	}
 	
 	/**
-	 * Create a margin.
-	 * */
-	private JPanel createMargin(int x, int y) {
-		JPanel marge = new JPanel();
-		marge.setPreferredSize(new Dimension(x,y));
-		marge.setMaximumSize(marge.getPreferredSize());
-		marge.setOpaque(false);
-		return marge ;
-	}
-	
+	 * Try the connection to enter in the MessageWindow. <br>
+	 * If the connection has failed, create a error message.
+	 * @see MessageWindow
+	 */
 	protected void connexion() {
 		try {
 			//try the connection with mail and password
@@ -256,6 +258,10 @@ public class LoginWindow extends JPanel implements MouseListener {
 		}
 	}
 	
+	/**
+	 * Display the SignInWindow. <br>
+	 * @see MessageWindow
+	 */
 	private void goToSignIn() {
 		try {
 			if (Application.getSignInWindow() == null) {

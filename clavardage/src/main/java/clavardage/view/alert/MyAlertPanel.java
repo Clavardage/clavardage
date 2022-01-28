@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.UUID;
 
 import javax.swing.BoxLayout;
 import javax.swing.JMenuItem;
@@ -17,12 +16,14 @@ import clavardage.view.listener.ActionSetColorTheme;
 import clavardage.view.listener.MouseFocusColor;
 import clavardage.view.main.DestinataireJPanel;
 import clavardage.view.mystyle.MyJButtonText;
-
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyAlertPanel extends JPanel {
 	
 	private MyJButtonText cancel, confirm;
-	private JPanel container, alert, buttons;
+	private JPanel mycontainer, alert, buttons;
 	private AlertAction typeAlert;
 	public enum AlertAction {LEAVEGROUP, CHANGELOG, DISCONNECT, ADDMEMBER, CLOSECONV;}
 
@@ -30,19 +31,19 @@ public class MyAlertPanel extends JPanel {
 		super();
 		cancel = new MyJButtonText("Cancel");
 		confirm = new MyJButtonText("Confirm");
-		container = new JPanel();
+		mycontainer = new JPanel();
 		alert = new JPanel();
 		buttons = new JPanel();
 		
 		this.setBorder(new EmptyBorder(0, 0, 0, 0));
 		this.setLayout(new GridBagLayout());
-		this.add(container);
+		this.add(mycontainer);
 		
-		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		container.setBorder(new EmptyBorder(15, 15, 15, 15));
-		container.setOpaque(false);
-		container.add(alert);
-		container.add(buttons);
+		mycontainer.setLayout(new BoxLayout(mycontainer, BoxLayout.Y_AXIS));
+		mycontainer.setBorder(new EmptyBorder(15, 15, 15, 15));
+		mycontainer.setOpaque(false);
+		mycontainer.add(alert);
+		mycontainer.add(buttons);
 
 		alert.setLayout(new BoxLayout(alert, BoxLayout.Y_AXIS));
 		alert.setOpaque(false);
@@ -141,8 +142,8 @@ public class MyAlertPanel extends JPanel {
 		return confirm;
 	}
 	
-	public JPanel getContainer() {
-		return container;
+	public JPanel getMycontainer() {
+		return mycontainer;
 	}
 
 }

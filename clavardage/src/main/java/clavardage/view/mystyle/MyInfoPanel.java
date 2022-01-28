@@ -13,6 +13,9 @@ import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.Application;
 import clavardage.view.main.DestinataireJPanel;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyInfoPanel extends JPanel {
 	

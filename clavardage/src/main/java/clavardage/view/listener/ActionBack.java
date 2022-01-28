@@ -13,7 +13,6 @@ import clavardage.view.main.DestinataireJPanel;
 
 /**
  * Allows you to go back in the display of users in the groups parameters.
- * 
  * @author Célestine Paillé
  */
 public class ActionBack implements ActionListener {

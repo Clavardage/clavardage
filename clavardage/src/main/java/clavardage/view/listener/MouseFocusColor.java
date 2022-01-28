@@ -6,6 +6,9 @@ import java.awt.event.MouseListener;
 import clavardage.view.Application;
 import clavardage.view.mystyle.MyJButtonText;
 
+/**
+ * @author Célestine Paillé
+ */
 public class MouseFocusColor implements MouseListener {
 
 	@Override

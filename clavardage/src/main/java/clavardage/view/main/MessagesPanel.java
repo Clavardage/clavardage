@@ -12,6 +12,9 @@ import clavardage.view.Application.Destinataire;
 import clavardage.view.MessageWindow;
 import clavardage.view.alert.MyAlertMessage;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MessagesPanel extends JPanel {
 	

@@ -1,9 +1,7 @@
 package clavardage.view.alert;
 
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -11,22 +9,16 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Highlighter;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.Highlighter.Highlight;
-import javax.swing.text.Highlighter.HighlightPainter;
 
 import clavardage.controller.authentification.AuthOperations;
 import clavardage.model.exceptions.UserNotConnectedException;
 import clavardage.view.Application;
-
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyChangeLogPanel extends MyAlertPanel {
 
@@ -61,7 +53,7 @@ public class MyChangeLogPanel extends MyAlertPanel {
 		            if(newLogin.getText().length() > 20){
 		        		e.consume();
 		            }
-		        	getContainer().revalidate();
+		        	getMycontainer().revalidate();
 		        }
 		    });
 

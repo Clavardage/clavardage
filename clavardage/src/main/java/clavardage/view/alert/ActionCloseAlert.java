@@ -10,7 +10,9 @@ import clavardage.view.listener.MouseCloseConversation;
 import clavardage.view.listener.MouseOpenConversation;
 import clavardage.view.main.DestinataireJPanel;
 import clavardage.view.mystyle.MyJButtonText;
-
+/**
+ * @author Célestine Paillé
+ */
 public class ActionCloseAlert {
 	
 

@@ -2,6 +2,9 @@ package clavardage.view.mystyle;
 
 import java.util.Date;
 
+/**
+ * @author Célestine Paillé
+ */
 @SuppressWarnings("serial")
 public class MyDate extends Date {
 	

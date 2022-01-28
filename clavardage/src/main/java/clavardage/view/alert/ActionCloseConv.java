@@ -8,7 +8,9 @@ import clavardage.view.Application;
 import clavardage.view.Application.Destinataire;
 import clavardage.view.listener.MouseCloseConversation;
 import clavardage.view.mystyle.MyJButtonText;
-
+/**
+ * @author Célestine Paillé
+ */
 public class ActionCloseConv implements ActionListener {
 	
 	public ActionCloseConv() {
