@@ -15,7 +15,7 @@
     <a href="https://github.com/Clavardage/clavardage/releases"><strong>See Releases »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Clavardage/REPORT">Read the PDF Report (French)</a>
+    <a href="https://github.com/Clavardage/REPORT/raw/main/Rapport_Projet_Java.pdf">Read the PDF Report (French)</a>
     ·
     <a href="https://github.com/Clavardage/uml#readme">See UML</a>
     ·
